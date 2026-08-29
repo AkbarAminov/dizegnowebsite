@@ -1,0 +1,97 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+
+type Status = "idle" | "submitting" | "success" | "error";
+
+export function ContactForm() {
+  const [status, setStatus] = useState<Status>("idle");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("submitting");
+    setFieldErrors({});
+
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    const res = await fetch("/api/contact/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok) {
+      setStatus("success");
+      form.reset();
+      return;
+    }
+
+    const body = await res.json().catch(() => ({}));
+    setFieldErrors(body.fieldErrors ?? {});
+    setStatus("error");
+  }
+
+  if (status === "success") {
+    return (
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-lg"
+      >
+        Thanks — your message has been sent.
+      </motion.p>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex max-w-xl flex-col gap-6">
+      <Field name="name" label="Name" errors={fieldErrors.name} />
+      <Field name="email" label="Email" type="email" errors={fieldErrors.email} />
+      <Field name="message" label="Message" as="textarea" errors={fieldErrors.message} />
+
+      <button
+        type="submit"
+        disabled={status === "submitting"}
+        className="w-fit border border-[#f0e10c] px-6 py-3 text-sm uppercase tracking-tight text-[#f0e10c] transition-colors duration-200 hover:bg-[#f0e10c] hover:text-black disabled:opacity-50"
+      >
+        {status === "submitting" ? "Sending..." : "Send"}
+      </button>
+    </form>
+  );
+}
+
+function Field({
+  name,
+  label,
+  type = "text",
+  as = "input",
+  errors,
+}: {
+  name: string;
+  label: string;
+  type?: string;
+  as?: "input" | "textarea";
+  errors?: string[];
+}) {
+  const commonClasses =
+    "border-b border-current/30 bg-transparent py-2 outline-none transition-colors focus:border-current";
+
+  return (
+    <label className="flex flex-col gap-2 text-sm">
+      <span className="uppercase tracking-tight opacity-70">{label}</span>
+      {as === "textarea" ? (
+        <textarea name={name} rows={4} className={commonClasses} />
+      ) : (
+        <input name={name} type={type} className={commonClasses} />
+      )}
+      {errors?.map((err) => (
+        <span key={err} className="text-red-500">
+          {err}
+        </span>
+      ))}
+    </label>
+  );
+}

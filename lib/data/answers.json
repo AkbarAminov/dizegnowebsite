@@ -1,0 +1,112 @@
+[
+  {
+    "title": "The basics",
+    "items": [
+      {
+        "number": "01",
+        "question": "What does Dizegno do?",
+        "answer": "Dizegno is a branding agency — identity, visual systems, and communication for businesses. That covers everything from a logo and a guideline to full brand strategy, depending on what the client actually needs."
+      },
+      {
+        "number": "02",
+        "question": "Is it just logos, or more than that?",
+        "answer": "A logo is usually the smallest part of the job. Most projects end up covering the full visual system — guidelines, typography, packaging, signage — whatever the brand actually needs to hold together once it's out in the world."
+      },
+      {
+        "number": "03",
+        "question": "What kind of clients do you work with?",
+        "answer": "Mostly banking and fintech, retail, and sports events — recent work includes Ipoteka Bank, Wolt, Toyota Central Asia, Anorbank, Uzinsurance, the Republican Emergency Medical Service, and the Samarkand Marathon race series (Sky Camp, Zaamin Ultra, Bukhara Night Race, Aral Ultra)."
+      },
+      {
+        "number": "04",
+        "question": "Where are you based?",
+        "answer": "Tashkent, Uzbekistan. Most of the work is with clients across the CIS region, but that's more about where the relationships started than a hard limit."
+      }
+    ]
+  },
+  {
+    "title": "Why Dizegno",
+    "items": [
+      {
+        "number": "05",
+        "question": "Why choose Dizegno?",
+        "answer": "Dizegno grew from one designer's practice into an agency clients return to — for consistency and craft, not just a portfolio. Six-plus years of work across banking, automotive, food delivery, healthcare, and sports events means the studio has usually already solved a problem close to whatever a new client is facing. Every project is personally overseen from brief to delivery, so responsibility never gets split or diluted between hands."
+      },
+      {
+        "number": "06",
+        "question": "Who is behind Dizegno?",
+        "answer": "Dizegno was founded by Akbar Aminov, who started as an independent designer and grew the practice into an agency one project at a time. Today it wins larger briefs on the strength of the work itself, not the size of a roster. Akbar remains the studio's creative director and personally oversees every major project that comes through the door."
+      },
+      {
+        "number": "07",
+        "question": "How big is the Dizegno team?",
+        "answer": "Dizegno runs lean by design — a small team with direct oversight on every project, rather than a large roster where work gets diluted across account managers and juniors. That structure is what keeps quality consistent as the studio takes on bigger clients, instead of stretching thinner with every new project."
+      },
+      {
+        "number": "08",
+        "question": "What makes the process different?",
+        "answer": "There's no handoff between strategy, design, and production — the same person who scopes a project stays on it through final files. That continuity is what most studios lose once they scale past a certain size, and it's the thing Dizegno has deliberately kept in place."
+      }
+    ]
+  },
+  {
+    "title": "How the work happens",
+    "items": [
+      {
+        "number": "09",
+        "question": "How long have you been doing this?",
+        "answer": "Six-plus years in branding at this point, mostly split between identity systems, packaging, and campaign work."
+      },
+      {
+        "number": "10",
+        "question": "What does a typical project look like, week to week?",
+        "answer": "Discovery and direction first — usually one to two weeks of research and concept work before anything gets presented. Then design development in rounds, with a review after each one, until the system is locked. Production and file handoff come last, once everything's approved."
+      },
+      {
+        "number": "11",
+        "question": "Do you handle production too — packaging, signage, print files?",
+        "answer": "Yes. If the brand needs print-ready packaging dielines, signage specs, or press-ready files, that's part of the job, not a separate quote. I'd rather see a system through to the shelf or the wall than hand off a PDF and hope it survives."
+      }
+    ]
+  },
+  {
+    "title": "Before you start a project",
+    "items": [
+      {
+        "number": "12",
+        "question": "How do projects usually start?",
+        "answer": "With a short conversation, usually. Reach out through the contact page or the button in the corner — tell me roughly what you need, and we'll figure out scope and timeline from there."
+      },
+      {
+        "number": "13",
+        "question": "What should I have ready before reaching out?",
+        "answer": "Nothing formal — a rough sense of the problem is enough. If you already have brand guidelines, past design work, or a competitor you like or dislike, send those too; it saves a round of back-and-forth later."
+      },
+      {
+        "number": "14",
+        "question": "What if I don't have a clear brief yet?",
+        "answer": "That's normal, and honestly more common than showing up with a finished brief. Part of the first conversation is turning a vague idea into something workable — problem, audience, what success looks like — before any design work starts."
+      },
+      {
+        "number": "15",
+        "question": "Can you work alongside an in-house team or another agency?",
+        "answer": "Regularly. Sometimes I'm building the whole system from zero, sometimes I'm brought in for one piece — a rebrand, a packaging line — that needs to sit inside a bigger team's existing workflow. Either way works."
+      }
+    ]
+  },
+  {
+    "title": "Pricing & timelines",
+    "items": [
+      {
+        "number": "16",
+        "question": "How is pricing structured?",
+        "answer": "Project-based, not hourly — priced against scope (how many deliverables, how many rounds, how much production work) rather than time spent. You get a fixed number before anything starts, not an open-ended estimate."
+      },
+      {
+        "number": "17",
+        "question": "How long does a typical identity project take?",
+        "answer": "Four to eight weeks for a full identity system, depending on how much production work sits on top of it — packaging and signage add time. Smaller scopes, like a refresh of an existing mark, move faster."
+      }
+    ]
+  }
+]

@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// "normal" | "wide" | "tall" — drives the CSS Grid dense span classes in
+// WorkGridItem.tsx. Kept as a plain string (not a Prisma enum) so it maps
+// 1:1 onto the existing ProjectSpan union without an extra cast layer.
+model Project {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  category    String?
+  year        Int?
+  description String?
+  production  String?
+  span        String   @default("normal")
+  order       Int      @default(0)
+  // Pinned projects always sort before unpinned ones on the public site
+  // (home + Work), regardless of `order` — see getAllProjects in
+  // lib/projects.ts. Relative order among pinned projects still follows
+  // `order`, same as unpinned ones.
+  pinned      Boolean  @default(false)
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  images ProjectImage[]
+  fields ProjectField[]
+
+  @@index([published, pinned, order])
+}
+
+enum ProjectImageType {
+  image
+  gif
+  youtube
+}
+
+model ProjectImage {
+  id        String           @id @default(cuid())
+  projectId String
+  project   Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  // For "youtube", this is a ready-to-embed URL (https://www.youtube.com/embed/<id>),
+  // not the original watch URL — see app/api/admin/projects/[id]/images/youtube/route.ts.
+  url       String
+  // Always populated, even for youtube (defaults to a 16:9 placeholder) so
+  // grid-layout code (lib/gridLayout.ts) doesn't need type-specific cases.
+  width     Int
+  height    Int
+  order     Int              @default(0)
+  type      ProjectImageType @default(image)
+  // "cover" | "contain" — plain string like `span` above, not an enum, so
+  // it maps 1:1 onto the frontend's fit-mode union without a cast layer.
+  // Lets a specific image (e.g. a thin logo-lockup crop) opt out of the
+  // gallery grid's default cover-crop and display uncropped instead.
+  fitMode   String           @default("cover")
+
+  @@index([projectId, order])
+}
+
+// Free-form label/value rows (e.g. "CLIENT:", "AWARD:") so new credit types
+// can be added from the admin UI without a schema change.
+model ProjectField {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  label     String
+  value     String
+  order     Int     @default(0)
+
+  @@index([projectId, order])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
