@@ -1,11 +1,13 @@
 import { Header } from "@/components/Header";
 import { EndCTA } from "@/components/EndCTA";
-import { ContactPopup } from "@/components/ContactPopup";
-import { ContactPopupProvider } from "@/components/ContactPopupProvider";
+import { ContactPopup, ContactPopupProvider } from "@/components/ContactPopup";
 import { PageTransition } from "@/components/PageTransition";
 
-// Public-site chrome, scoped to this route group only — /admin (a
-// sibling of this group under the root layout) never sees any of it.
+// Public pages are statically rendered and refreshed on demand by admin
+// mutations (see revalidatePublicSite). The hourly window is a safety net
+// for changes made outside the admin, e.g. a seed run.
+export const revalidate = 3600;
+
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <ContactPopupProvider>

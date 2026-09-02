@@ -1,13 +1,9 @@
 @import "tailwindcss";
 
-:root {
-  --background: #000000;
-  --foreground: #ffffff;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
+  --color-accent: #f0e10c;
+  /* Helvetica Neue renders natively on Mac/iOS; no web font is loaded. */
+  --font-sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
 }
 
 html {
@@ -15,22 +11,12 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  /* System font stack — Helvetica Neue renders natively on Mac/iOS; no
-     web font file is loaded (it isn't licensed for that), so everywhere
-     else falls back through Helvetica/Arial to the platform default. */
-  font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  background: black;
+  color: white;
 }
 
-/* Fluid type scale for the project-page title specifically — scoped to
-   a class (not a bare `h1` selector) on purpose: an unscoped `h1 { }`
-   rule here sits unlayered after `@import "tailwindcss"`, and unlayered
-   CSS always wins over Tailwind's `@layer utilities` regardless of
-   specificity — so a bare selector would silently override every other
-   h1's text-4xl/text-6xl utility classes site-wide (Work/Answers/
-   Contact headings), not just this one. */
+/* Fluid project-page title. Scoped to a class on purpose: an unlayered
+   bare `h1` rule would override every Tailwind text-size utility site-wide. */
 .project-title {
   font-size: clamp(1.75rem, 2.2vw, 3.5rem);
 }
-

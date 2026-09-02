@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export function RevealOnScroll({
   children,
   delay = 0,
-  className = "",
+  className,
 }: {
   children: React.ReactNode;
   delay?: number;

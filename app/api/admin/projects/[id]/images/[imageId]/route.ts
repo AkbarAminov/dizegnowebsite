@@ -1,39 +1,29 @@
-import { NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { storage } from "@/lib/storage";
-import { PROJECTS_CACHE_TAG } from "@/lib/projects";
+import { jsonError, parseBody } from "@/lib/api";
+import { fitModeSchema } from "@/lib/validation";
+import { revalidatePublicSite } from "@/lib/projects";
+import { removeUpload } from "@/lib/uploads";
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string; imageId: string }> }
-) {
-  const { imageId } = await params;
-  const body = await request.json().catch(() => null);
-  if (body?.fitMode !== "cover" && body?.fitMode !== "contain") {
-    return NextResponse.json({ error: "fitMode must be 'cover' or 'contain'" }, { status: 400 });
-  }
+export async function PATCH(request: Request, { params }: RouteContext<"/api/admin/projects/[id]/images/[imageId]">) {
+  const { id, imageId } = await params;
+  const parsed = await parseBody(request, fitModeSchema);
+  if (!parsed.ok) return parsed.response;
 
-  const image = await prisma.projectImage.update({
-    where: { id: imageId },
-    data: { fitMode: body.fitMode },
-  });
+  const { count } = await prisma.projectImage.updateMany({ where: { id: imageId, projectId: id }, data: parsed.data });
+  if (count === 0) return jsonError("Image not found", 404);
 
-  revalidateTag(PROJECTS_CACHE_TAG, { expire: 0 });
-  return NextResponse.json(image);
+  revalidatePublicSite();
+  return Response.json({ ok: true });
 }
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: Promise<{ id: string; imageId: string }> }
-) {
-  const { imageId } = await params;
-  const image = await prisma.projectImage.findUnique({ where: { id: imageId } });
-  if (!image) return NextResponse.json({ error: "Not found" }, { status: 404 });
+export async function DELETE(_request: Request, { params }: RouteContext<"/api/admin/projects/[id]/images/[imageId]">) {
+  const { id, imageId } = await params;
+  const image = await prisma.projectImage.findFirst({ where: { id: imageId, projectId: id } });
+  if (!image) return jsonError("Image not found", 404);
 
-  await storage.remove(image.url);
   await prisma.projectImage.delete({ where: { id: imageId } });
+  await removeUpload(image.url);
 
-  revalidateTag(PROJECTS_CACHE_TAG, { expire: 0 });
-  return NextResponse.json({ ok: true });
+  revalidatePublicSite();
+  return Response.json({ ok: true });
 }

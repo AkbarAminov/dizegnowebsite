@@ -1,28 +1,21 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { NextResponse, type NextRequest } from "next/server";
+import { SESSION_COOKIE, isValidSessionToken } from "@/lib/auth";
 
-export default auth((req) => {
-  const { pathname } = req.nextUrl;
-  const isLoggedIn = !!req.auth;
-  const isApi = pathname.startsWith("/api/admin");
-  const isLoginPage = pathname.startsWith("/admin/login");
+// Guards the admin UI and its API: unauthenticated pages redirect to the
+// login form, unauthenticated API calls get a 401.
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const loggedIn = await isValidSessionToken(request.cookies.get(SESSION_COOKIE)?.value);
 
-  if (isLoginPage) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(new URL("/admin", req.nextUrl));
-    }
-    return NextResponse.next();
+  if (pathname.startsWith("/admin/login")) {
+    return loggedIn ? NextResponse.redirect(new URL("/admin", request.url)) : NextResponse.next();
   }
-
-  if (!isLoggedIn) {
-    if (isApi) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    return NextResponse.redirect(new URL("/admin/login", req.nextUrl));
+  if (loggedIn) return NextResponse.next();
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  return NextResponse.next();
-});
+  return NextResponse.redirect(new URL("/admin/login", request.url));
+}
 
 export const config = {
   matcher: ["/admin/:path*", "/api/admin/:path*"],

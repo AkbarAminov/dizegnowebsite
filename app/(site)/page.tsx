@@ -1,16 +1,12 @@
-import { Section } from "@/components/Section";
 import { WorkGrid } from "@/components/WorkGrid";
-import { getAllProjects } from "@/lib/projects";
+import { getPublishedProjects } from "@/lib/projects";
 
 export default async function HomePage() {
-  console.time("[render] HomePage total");
-  const projects = await getAllProjects();
+  const projects = await getPublishedProjects();
 
-  const page = (
-    <Section theme="dark" className="min-h-screen px-0 pt-24 pb-20 md:pt-28">
+  return (
+    <section className="min-h-screen pt-24 pb-20 md:pt-28">
       <WorkGrid projects={projects} />
-    </Section>
+    </section>
   );
-  console.timeEnd("[render] HomePage total");
-  return page;
 }

@@ -4,43 +4,40 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 type Status = "idle" | "submitting" | "success" | "error";
+type FieldErrors = Partial<Record<"name" | "email" | "message", string[]>>;
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
     setStatus("submitting");
     setFieldErrors({});
 
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    const res = await fetch("/api/contact/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    if (res.ok) {
-      setStatus("success");
-      form.reset();
-      return;
+    try {
+      const res = await fetch("/api/contact/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      if (res.ok) {
+        setStatus("success");
+        form.reset();
+        return;
+      }
+      const body = await res.json().catch(() => ({}));
+      setFieldErrors(body.fieldErrors ?? {});
+    } catch {
+      // Network failure: fall through to the generic error state.
     }
-
-    const body = await res.json().catch(() => ({}));
-    setFieldErrors(body.fieldErrors ?? {});
     setStatus("error");
   }
 
   if (status === "success") {
     return (
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-lg"
-      >
+      <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-lg">
         Thanks — your message has been sent.
       </motion.p>
     );
@@ -52,10 +49,14 @@ export function ContactForm() {
       <Field name="email" label="Email" type="email" errors={fieldErrors.email} />
       <Field name="message" label="Message" as="textarea" errors={fieldErrors.message} />
 
+      {status === "error" && Object.keys(fieldErrors).length === 0 && (
+        <p className="text-sm text-red-500">Something went wrong. Please try again.</p>
+      )}
+
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="w-fit border border-[#f0e10c] px-6 py-3 text-sm uppercase tracking-tight text-[#f0e10c] transition-colors duration-200 hover:bg-[#f0e10c] hover:text-black disabled:opacity-50"
+        className="w-fit border border-accent px-6 py-3 text-sm uppercase tracking-tight text-accent transition-colors duration-200 hover:bg-accent hover:text-black disabled:opacity-50"
       >
         {status === "submitting" ? "Sending..." : "Send"}
       </button>
@@ -76,20 +77,20 @@ function Field({
   as?: "input" | "textarea";
   errors?: string[];
 }) {
-  const commonClasses =
+  const inputClass =
     "border-b border-current/30 bg-transparent py-2 outline-none transition-colors focus:border-current";
 
   return (
     <label className="flex flex-col gap-2 text-sm">
       <span className="uppercase tracking-tight opacity-70">{label}</span>
       {as === "textarea" ? (
-        <textarea name={name} rows={4} className={commonClasses} />
+        <textarea name={name} rows={4} required className={inputClass} />
       ) : (
-        <input name={name} type={type} className={commonClasses} />
+        <input name={name} type={type} required className={inputClass} />
       )}
-      {errors?.map((err) => (
-        <span key={err} className="text-red-500">
-          {err}
+      {errors?.map((error) => (
+        <span key={error} className="text-red-500">
+          {error}
         </span>
       ))}
     </label>

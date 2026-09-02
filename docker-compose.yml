@@ -7,8 +7,7 @@ services:
       POSTGRES_PASSWORD: dizegno
       POSTGRES_DB: dizegno
     ports:
-      # Host port 5433 (not the default 5432) — this machine already has an
-      # unrelated Postgres container for a different project bound to 5432.
+      # 5433 on the host so it never clashes with a default local Postgres.
       - "5433:5432"
     volumes:
       - dizegno_new_pgdata:/var/lib/postgresql/data

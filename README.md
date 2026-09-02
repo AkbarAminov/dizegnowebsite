@@ -1,259 +1,101 @@
 # Dizegno
 
-A dark-themed portfolio site built with Next.js (App Router), TypeScript,
-Tailwind CSS and Framer Motion, backed by Postgres via Prisma and a
-self-hosted admin panel at `/admin`. The layout patterns and motion
-(collage grid, hover reveal, page transitions, expandable info panel,
-lightbox) were modeled on the UX/structure of a well-known design-studio
-portfolio site — no text, images, or branding from that site are
-included.
-
-## Stack
-
-- Next.js App Router + TypeScript + Tailwind CSS + Framer Motion (frontend)
-- Prisma ORM + PostgreSQL (data)
-- NextAuth.js (Auth.js v5) — single hardcoded admin account, credentials login
-- Local disk storage for uploaded images (`public/uploads`), behind a
-  swappable `Storage` interface (`lib/storage.ts`) so it can move to
-  S3/Cloudinary later without touching callers
-- Telegram Bot API + Resend/Nodemailer for contact-form notifications
-  (both optional and independent of each other)
+Portfolio site for a branding agency: Next.js 16 (App Router), TypeScript,
+Tailwind CSS 4, Framer Motion, Prisma 7 + PostgreSQL, and a small
+self-hosted admin panel at `/admin`.
 
 ## Getting started
 
-### 1. Start Postgres
-
-A `docker-compose.yml` is included for local development:
-
 ```bash
-docker compose up -d db
-```
-
-This starts Postgres 16 on **host port 5433** (not the default 5432, to
-avoid clashing with any other local Postgres instance) with a persistent
-named volume. If you'd rather use a hosted free-tier database instead of
-Docker (e.g. [Neon](https://neon.tech) or
-[Supabase](https://supabase.com)), skip this step and just point
-`DATABASE_URL` at that instance in the next step.
-
-### 2. Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Then edit `.env`. See [Environment variables](#environment-variables)
-below for the full list and what each one does.
-
-Generate `NEXTAUTH_SECRET` with:
-
-```bash
-openssl rand -base64 32
-```
-
-### 3. Install dependencies, run migrations, seed demo data
-
-```bash
+docker compose up -d db        # Postgres 16 on localhost:5433
+cp .env.example .env           # then fill in ADMIN_* and AUTH_SECRET
 npm install
-npx prisma migrate dev
-npx prisma db seed
+npm run db:migrate             # create the schema
+npm run db:seed                # optional: 10 demo projects with placeholder images
+npm run dev                    # http://localhost:3000
 ```
 
-`prisma migrate dev` creates the database schema (`Project`,
-`ProjectImage`, `ProjectField`, `ContactMessage`). `prisma db seed` runs
-`prisma/seed.ts`, which inserts ~10 demo projects using picsum.photos
-placeholder images so the homepage grid isn't empty on first run. It's
-safe to re-run — it upserts by `slug`.
+Generate `AUTH_SECRET` with `openssl rand -base64 32`. Sign in at
+`/admin/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD`; that env pair is the
+only account.
 
-### 4. Run the dev server
+Requires Node 22.18+ (the seed script runs as TypeScript natively).
 
-```bash
-npm run dev
-```
-
-Open http://localhost:3000. Sign in to the admin panel at
-`/admin/login` with the `ADMIN_EMAIL` / `ADMIN_PASSWORD` you set in
-`.env` — there's no separate account/seed step, that env pair *is* the
-account.
-
-```bash
-npm run build   # production build
-npm run start   # run the production build
-npm run lint    # eslint
-```
+| Script | What it does |
+| --- | --- |
+| `npm run dev` / `build` / `start` | Next.js dev server / production build / serve the build |
+| `npm run lint` / `typecheck` | ESLint / `tsc --noEmit` |
+| `npm run db:migrate` | `prisma migrate dev` (local development) |
+| `npm run db:deploy` | `prisma migrate deploy` (production) |
+| `npm run db:seed` | Upsert demo projects by slug; safe to re-run |
 
 ## Environment variables
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | Yes | Postgres connection string, e.g. `postgresql://dizegno:dizegno@localhost:5433/dizegno` |
-| `ADMIN_EMAIL` | Yes | The only email allowed to sign in at `/admin/login` |
-| `ADMIN_PASSWORD` | Yes | The password for that account |
-| `NEXTAUTH_SECRET` | Yes | Random secret NextAuth uses to sign session tokens — generate with `openssl rand -base64 32` |
-| `TELEGRAM_BOT_TOKEN` | No | Enables Telegram notifications on contact-form submit |
-| `TELEGRAM_CHAT_ID` | No | Chat to send those notifications to |
-| `RESEND_API_KEY` | No | Enables email notifications via Resend (takes priority over SMTP if both are set) |
-| `EMAIL_HOST` / `EMAIL_PORT` / `EMAIL_USER` / `EMAIL_PASS` | No | SMTP credentials for email notifications via Nodemailer (used only if `RESEND_API_KEY` is unset) |
-| `EMAIL_TO` | No | Where notification emails are sent — defaults to `EMAIL_USER` if unset |
+| `DATABASE_URL` | Yes | Postgres connection string |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Yes | The single admin login |
+| `AUTH_SECRET` | Yes | Signs the admin session cookie |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | No | Telegram notification on each contact-form submission |
+| `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS` | No | SMTP notification on each contact-form submission |
+| `EMAIL_TO` | No | Recipient for those emails; defaults to `EMAIL_USER` |
 
-Every "No" row above is independently optional: if its variables are
-absent, that notification channel is silently skipped — the contact form
-still saves to the database and returns success either way. See
-`lib/notifications.ts`.
+Notification channels are independent and optional. Messages are always
+saved to the database; a missing or failing channel is logged, never
+surfaced to the visitor.
 
-### Setting up Telegram notifications
+To get Telegram values: create a bot with [@BotFather](https://t.me/BotFather)
+(`/newbot`), send it any message, then open
+`https://api.telegram.org/bot<TOKEN>/getUpdates` and read `chat.id`.
 
-1. Open a chat with [@BotFather](https://t.me/BotFather) on Telegram.
-2. Send `/newbot` and follow the prompts (choose a name and a username
-   ending in `bot`). BotFather replies with a token — this is
-   `TELEGRAM_BOT_TOKEN`.
-3. Send a message to your new bot (anything, e.g. "hi") so it has a chat
-   to talk back to.
-4. Get your chat ID by visiting
-   `https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates` in a
-   browser (with your real token in the URL) right after sending that
-   message — look for `"chat":{"id": ...}` in the JSON response. That
-   number is `TELEGRAM_CHAT_ID`.
-5. Add both values to `.env` and restart the dev server.
-
-### Setting up email notifications
-
-Pick **one**:
-
-- **Resend** (simplest): sign up at [resend.com](https://resend.com),
-  create an API key, set `RESEND_API_KEY`. The sender address in
-  `lib/notifications.ts` uses Resend's shared `onboarding@resend.dev`
-  domain, which works immediately without DNS setup — verify your own
-  domain in the Resend dashboard later if you want mail from your own
-  address.
-- **SMTP via Nodemailer**: set `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`,
-  `EMAIL_PASS` (and optionally `EMAIL_TO`) to your mail provider's SMTP
-  credentials (Gmail app password, SendGrid SMTP, your own mail server,
-  etc).
-
-## Admin panel
-
-`/admin` is a self-contained, protected section — separate visual style
-from the public site, no shared components. Everything under `/admin/*`
-(pages and `/api/admin/*` routes) redirects to `/admin/login` (or
-returns `401` for API calls) unless signed in; see `proxy.ts`.
-
-- `/admin` — projects table: thumbnail, title, published/draft toggle,
-  created date, drag handle to reorder the homepage grid, edit link,
-  delete
-- `/admin/projects/new` — create a project (title, slug, category, year,
-  description, production, grid span, free-form extra fields)
-- `/admin/projects/[id]` — edit those same fields, plus an image manager:
-  upload, drag-to-reorder, delete
-- `/admin/messages` — contact-form submissions, mark read/unread, delete
-
-## Replacing/extending content
-
-- **Projects, images, and contact messages** now live in Postgres and are
-  managed entirely through `/admin` — there's no JSON file to hand-edit
-  for these anymore.
-- `lib/data/answers.json` is still a plain JSON file (FAQ accordion on
-  `/answers/`) — there was no request to move this into the database, so
-  it stays as-is; edit it directly.
-- `lib/projects.ts` is the only place the public site reads project data
-  from — `getAllProjects`, `getProject`, `getAdjacentProjects` all query
-  Prisma and return the same shape the components have always expected
-  (see `lib/types.ts`). If you ever swap Postgres/Prisma for something
-  else, this is the one file to reimplement.
-- Uploaded images are written to `public/uploads` and served directly by
-  Next as static files. To move to S3-compatible storage or Cloudinary
-  later, implement the `Storage` interface in `lib/storage.ts` and swap
-  the `storage` export — nothing else in the app references the
-  filesystem directly.
-
-## Project structure
+## How it fits together
 
 ```
 app/
-  layout.tsx                     Root layout: Header, PageTransition, EndCTA, ContactPopup
-  page.tsx                        Home — the work grid, no hero
-  work/page.tsx                    Full work grid
-  work/[slug]/page.tsx              Project template
-  answers/page.tsx                  FAQ accordion
-  contact/page.tsx                  Contact page
-  api/contact/route.ts               Contact form endpoint (DB + notifications)
-  api/auth/[...nextauth]/route.ts    NextAuth handlers
+  layout.tsx                  Root layout (<html>/<body>, metadata)
+  (site)/                     Public site: Header, page transition, end CTA, contact popup
+    page.tsx                  Home: project grid
+    work/page.tsx             Work: grid with category filter
+    work/[slug]/page.tsx      Project: gallery, info panel, prev/next, related
+    answers/page.tsx          FAQ from lib/data/answers.json
+    contact/page.tsx          Contact details + form
   admin/
-    login/page.tsx                   Sign-in form
-    (dashboard)/layout.tsx           Sidebar shell (Projects / Messages / Sign out)
-    (dashboard)/page.tsx              Projects table
-    (dashboard)/projects/new/         Create project
-    (dashboard)/projects/[id]/        Edit project + image manager
-    (dashboard)/messages/             Contact messages
-  api/admin/
-    projects/                          CRUD + reorder
-    projects/[id]/images/               Upload, delete, reorder
-    messages/                           List, mark read, delete
-components/                          Public-site UI — untouched by this backend work
+    login/page.tsx            Sign-in form (server action in admin/actions.ts)
+    (dashboard)/              Projects table, project form + image manager, messages
+  api/
+    contact/                  Public contact-form endpoint
+    admin/...                 JSON endpoints used by the admin UI (guarded by proxy.ts)
+components/                   Public-site UI
 lib/
-  types.ts                           Shared Project/Answer/etc. shapes (public contract)
-  projects.ts                        Prisma-backed data layer for the public site
-  auth.ts                            NextAuth config (single credentials-based admin)
-  prisma.ts                          Prisma client singleton
-  storage.ts                         Image storage abstraction (local disk today)
-  notifications.ts                   Telegram + email senders (both optional)
-  validation.ts                      Zod contact-form schema
-  data/answers.json                  Still-static FAQ content
-proxy.ts                            Protects /admin/* and /api/admin/*
-prisma/
-  schema.prisma                      Project / ProjectImage / ProjectField / ContactMessage
-  seed.ts                            Demo data (picsum.photos images)
-prisma.config.ts                    Prisma CLI config (datasource URL, seed command — Prisma 7)
-docker-compose.yml                  Local Postgres for development
+  projects.ts                 Public read model over Prisma + revalidation helper
+  auth.ts                     Signed-cookie session for the single admin account
+  validation.ts               Zod schemas shared by API routes and the admin form
+  uploads.ts, imageInfo.ts    Local-disk image storage and dimension/format detection
+  notifications.ts            Telegram + SMTP senders
+  youtube.ts, site.ts         Small helpers and site-wide constants
+prisma/                       Schema, migrations, seed
+proxy.ts                      Redirects unauthenticated /admin requests, 401s /api/admin
 ```
 
-## Notable implementation details
+- **Public pages are static.** Every admin mutation calls
+  `revalidatePublicSite()`, which invalidates the whole public tree; the
+  next visit re-renders with fresh data. An hourly `revalidate` window in
+  `app/(site)/layout.tsx` covers changes made outside the admin.
+- **Auth** is a signed, expiring cookie (HMAC-SHA256 via Web Crypto) checked
+  in `proxy.ts`. There is no user table.
+- **Images** are stored under `public/uploads` and served as static files.
+  Format and dimensions are read from the file bytes (JPG, PNG, WEBP, GIF),
+  so a renamed file cannot spoof its type. GIFs are served unoptimised so
+  the animation survives. YouTube links are stored as embed URLs.
+- **Grid layout.** Home/Work use a uniform 2-column grid; the project
+  gallery uses `grid-auto-flow: dense` with tile spans chosen by position so
+  server and client markup match.
 
-- **The public-facing markup, animations, lightbox, and masonry/grid
-  layout were not touched by the backend work.** Only the data-fetching
-  layer (`lib/projects.ts`) changed internally, from reading
-  `lib/data/projects.json` to querying Prisma — the exported function
-  signatures and the shape of data they return are unchanged, so every
-  component in `components/` works exactly as before.
-- **No more per-section light/dark switching.** An earlier version tried
-  to invert the header color based on which page section was in view.
-  That broke on pages taller than the viewport, so it was removed;
-  `Header` is just always dark.
-- **Homepage/work grid** uses CSS Grid with `grid-auto-flow: dense` and
-  per-item `col-span`/`row-span` driven by each project's `span` field
-  (`normal` | `wide` | `tall`, editable per-project in `/admin`) — an
-  asymmetric collage, not a uniform table.
-- **Project gallery** uses the same dense-grid technique, but spans are
-  computed from each image's actual `width`/`height` (captured
-  automatically at upload time via `image-size`) instead of a hand-picked
-  field.
-- **Page transitions** are implemented via Framer Motion
-  `AnimatePresence` keyed by pathname — Next's App Router doesn't
-  guarantee the outgoing route stays mounted, so this is the standard
-  workaround, not a hard guarantee of every exit animation completing.
+## Deploying
 
-## What's still needed for production
-
-Everything above is enough to run this fully functional locally. Before
-deploying for real, you'll still need to:
-
-1. **Create the actual Telegram bot** via @BotFather and get a real
-   `TELEGRAM_CHAT_ID` (see steps above) — the `.env.example` values are
-   placeholders.
-2. **Choose a production database host.** Local Docker Postgres is
-   dev-only. [Neon](https://neon.tech) and [Supabase](https://supabase.com)
-   both have free tiers that work as-is with `DATABASE_URL`; run
-   `npx prisma migrate deploy` (not `migrate dev`) against it once.
-3. **Choose a production image host.** `public/uploads` works for a
-   single-server deployment but won't survive redeploys on most
-   serverless hosts (e.g. Vercel's filesystem is ephemeral/read-only in
-   production). Implement `lib/storage.ts`'s `Storage` interface against
-   S3, R2, or Cloudinary and swap the `storage` export before deploying
-   there.
-4. **Set a real `ADMIN_PASSWORD` and `NEXTAUTH_SECRET`** in production
-   env vars — don't reuse local dev values.
-5. **Set up email notifications for real** (Resend domain verification,
-   or production SMTP credentials) if you want that channel live —
-   otherwise contact messages still save to the database and Telegram
-   notifications (if configured) still work without it.
-# dizegnowebsite
+1. Point `DATABASE_URL` at a hosted Postgres and run `npm run db:deploy`.
+   `next build` prerenders the public pages and needs database access.
+2. `public/uploads` only survives on a single persistent server. For a
+   serverless host, reimplement `prepareUpload`/`storeUpload`/`removeUpload`
+   in `lib/uploads.ts` against S3, R2 or Cloudinary.
+3. Set real `ADMIN_PASSWORD` and `AUTH_SECRET` values.

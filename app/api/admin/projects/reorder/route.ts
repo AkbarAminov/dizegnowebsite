@@ -1,20 +1,16 @@
-import { NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { PROJECTS_CACHE_TAG } from "@/lib/projects";
+import { parseBody } from "@/lib/api";
+import { orderSchema } from "@/lib/validation";
+import { revalidatePublicSite } from "@/lib/projects";
 
 export async function PATCH(request: Request) {
-  const body = await request.json().catch(() => null);
-  if (!Array.isArray(body?.order)) {
-    return NextResponse.json({ error: "order must be an array of project ids" }, { status: 400 });
-  }
+  const parsed = await parseBody(request, orderSchema);
+  if (!parsed.ok) return parsed.response;
 
   await prisma.$transaction(
-    body.order.map((id: string, index: number) =>
-      prisma.project.update({ where: { id }, data: { order: index } })
-    )
+    parsed.data.order.map((id, order) => prisma.project.updateMany({ where: { id }, data: { order } }))
   );
 
-  revalidateTag(PROJECTS_CACHE_TAG, { expire: 0 });
-  return NextResponse.json({ ok: true });
+  revalidatePublicSite();
+  return Response.json({ ok: true });
 }

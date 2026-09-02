@@ -1,83 +1,72 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Section } from "@/components/Section";
 import { ProjectInfoPanel } from "@/components/ProjectInfoPanel";
 import { ProjectGallery } from "@/components/ProjectGallery";
-import { RelatedProjectsGrid } from "@/components/RelatedProjectsGrid";
-import { getAdjacentProjects, getAllProjects, getProject } from "@/lib/projects";
+import { WorkGrid } from "@/components/WorkGrid";
+import { getPublishedProjects } from "@/lib/projects";
+
+type Props = PageProps<"/work/[slug]">;
 
 export async function generateStaticParams() {
-  const projects = await getAllProjects();
-  return projects.map((p) => ({ slug: p.slug }));
+  const projects = await getPublishedProjects();
+  return projects.map((project) => ({ slug: project.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps<"/work/[slug]">): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = await getProject(slug);
-  return { title: project ? `${project.title} — Dizegno` : "Work — Dizegno" };
+  const project = (await getPublishedProjects()).find((p) => p.slug === slug);
+  return { title: project?.title ?? "Work" };
 }
 
-export default async function ProjectPage({ params }: PageProps<"/work/[slug]">) {
-  console.time("[render] ProjectPage total");
+export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = await getProject(slug);
-  if (!project) notFound();
+  const projects = await getPublishedProjects();
+  const index = projects.findIndex((p) => p.slug === slug);
+  if (index === -1) notFound();
 
-  const { prev, next } = await getAdjacentProjects(project.slug);
-  const allProjects = await getAllProjects();
-  const related = allProjects.filter((p) => p.slug !== project.slug).slice(0, 6);
+  const project = projects[index];
+  // Prev/next wrap around so every project has both links.
+  const prev = projects[(index - 1 + projects.length) % projects.length];
+  const next = projects[(index + 1) % projects.length];
+  const related = projects.filter((p) => p.slug !== slug).slice(0, 6);
 
-  console.time("[render] ProjectGallery JSX");
-  const page = (
-    <Section theme="dark" className="min-h-screen pt-16 md:pt-20">
+  return (
+    <section className="min-h-screen pt-16 md:pt-20">
       <div className="relative">
         <ProjectInfoPanel project={project} />
         <ProjectGallery images={project.gallery} alt={project.title} />
       </div>
 
-      <nav className="flex items-center justify-between border-t border-white/15 px-5 py-6 text-sm uppercase tracking-tight md:px-8">
-        {prev ? (
+      {projects.length > 1 && (
+        <nav className="mt-10 flex items-center justify-between border-t border-white/15 px-5 py-6 text-sm uppercase tracking-tight md:px-8">
           <Link
             href={`/work/${prev.slug}/`}
             className="group flex items-center gap-2 transition-opacity duration-200 hover:opacity-70"
           >
-            <span className="inline-block text-[#f0e10c] transition-transform duration-200 ease-out group-hover:-translate-x-1">
+            <span className="inline-block text-accent transition-transform duration-200 ease-out group-hover:-translate-x-1">
               &larr;
             </span>
             Previous project
           </Link>
-        ) : (
-          <span />
-        )}
-        {next ? (
           <Link
             href={`/work/${next.slug}/`}
             className="group flex items-center gap-2 transition-opacity duration-200 hover:opacity-70"
           >
             Next project
-            <span className="inline-block text-[#f0e10c] transition-transform duration-200 ease-out group-hover:translate-x-1">
+            <span className="inline-block text-accent transition-transform duration-200 ease-out group-hover:translate-x-1">
               &rarr;
             </span>
           </Link>
-        ) : (
-          <span />
-        )}
-      </nav>
+        </nav>
+      )}
 
       {related.length > 0 && (
         <div className="pt-10 pb-20">
-          <h2 className="mb-6 px-5 text-xl uppercase tracking-tight opacity-60 md:px-8">
-            Related projects
-          </h2>
-          <RelatedProjectsGrid projects={related} />
+          <h2 className="mb-6 px-5 text-xl uppercase tracking-tight opacity-60 md:px-8">Related projects</h2>
+          <WorkGrid projects={related} columns={3} />
         </div>
       )}
-    </Section>
+    </section>
   );
-  console.timeEnd("[render] ProjectGallery JSX");
-  console.timeEnd("[render] ProjectPage total");
-  return page;
 }

@@ -1,8 +1,14 @@
-// Stored ProjectImage.url for a "youtube" type is already a ready-to-embed
-// URL (https://www.youtube.com/embed/<id>) — this derives a static preview
-// thumbnail from it for grid tiles, using YouTube's public, no-API-key
-// thumbnail endpoint.
-export function getYoutubeThumbnail(embedUrl: string): string {
-  const id = embedUrl.split("/embed/")[1];
-  return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+const VIDEO_ID = /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/;
+
+export function parseYoutubeId(url: string): string | null {
+  return url.match(VIDEO_ID)?.[1] ?? null;
+}
+
+export function youtubeEmbedUrl(id: string) {
+  return `https://www.youtube.com/embed/${id}`;
+}
+
+/** Static preview for grid tiles, derived from the stored embed URL. */
+export function youtubeThumbnail(embedUrl: string) {
+  return `https://img.youtube.com/vi/${embedUrl.split("/embed/")[1]}/hqdefault.jpg`;
 }

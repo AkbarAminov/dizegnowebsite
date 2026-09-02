@@ -1,21 +1,19 @@
-import { NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { PROJECTS_CACHE_TAG } from "@/lib/projects";
+import { parseBody } from "@/lib/api";
+import { orderSchema } from "@/lib/validation";
+import { revalidatePublicSite } from "@/lib/projects";
 
-export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  await params;
-  const body = await request.json().catch(() => null);
-  if (!Array.isArray(body?.order)) {
-    return NextResponse.json({ error: "order must be an array of image ids" }, { status: 400 });
-  }
+export async function PATCH(request: Request, { params }: RouteContext<"/api/admin/projects/[id]/images/reorder">) {
+  const { id } = await params;
+  const parsed = await parseBody(request, orderSchema);
+  if (!parsed.ok) return parsed.response;
 
   await prisma.$transaction(
-    body.order.map((imageId: string, index: number) =>
-      prisma.projectImage.update({ where: { id: imageId }, data: { order: index } })
+    parsed.data.order.map((imageId, order) =>
+      prisma.projectImage.updateMany({ where: { id: imageId, projectId: id }, data: { order } })
     )
   );
 
-  revalidateTag(PROJECTS_CACHE_TAG, { expire: 0 });
-  return NextResponse.json({ ok: true });
+  revalidatePublicSite();
+  return Response.json({ ok: true });
 }

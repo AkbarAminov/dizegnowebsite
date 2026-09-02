@@ -8,31 +8,37 @@ export const contactSchema = z.object({
 
 export type ContactInput = z.infer<typeof contactSchema>;
 
-const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
-const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
-const MIN_IMAGE_DIMENSION = 800;
+const optionalText = z.string().trim().transform((value) => value || null);
 
-// Validated against the raw upload (mime type + byte size + decoded
-// dimensions) before anything is written to disk or the DB — an early
-// reject here is the only thing standing between a client's file picker
-// and a broken/oversized asset in the gallery.
-export async function validateImageFile(file: File): Promise<string | null> {
-  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-    return `${file.name}: unsupported file type — use JPG, PNG, WEBP, or GIF.`;
-  }
-  if (file.size > MAX_IMAGE_BYTES) {
-    return `${file.name}: file is too large — max ${MAX_IMAGE_BYTES / (1024 * 1024)}MB.`;
-  }
+export const projectSchema = z.object({
+  title: z.string().trim().min(1, "Title is required"),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug may only contain lowercase letters, digits and hyphens"),
+  category: optionalText,
+  year: z.number().int().min(1900).max(2100).nullable(),
+  description: optionalText,
+  production: optionalText,
+  fields: z.array(
+    z.object({
+      label: z.string().trim().min(1, "Field label is required"),
+      value: z.string().trim().min(1, "Field value is required"),
+    })
+  ),
+});
 
-  const { imageSize } = await import("image-size");
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const dimensions = imageSize(buffer);
-  if (!dimensions.width || !dimensions.height) {
-    return `${file.name}: could not read image dimensions.`;
-  }
-  if (Math.min(dimensions.width, dimensions.height) < MIN_IMAGE_DIMENSION) {
-    return `${file.name}: resolution too low — shortest side must be at least ${MIN_IMAGE_DIMENSION}px.`;
-  }
+export type ProjectInput = z.infer<typeof projectSchema>;
 
-  return null;
-}
+export const projectPatchSchema = projectSchema.partial().extend({
+  published: z.boolean().optional(),
+  pinned: z.boolean().optional(),
+});
+
+export const orderSchema = z.object({ order: z.array(z.string()).min(1) });
+
+export const fitModeSchema = z.object({ fitMode: z.enum(["cover", "contain"]) });
+
+export const youtubeSchema = z.object({ url: z.string().trim() });
+
+export const readSchema = z.object({ read: z.boolean() });

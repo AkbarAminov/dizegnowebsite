@@ -1,8 +1,12 @@
-import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+// Run with `npm run db:seed`. Safe to re-run: projects are upserted by slug.
+try {
+  process.loadEnvFile();
+} catch {}
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 type SeedImage = { width: number; height: number };
@@ -13,7 +17,6 @@ type SeedProject = {
   year: number;
   description: string;
   production?: string;
-  span: "normal" | "wide" | "tall";
   fields?: { label: string; value: string }[];
   images: SeedImage[];
 };
@@ -27,10 +30,7 @@ const LANDSCAPE: SeedImage = { width: 800, height: 600 };
 const PORTRAIT: SeedImage = { width: 600, height: 800 };
 const SQUARE: SeedImage = { width: 700, height: 700 };
 
-// Categories are industry/client-sector based (not design-discipline based)
-// so a visitor scanning the Work page filter can find relevant experience
-// for their own sector. This is just data — `category` stays a plain
-// string on Project, no schema change needed to add/rename values.
+// Categories are client sectors so the Work page filter reads as industries.
 const CATEGORIES = {
   FINANCE: "Finance & Banking",
   AUTOMOTIVE: "Automotive",
@@ -48,7 +48,6 @@ const projects: SeedProject[] = [
     year: 2026,
     description: "A flexible identity system built around a single rotating mark.",
     production: "Studio North, Ana Petrova",
-    span: "wide",
     fields: [{ label: "Client", value: "North Star Bank" }],
     images: [LANDSCAPE, PORTRAIT, SQUARE, LANDSCAPE],
   },
@@ -58,7 +57,6 @@ const projects: SeedProject[] = [
     category: CATEGORIES.FINANCE,
     year: 2026,
     description: "Positioning and naming for an early-stage fintech spin-out.",
-    span: "wide",
     fields: [{ label: "Client", value: "Verge" }],
     images: [LANDSCAPE, SQUARE, LANDSCAPE, PORTRAIT],
   },
@@ -69,7 +67,6 @@ const projects: SeedProject[] = [
     year: 2025,
     description: "A short reel exploring type-driven motion for a new model launch.",
     production: "Motion Lab",
-    span: "tall",
     fields: [{ label: "Client", value: "Kinetic Motors" }],
     images: [PORTRAIT, LANDSCAPE, PORTRAIT],
   },
@@ -80,7 +77,6 @@ const projects: SeedProject[] = [
     year: 2024,
     description: "Showroom concept and interior graphics for a car dealership network.",
     production: "Atlas Studio",
-    span: "normal",
     fields: [{ label: "Client", value: "Drift Auto Group" }],
     images: [SQUARE, PORTRAIT],
   },
@@ -90,7 +86,6 @@ const projects: SeedProject[] = [
     category: CATEGORIES.FOOD,
     year: 2025,
     description: "Modular packaging for a coastal seafood and grocery delivery brand.",
-    span: "normal",
     fields: [{ label: "Client", value: "Harbor Goods" }, { label: "Award", value: "ADC Bronze, 2025" }],
     images: [SQUARE, LANDSCAPE, PORTRAIT],
   },
@@ -100,7 +95,6 @@ const projects: SeedProject[] = [
     category: CATEGORIES.FOOD,
     year: 2025,
     description: "Visual identity and interface for an on-demand food-delivery app.",
-    span: "normal",
     fields: [{ label: "Client", value: "Loop" }],
     images: [SQUARE, LANDSCAPE],
   },
@@ -111,7 +105,6 @@ const projects: SeedProject[] = [
     year: 2024,
     description: "Wayfinding and signage for a hospital campus.",
     production: "Atlas Studio, Jon Reyes",
-    span: "tall",
     fields: [{ label: "Client", value: "Atlas Health" }],
     images: [PORTRAIT, SQUARE, PORTRAIT],
   },
@@ -122,7 +115,6 @@ const projects: SeedProject[] = [
     year: 2023,
     description: "Data-forward layout for a healthcare insurance group's annual report.",
     production: "Studio North",
-    span: "normal",
     fields: [{ label: "Client", value: "Meridian Health" }],
     images: [LANDSCAPE, PORTRAIT, SQUARE],
   },
@@ -132,7 +124,6 @@ const projects: SeedProject[] = [
     category: CATEGORIES.SPORT,
     year: 2026,
     description: "A generative identity system for a photography festival.",
-    span: "wide",
     fields: [{ label: "Client", value: "Aperture Festival" }, { label: "Award", value: "Type Directors Club, 2026" }],
     images: [LANDSCAPE, SQUARE, PORTRAIT, LANDSCAPE],
   },
@@ -143,7 +134,6 @@ const projects: SeedProject[] = [
     year: 2024,
     description: "A grid system for a quarterly print publication about architecture.",
     production: "Studio North",
-    span: "normal",
     images: [LANDSCAPE, PORTRAIT],
   },
 ];
@@ -158,7 +148,6 @@ async function main() {
         year: p.year,
         description: p.description,
         production: p.production,
-        span: p.span,
         fields: {
           deleteMany: {},
           create: (p.fields ?? []).map((field, i) => ({ ...field, order: i })),
@@ -171,7 +160,6 @@ async function main() {
         year: p.year,
         description: p.description,
         production: p.production,
-        span: p.span,
         order: index,
         published: true,
         images: {

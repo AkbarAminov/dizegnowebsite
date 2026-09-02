@@ -4,17 +4,20 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import type { GalleryImage } from "@/lib/types";
+import { useLockBodyScroll } from "./useLockBodyScroll";
 
+// The whole overlay is the control surface: left third = previous, right
+// third = next, middle = close. A custom cursor shows which zone is active.
 type Zone = "prev" | "close" | "next";
 
-function getZone(clientX: number, rect: DOMRect): Zone {
-  const relX = (clientX - rect.left) / rect.width;
-  if (relX < 1 / 3) return "prev";
-  if (relX > 2 / 3) return "next";
+const ZONE_ICON: Record<Zone, string> = { prev: "←", close: "×", next: "→" };
+
+function zoneAt(clientX: number, rect: DOMRect): Zone {
+  const relative = (clientX - rect.left) / rect.width;
+  if (relative < 1 / 3) return "prev";
+  if (relative > 2 / 3) return "next";
   return "close";
 }
-
-const ZONE_ICON: Record<Zone, string> = { prev: "←", close: "×", next: "→" };
 
 export function Lightbox({
   images,
@@ -33,6 +36,9 @@ export function Lightbox({
   const [direction, setDirection] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
+  const hasMany = images.length > 1;
+
+  useLockBodyScroll(true);
 
   const goPrev = useCallback(() => {
     setDirection(-1);
@@ -45,28 +51,30 @@ export function Lightbox({
   }, [index, images.length, onNavigate]);
 
   useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") goPrev();
-      if (e.key === "ArrowRight") goNext();
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === "Escape") onClose();
+      if (event.key === "ArrowLeft") goPrev();
+      if (event.key === "ArrowRight") goNext();
     }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose, goPrev, goNext]);
 
-  function handleMouseMove(e: React.MouseEvent) {
+  function zoneForEvent(event: React.MouseEvent): Zone | null {
     const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setZone(images.length > 1 ? getZone(e.clientX, rect) : "close");
+    if (!rect) return null;
+    return hasMany ? zoneAt(event.clientX, rect) : "close";
+  }
+
+  function handleMouseMove(event: React.MouseEvent) {
+    setZone(zoneForEvent(event));
     if (cursorRef.current) {
-      cursorRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+      cursorRef.current.style.transform = `translate(${event.clientX}px, ${event.clientY}px) translate(-50%, -50%)`;
     }
   }
 
-  function handleClick(e: React.MouseEvent) {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const clicked = images.length > 1 ? getZone(e.clientX, rect) : "close";
+  function handleClick(event: React.MouseEvent) {
+    const clicked = zoneForEvent(event);
     if (clicked === "prev") goPrev();
     else if (clicked === "next") goNext();
     else onClose();
@@ -77,8 +85,7 @@ export function Lightbox({
   return (
     <motion.div
       ref={containerRef}
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/95"
-      style={{ cursor: "none" }}
+      className="fixed inset-0 z-[60] flex cursor-none items-center justify-center bg-black/95"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -87,24 +94,20 @@ export function Lightbox({
       onMouseLeave={() => setZone(null)}
       onClick={handleClick}
     >
-      {images.length > 1 && (
+      {hasMany && (
         <div className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-sm uppercase tracking-tight text-white/60">
           {index + 1} / {images.length}
         </div>
       )}
 
-      <AnimatePresence mode="wait" initial={false} custom={direction}>
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={index}
-          // YouTube needs real pointer events to be playable at all — the
-          // surrounding backdrop is still large enough for zone-based
-          // prev/next/close clicks around it. Image/gif stay
-          // pointer-events-none so clicks fall through to the zone
-          // navigation as before.
+          // A video needs real pointer events to be playable; images let
+          // clicks fall through to the zone navigation.
           className={`relative h-[80vh] w-[85vw] ${
             image.type === "youtube" ? "pointer-events-auto" : "pointer-events-none"
           }`}
-          custom={direction}
           initial={{ opacity: 0, x: direction * 60 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: direction * -60 }}
@@ -118,9 +121,6 @@ export function Lightbox({
               allowFullScreen
               className="h-full w-full border-0"
             />
-          ) : image.type === "gif" ? (
-            // eslint-disable-next-line @next/next/no-img-element -- next/image would strip gif animation
-            <img src={image.src} alt={alt} className="h-full w-full object-contain" />
           ) : (
             <Image
               src={image.src}
@@ -129,6 +129,7 @@ export function Lightbox({
               sizes="85vw"
               className="object-contain"
               priority
+              unoptimized={image.type === "gif"}
             />
           )}
         </motion.div>
@@ -136,7 +137,7 @@ export function Lightbox({
 
       <div
         ref={cursorRef}
-        className={`pointer-events-none fixed top-0 left-0 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-[#f0e10c] text-xl leading-none text-black transition-opacity duration-200 ${
+        className={`pointer-events-none fixed top-0 left-0 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-xl leading-none text-black transition-opacity duration-200 ${
           zone ? "opacity-100" : "opacity-0"
         }`}
         aria-hidden

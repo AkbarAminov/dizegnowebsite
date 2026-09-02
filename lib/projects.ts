@@ -1,23 +1,15 @@
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
+import { revalidatePath } from "next/cache";
 import type { Prisma } from "@prisma/client";
-import type { AnswerSection, Project } from "./types";
-import answersData from "./data/answers.json";
 import { prisma } from "./prisma";
+import type { Project } from "./types";
 
-const answerSections = answersData as AnswerSection[];
-
-// Every admin mutation (create/update/delete/reorder project or image)
-// calls revalidateTag(PROJECTS_CACHE_TAG) so published changes show up
-// on the public site immediately; the revalidate window below is just a
-// safety-net upper bound on staleness, not the primary invalidation path.
-export const PROJECTS_CACHE_TAG = "projects";
-
-const projectInclude = {
-  images: { orderBy: { order: "asc" as const } },
-  fields: { orderBy: { order: "asc" as const } },
+const include = {
+  images: { orderBy: { order: "asc" } },
+  fields: { orderBy: { order: "asc" } },
 } satisfies Prisma.ProjectInclude;
 
-type ProjectRow = Prisma.ProjectGetPayload<{ include: typeof projectInclude }>;
+type ProjectRow = Prisma.ProjectGetPayload<{ include: typeof include }>;
 
 function toProject(row: ProjectRow): Project {
   const gallery = row.images.map((image) => ({
@@ -28,81 +20,50 @@ function toProject(row: ProjectRow): Project {
     fitMode: image.fitMode === "contain" ? ("contain" as const) : ("cover" as const),
   }));
 
-  const credits = [
-    ...(row.year ? [{ label: "Year", value: String(row.year) }] : []),
-    ...(row.production ? [{ label: "Production", value: row.production }] : []),
-    ...row.fields.map((field) => ({ label: field.label, value: field.value })),
-  ];
-
-  // Prefer a real image for the thumbnail (homepage/work grid cards) —
-  // a gif works fine there too, but a youtube embed URL can't render
-  // inside next/image at all, so skip straight to the first plain image
-  // if the gallery's first item happens to be a video.
-  const thumbnail = gallery.find((image) => image.type !== "youtube") ?? gallery[0];
-
   return {
     slug: row.slug,
     title: row.title,
-    category: row.category ?? "",
-    year: row.year ?? 0,
+    category: row.category,
     description: row.description ?? "",
-    disciplines: row.category ? [row.category] : [],
-    span: row.span === "wide" || row.span === "tall" ? row.span : "normal",
-    thumbnail: thumbnail?.src ?? "",
+    // A YouTube embed cannot be a card thumbnail; prefer the first real image.
+    thumbnail: (gallery.find((image) => image.type !== "youtube") ?? gallery[0])?.src ?? null,
     gallery,
-    credits,
+    credits: [
+      ...(row.year ? [{ label: "Year", value: String(row.year) }] : []),
+      ...(row.production ? [{ label: "Production", value: row.production }] : []),
+      ...row.fields.map(({ label, value }) => ({ label, value })),
+    ],
   };
 }
 
-const getAllProjectsCached = unstable_cache(
-  async (): Promise<Project[]> => {
-    console.time("[db] project.findMany (getAllProjects)");
-    const rows = await prisma.project.findMany({
-      where: { published: true },
-      orderBy: [{ pinned: "desc" }, { order: "asc" }],
-      include: projectInclude,
-    });
-    console.timeEnd("[db] project.findMany (getAllProjects)");
-    return rows.map(toProject);
-  },
-  ["all-projects"],
-  { tags: [PROJECTS_CACHE_TAG], revalidate: 60 }
-);
+/**
+ * Published projects, pinned first. Wrapped in React `cache` so a page and
+ * its `generateMetadata` share one query per request.
+ */
+export const getPublishedProjects = cache(async (): Promise<Project[]> => {
+  const rows = await prisma.project.findMany({
+    where: { published: true },
+    orderBy: [{ pinned: "desc" }, { order: "asc" }],
+    include,
+  });
+  return rows.map(toProject);
+});
 
-export async function getAllProjects(): Promise<Project[]> {
-  return getAllProjectsCached();
+/** Distinct categories in use, for the admin form's suggestions. */
+export async function getProjectCategories(): Promise<string[]> {
+  const rows = await prisma.project.findMany({
+    where: { category: { not: null } },
+    distinct: ["category"],
+    select: { category: true },
+    orderBy: { category: "asc" },
+  });
+  return rows.flatMap((row) => (row.category ? [row.category] : []));
 }
 
-const getProjectCached = unstable_cache(
-  async (slug: string): Promise<Project | null> => {
-    console.time(`[db] project.findFirst (${slug})`);
-    const row = await prisma.project.findFirst({
-      where: { slug, published: true },
-      include: projectInclude,
-    });
-    console.timeEnd(`[db] project.findFirst (${slug})`);
-    return row ? toProject(row) : null;
-  },
-  ["project-by-slug"],
-  { tags: [PROJECTS_CACHE_TAG], revalidate: 60 }
-);
-
-export async function getProject(slug: string): Promise<Project | undefined> {
-  const project = await getProjectCached(slug);
-  return project ?? undefined;
-}
-
-export async function getAdjacentProjects(
-  slug: string
-): Promise<{ prev: Project | undefined; next: Project | undefined }> {
-  const projects = await getAllProjects();
-  const index = projects.findIndex((p) => p.slug === slug);
-  if (index === -1) return { prev: undefined, next: undefined };
-  const prev = projects[(index - 1 + projects.length) % projects.length];
-  const next = projects[(index + 1) % projects.length];
-  return { prev, next };
-}
-
-export function getAllAnswers(): AnswerSection[] {
-  return answerSections;
+/**
+ * Public pages are statically rendered. Call this after every admin
+ * mutation so the next visit re-renders them with fresh data.
+ */
+export function revalidatePublicSite() {
+  revalidatePath("/", "layout");
 }

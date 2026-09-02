@@ -1,17 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { Project } from "@/lib/types";
 import { WorkGrid } from "./WorkGrid";
 
-// Client-side filter over the already-fetched (pinned-first, published)
-// project list — no refetch on click, just a subset re-render.
+// Client-side category filter over the already-fetched project list.
 export function WorkFilter({ projects }: { projects: Project[] }) {
-  const categories = useMemo(
-    () => Array.from(new Set(projects.map((p) => p.category).filter(Boolean))),
-    [projects]
-  );
   const [active, setActive] = useState<string | null>(null);
+  const categories = Array.from(new Set(projects.flatMap((p) => (p.category ? [p.category] : []))));
 
   if (categories.length === 0) return <WorkGrid projects={projects} />;
 
@@ -36,23 +32,14 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
   );
 }
 
-function FilterButton({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+function FilterButton({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={`border-b-2 pb-1 transition-colors duration-200 ${
-        active
-          ? "border-[#f0e10c] text-[#f0e10c]"
-          : "border-transparent text-white/60 hover:text-white"
+        active ? "border-accent text-accent" : "border-transparent text-white/60 hover:text-white"
       }`}
     >
       {label}

@@ -3,18 +3,9 @@
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
-/**
- * We couldn't confirm the reference site's exact page-transition timing
- * without a live browser session (see research notes), so this is an
- * original fade/rise transition, not a measured copy.
- *
- * Caveat: Next's App Router doesn't guarantee the outgoing route stays
- * mounted for an exit animation (data for the new route can start
- * streaming immediately). Keying AnimatePresence by pathname and passing
- * the RSC-rendered `children` through is the standard workaround, but a
- * genuinely reliable exit animation would need every route to resolve
- * instantly or to opt into `export const dynamic = "force-static"`.
- */
+// Fade/rise between routes. Keying by pathname is the standard App Router
+// workaround; Next does not guarantee the outgoing route stays mounted, so
+// the exit animation is best-effort.
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 

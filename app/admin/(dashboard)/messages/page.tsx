@@ -6,17 +6,10 @@ export default async function AdminMessagesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-neutral-100">Messages</h1>
+      <h1 className="text-2xl font-semibold">Messages</h1>
       <div className="mt-6">
         <MessagesTable
-          messages={messages.map((m) => ({
-            id: m.id,
-            name: m.name,
-            email: m.email,
-            message: m.message,
-            read: m.read,
-            createdAt: m.createdAt.toISOString(),
-          }))}
+          messages={messages.map((message) => ({ ...message, createdAt: message.createdAt.toISOString() }))}
         />
       </div>
     </div>

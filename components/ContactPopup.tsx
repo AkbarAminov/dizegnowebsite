@@ -1,11 +1,38 @@
 "use client";
 
+import { createContext, useContext, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ContactForm } from "./ContactForm";
-import { useContactPopup } from "./ContactPopupProvider";
+import { ContactLinks } from "./ContactLinks";
+import { useLockBodyScroll } from "./useLockBodyScroll";
+
+// One modal, opened from both the floating "+" button and the end-of-page CTA.
+
+const ContactPopupContext = createContext<{ open: boolean; setOpen: (open: boolean) => void } | null>(null);
+
+export function ContactPopupProvider({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return <ContactPopupContext.Provider value={{ open, setOpen }}>{children}</ContactPopupContext.Provider>;
+}
+
+export function useContactPopup() {
+  const context = useContext(ContactPopupContext);
+  if (!context) throw new Error("useContactPopup must be used within ContactPopupProvider");
+  return context;
+}
 
 export function ContactPopup() {
   const { open, setOpen } = useContactPopup();
+  useLockBodyScroll(open);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [open, setOpen]);
 
   return (
     <>
@@ -13,7 +40,7 @@ export function ContactPopup() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Open contact form"
-        className="fixed right-5 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#f0e10c] text-2xl leading-none text-black shadow-[0_4px_24px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-105 md:right-8 md:bottom-8"
+        className="fixed right-5 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl leading-none text-black shadow-[0_4px_24px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-105 md:right-8 md:bottom-8"
       >
         +
       </button>
@@ -27,16 +54,13 @@ export function ContactPopup() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <motion.div
-              className="absolute inset-0 bg-black/70"
-              onClick={() => setOpen(false)}
-              aria-hidden
-            />
+            <div className="absolute inset-0 bg-black/70" onClick={() => setOpen(false)} aria-hidden />
 
             <motion.div
               role="dialog"
               aria-modal="true"
-              className="relative w-full max-w-md bg-white p-8 text-black shadow-2xl md:p-10"
+              aria-labelledby="contact-popup-title"
+              className="relative max-h-full w-full max-w-md overflow-y-auto bg-white p-8 text-black shadow-2xl md:p-10"
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.94 }}
@@ -51,29 +75,13 @@ export function ContactPopup() {
                 &times;
               </button>
 
-              <h2 className="text-2xl font-medium uppercase tracking-tight md:text-3xl">
+              <h2 id="contact-popup-title" className="text-2xl font-medium uppercase tracking-tight md:text-3xl">
                 Get in touch
               </h2>
               <p className="mt-3 max-w-sm text-sm opacity-70">
                 Have a project in mind? Send a short note and we&apos;ll get back to you.
               </p>
-
-              <div className="mt-4 flex flex-col gap-1 text-sm">
-                <a href="mailto:dizegno.design@gmail.com" className="underline underline-offset-4 opacity-80 transition-opacity duration-200 hover:opacity-100">
-                  dizegno.design@gmail.com
-                </a>
-                <a href="tel:+998933938274" className="underline underline-offset-4 opacity-80 transition-opacity duration-200 hover:opacity-100">
-                  +998 93 393 82 74
-                </a>
-                <a
-                  href="https://t.me/Here_for"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-4 opacity-80 transition-opacity duration-200 hover:opacity-100"
-                >
-                  Telegram — @Here_for
-                </a>
-              </div>
+              <ContactLinks className="mt-4 gap-1" />
 
               <div className="mt-8">
                 <ContactForm />

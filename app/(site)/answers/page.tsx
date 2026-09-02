@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Section } from "@/components/Section";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
-import { getAllAnswers } from "@/lib/projects";
+import type { AnswerSection } from "@/lib/types";
+import answers from "@/lib/data/answers.json";
 
-export const metadata: Metadata = { title: "Answers — Dizegno" };
+export const metadata: Metadata = { title: "Answers" };
+
+const sections = answers as AnswerSection[];
 
 export default function AnswersPage() {
-  const sections = getAllAnswers();
-
   return (
-    <Section theme="dark" className="min-h-screen px-5 pt-28 pb-20 md:px-8 md:pt-36">
+    <section className="min-h-screen px-5 pt-28 pb-20 md:px-8 md:pt-36">
       <RevealOnScroll className="mb-14 md:mb-20">
         <h1 className="text-4xl font-medium uppercase tracking-tight md:text-6xl">Answers</h1>
       </RevealOnScroll>
@@ -17,9 +17,7 @@ export default function AnswersPage() {
       <div className="flex flex-col gap-14 md:gap-20">
         {sections.map((section) => (
           <div key={section.title}>
-            <h2 className="mb-6 text-xl uppercase tracking-tight opacity-60 md:mb-8">
-              {section.title}
-            </h2>
+            <h2 className="mb-6 text-xl uppercase tracking-tight opacity-60 md:mb-8">{section.title}</h2>
 
             <div className="grid gap-x-10 border-t border-white/15 md:grid-cols-2">
               {section.items.map((item) => (
@@ -33,6 +31,6 @@ export default function AnswersPage() {
           </div>
         ))}
       </div>
-    </Section>
+    </section>
   );
 }

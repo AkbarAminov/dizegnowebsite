@@ -2,12 +2,8 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-
-const LINKS = [
-  { href: "/work/", label: "Work" },
-  { href: "/answers/", label: "Answers" },
-  { href: "/contact/", label: "Contact" },
-];
+import { NAV_LINKS } from "@/lib/site";
+import { useLockBodyScroll } from "./useLockBodyScroll";
 
 const listVariants = {
   open: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
@@ -20,6 +16,8 @@ const itemVariants = {
 };
 
 export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+  useLockBodyScroll(open);
+
   return (
     <AnimatePresence>
       {open && (
@@ -37,7 +35,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
             animate="open"
             exit="closed"
           >
-            {LINKS.map((link) => (
+            {NAV_LINKS.map((link) => (
               <motion.li key={link.href} variants={itemVariants}>
                 <Link
                   href={link.href}

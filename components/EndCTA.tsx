@@ -1,6 +1,6 @@
 "use client";
 
-import { useContactPopup } from "./ContactPopupProvider";
+import { useContactPopup } from "./ContactPopup";
 
 export function EndCTA() {
   const { setOpen } = useContactPopup();
@@ -12,7 +12,7 @@ export function EndCTA() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mx-auto mt-2 block max-w-3xl cursor-pointer uppercase text-[#f0e10c] transition-opacity duration-200 hover:opacity-70"
+          className="mx-auto mt-2 block max-w-3xl cursor-pointer uppercase text-accent transition-opacity duration-200 hover:opacity-70"
         >
           Let&apos;s talk about your project instead
         </button>
