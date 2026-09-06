@@ -1,0 +1,54 @@
+# Local development stack: `make up`. No Dockerfile — the app runs from the
+# official node:22-alpine image with the repo bind-mounted, so edits on the
+# host hot-reload inside the container.
+#
+# All values come from the root .env (see .env.example). The Makefile passes
+# `--project-directory .` so Compose reads that file for ${VAR} substitution.
+name: dizegno
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set in .env}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app:
+    image: node:22-alpine
+    working_dir: /app
+    command: >
+      sh -c "npm install --no-audit --no-fund
+      && for i in 1 2 3 4 5; do npx prisma migrate deploy && break || sleep 5; done
+      && npm run dev"
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    env_file:
+      - .env
+    environment:
+      # Overrides the host-oriented DATABASE_URL from .env with the in-network one.
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      NEXT_TELEMETRY_DISABLED: "1"
+    volumes:
+      - .:/app
+      # Keep platform-specific build output out of the host checkout.
+      - node_modules:/app/node_modules
+      - next_cache:/app/.next
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  node_modules:
+  next_cache:

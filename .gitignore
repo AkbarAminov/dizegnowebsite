@@ -22,3 +22,6 @@ npm-debug.log*
 
 # IDE
 /.idea/
+
+# next typegen
+/next-env.d.ts
