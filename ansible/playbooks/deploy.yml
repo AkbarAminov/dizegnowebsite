@@ -1,0 +1,40 @@
+---
+# Deploys the current working copy from the local machine to the server:
+# create the database, rsync the source, build the image on the server,
+# restart the container, then make sure nginx and TLS are in place.
+#
+#   make deploy
+#
+- name: Prepare the database
+  hosts: all
+  become: true
+
+  # Catch unfilled vault.yml.example values before anything is built or issued.
+  pre_tasks:
+    - name: Check that the vault secrets are filled in
+      assert:
+        that: lookup('vars', item) not in ['', 'change-me', 'you@example.com']
+        fail_msg: "vault_{{ item }} is still the vault.yml.example placeholder — run `make vault-edit`"
+        quiet: true
+      loop:
+        - mysql_password
+        - auth_secret
+        - admin_email
+        - admin_password
+        - certbot_email
+      run_once: true
+
+  roles:
+    - mysql
+
+- name: Build and run the app
+  hosts: all
+  become: false          # deploy is in the docker group
+  roles:
+    - app
+
+- name: Configure nginx and TLS
+  hosts: all
+  become: true
+  roles:
+    - nginx

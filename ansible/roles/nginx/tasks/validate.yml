@@ -1,0 +1,21 @@
+---
+# nginx is shared with out-bot: a broken fragment in sites-enabled would make
+# `nginx -t` fail now and, worse, stop nginx from starting after any future
+# reboot — taking out-bot down too. So the site is removed again if it does not
+# validate, and the play stops before any reload happens.
+- name: Validate nginx configuration
+  command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: false
+
+- name: Disable this site when its configuration is invalid
+  file:
+    path: "/etc/nginx/sites-enabled/{{ site_name }}"
+    state: absent
+  when: nginx_test.rc != 0
+
+- name: Stop before reloading a broken nginx
+  fail:
+    msg: "nginx -t failed; {{ site_name }} disabled again so nginx keeps serving out-bot — {{ nginx_test.stderr }}"
+  when: nginx_test.rc != 0

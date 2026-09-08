@@ -1,16 +1,22 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 // One client per process. In dev the module is re-evaluated on hot reload,
 // so the instance is parked on globalThis to avoid opening a new pool each time.
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 function createClient() {
-  const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL,
+  // The driver takes pool settings as an object, so the URL is split here.
+  const url = new URL(process.env.DATABASE_URL ?? "");
+  const adapter = new PrismaMariaDb({
+    host: url.hostname,
+    port: Number(url.port) || 3306,
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: url.pathname.replace(/^\//, ""),
     // Fail fast instead of hanging a request when the database is unreachable.
-    connectionTimeoutMillis: 10_000,
-    statement_timeout: 10_000,
+    connectTimeout: 10_000,
+    acquireTimeout: 10_000,
   });
   return new PrismaClient({ adapter });
 }

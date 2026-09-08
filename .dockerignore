@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.idea
+.claude
+.env
+.env.*
+.vault_pass
+!.env.example
+public/uploads/*
+*.tsbuildinfo
+ansible

@@ -1,0 +1,36 @@
+# ─── Server ──────────────────────────────────────────────────────────────────
+deploy_user: deploy
+app_dir: /home/deploy/dizegno
+
+# ─── App ─────────────────────────────────────────────────────────────────────
+image_name: dizegno-web:latest
+# Host port for the app container (out-bot already uses 3000).
+app_port: 3001
+
+# ─── MySQL (the server's system MySQL, shared with out-bot) ──────────────────
+mysql_db: dizegno
+mysql_user: dizegno
+mysql_port: 3306
+
+# ─── Nginx / TLS ─────────────────────────────────────────────────────────────
+domain: dizegnoagency.com
+site_name: dizegno
+# Uploads are capped at 20 MB in src/lib/uploads.ts.
+client_max_body_size: 25m
+
+# ─── Secrets (real values live in vault.yml) ─────────────────────────────────
+mysql_password: "{{ vault_mysql_password }}"
+# Ansible's urlencode keeps "/" (safe='/'), which would end the host part of a
+# connection string, so slashes are escaped separately.
+mysql_password_url: "{{ mysql_password | urlencode | replace('/', '%2F') }}"
+auth_secret: "{{ vault_auth_secret }}"
+admin_email: "{{ vault_admin_email }}"
+admin_password: "{{ vault_admin_password }}"
+certbot_email: "{{ vault_certbot_email }}"
+telegram_bot_token: "{{ vault_telegram_bot_token }}"
+telegram_chat_id: "{{ vault_telegram_chat_id }}"
+email_host: "{{ vault_email_host }}"
+email_port: "{{ vault_email_port }}"
+email_user: "{{ vault_email_user }}"
+email_pass: "{{ vault_email_pass }}"
+email_to: "{{ vault_email_to }}"

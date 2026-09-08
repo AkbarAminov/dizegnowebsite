@@ -1,13 +1,30 @@
 // Shared admin styles and a tiny fetch wrapper for the /api/admin routes.
 
+export const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60";
+
 export const inputClass =
-  "w-full rounded border border-white/15 bg-white/5 px-3 py-2 text-sm text-neutral-100 outline-none placeholder:text-neutral-500 focus:border-white/40";
+  `w-full rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm text-neutral-100 outline-none transition-colors placeholder:text-neutral-500 hover:border-white/25 focus:border-white/50 focus:bg-white/[0.07] disabled:opacity-50 ${focusRing}`;
+
+export const invalidInputClass = "border-red-500/60 focus:border-red-500";
 
 export const primaryButtonClass =
-  "rounded bg-white px-4 py-2 text-sm font-medium text-black hover:bg-neutral-200 disabled:opacity-50";
+  `inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-50 ${focusRing}`;
 
 export const secondaryButtonClass =
-  "rounded border border-white/15 px-4 py-2 text-sm text-neutral-400 hover:border-white/30 hover:text-neutral-100 disabled:opacity-50";
+  `inline-flex items-center gap-2 rounded-md border border-white/15 px-4 py-2 text-sm text-neutral-300 transition-colors hover:border-white/30 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 ${focusRing}`;
+
+export const dangerButtonClass =
+  `inline-flex items-center gap-2 rounded-md border border-red-500/30 px-4 py-2 text-sm text-red-400 transition-colors hover:border-red-500/60 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50 ${focusRing}`;
+
+export const iconButtonClass =
+  `rounded p-1.5 text-neutral-500 transition-colors hover:bg-white/5 hover:text-neutral-100 ${focusRing}`;
+
+/** Panel that groups one topic of a form. */
+export const cardClass = "rounded-xl border border-white/10 bg-neutral-900/60";
+
+export const labelClass = "text-sm font-medium text-neutral-200";
+
+export const hintClass = "text-xs text-neutral-500";
 
 type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string };
 

@@ -1,4 +1,4 @@
-# Local development through Docker (node:22-alpine + postgres:16-alpine).
+# Local development through Docker (node:22-alpine + mysql:8.0).
 # `make up` is all you need. Every setting lives in .env (see .env.example).
 
 -include .env
@@ -45,8 +45,8 @@ migrate: ## Create/apply a migration after editing prisma/schema.prisma (make mi
 studio: ## Open Prisma Studio at http://localhost:5555
 	$(COMPOSE) exec -p 5555:5555 app npx prisma studio --hostname 0.0.0.0
 
-psql: ## Open a psql session
-	$(COMPOSE) exec db sh -c 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'
+mysql: ## Open a mysql session
+	$(COMPOSE) exec db sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"'
 
 lint: ## ESLint
 	$(APP) npm run lint
@@ -62,4 +62,29 @@ check: lint typecheck ## Lint + typecheck
 clean: ## Stop containers and delete all volumes (database, node_modules, .next)
 	$(COMPOSE) down -v --remove-orphans
 
-.PHONY: help env up down restart logs ps shell seed migrate studio psql lint typecheck build check clean
+# ─── Deployment (ansible → dizegnoagency.com) ────────────────────────────────
+
+VAULT      := ansible/inventory/group_vars/all/vault.yml
+# .vault_pass holds the vault password (gitignored). Without it every target
+# below asks for the password instead.
+VAULT_PASS := .vault_pass
+VAULT_ARG  := $(if $(wildcard $(VAULT_PASS)),--vault-password-file $(VAULT_PASS),--ask-vault-pass)
+
+ansible-deps: ## Install the Ansible collections the playbook needs
+	ansible-galaxy collection install -r ansible/requirements.yml
+
+vault-init: ## Create the encrypted secrets file from the example (once)
+	@test -f $(VAULT) && { echo "$(VAULT) already exists"; exit 1; } || true
+	cp $(VAULT).example $(VAULT)
+	ansible-vault encrypt $(VAULT_ARG) $(VAULT)
+
+vault-edit: ## Edit the encrypted secrets file
+	ansible-vault edit $(VAULT_ARG) $(VAULT)
+
+deploy: ## Deploy the current working copy to the server
+	ansible-playbook ansible/playbooks/deploy.yml $(VAULT_ARG)
+
+deploy-logs: ## Follow production app logs
+	ssh -i ~/.ssh/outbot_deploy deploy@195.201.93.68 'docker logs -f --tail 100 dizegno-app'
+
+.PHONY: help env up down restart logs ps shell seed migrate studio mysql lint typecheck build check clean ansible-deps vault-init vault-edit deploy deploy-logs

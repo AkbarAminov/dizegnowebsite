@@ -1,0 +1,65 @@
+---
+- name: Create app directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+  loop:
+    - "{{ app_dir }}"
+    - "{{ app_dir }}/repo"
+    - "{{ app_dir }}/uploads"   # bind-mounted at /app/public/uploads
+
+- name: Sync project source to the server
+  ansible.posix.synchronize:
+    src: "{{ playbook_dir }}/../../"
+    dest: "{{ app_dir }}/repo/"
+    delete: true
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=node_modules"
+      - "--exclude=.next"
+      - "--exclude=.env"
+      - "--exclude=.vault_pass"
+      - "--exclude=ansible"
+      - "--exclude=.idea"
+      - "--exclude=.claude"
+      - "--exclude=public/uploads"
+      - "--exclude=*.tsbuildinfo"
+
+- name: Deploy compose file
+  template:
+    src: compose.prod.yml.j2
+    dest: "{{ app_dir }}/compose.yml"
+    mode: "0644"
+
+- name: Deploy .env file
+  template:
+    src: env.j2
+    dest: "{{ app_dir }}/.env"
+    mode: "0600"
+
+# --network=host lets the build reach the system MySQL on 127.0.0.1; the build
+# stage applies migrations and prerenders the public pages against it.
+- name: Build the application image
+  command: >
+    docker build
+    --network=host
+    --build-arg DATABASE_URL=mysql://{{ mysql_user }}:{{ mysql_password_url }}@127.0.0.1:{{ mysql_port }}/{{ mysql_db }}
+    -f docker/Dockerfile
+    -t {{ image_name }}
+    .
+  args:
+    chdir: "{{ app_dir }}/repo"
+  changed_when: true
+
+- name: Start the application
+  command: docker compose up -d --remove-orphans
+  args:
+    chdir: "{{ app_dir }}"
+  changed_when: true
+
+# Label filter keeps the prune to this project's own old layers; out-bot's
+# image is never a candidate.
+- name: Remove this project's dangling images
+  command: docker image prune -f --filter label=project=dizegno
+  changed_when: false

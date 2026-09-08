@@ -1,0 +1,20 @@
+# Copy to vault.yml and encrypt: `make vault-init` (or `ansible-vault encrypt`).
+# Never commit the plaintext file.
+
+vault_mysql_password: "change-me"
+# openssl rand -base64 32
+vault_auth_secret: "change-me"
+# The only account that can sign in at /admin/login
+vault_admin_email: "admin@dizegnoagency.com"
+vault_admin_password: "change-me"
+# Address Let's Encrypt uses for expiry notices
+vault_certbot_email: "you@example.com"
+
+# Optional — leave empty to disable contact-form notifications
+vault_telegram_bot_token: ""
+vault_telegram_chat_id: ""
+vault_email_host: ""
+vault_email_port: "587"
+vault_email_user: ""
+vault_email_pass: ""
+vault_email_to: ""

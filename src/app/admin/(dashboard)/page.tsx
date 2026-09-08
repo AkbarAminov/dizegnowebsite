@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { ProjectsTable } from "./ProjectsTable";
 import { primaryButtonClass } from "./ui";
@@ -9,12 +10,22 @@ export default async function AdminProjectsPage() {
     include: { images: { orderBy: { order: "asc" }, take: 1 } },
   });
 
+  const published = projects.filter((project) => project.published).length;
+
   return (
-    <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Projects</h1>
+    <div className="mx-auto max-w-6xl">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Projects</h1>
+          <p className="mt-1 text-sm text-neutral-500">
+            {projects.length === 0
+              ? "Nothing here yet."
+              : `${published} of ${projects.length} published on the site.`}
+          </p>
+        </div>
         <Link href="/admin/projects/new" className={primaryButtonClass}>
-          + New project
+          <Plus size={16} />
+          New project
         </Link>
       </div>
 

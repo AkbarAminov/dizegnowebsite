@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 model Project {
@@ -12,8 +12,8 @@ model Project {
   title       String
   category    String?
   year        Int?
-  description String?
-  production  String?
+  description String?  @db.Text
+  production  String?  @db.Text
   order       Int      @default(0)
   // Pinned projects sort before unpinned ones on the public site.
   pinned      Boolean  @default(false)
@@ -56,7 +56,7 @@ model ProjectField {
   projectId String
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   label     String
-  value     String
+  value     String  @db.Text
   order     Int     @default(0)
 
   @@index([projectId, order])
@@ -66,7 +66,7 @@ model ContactMessage {
   id        String   @id @default(cuid())
   name      String
   email     String
-  message   String
+  message   String  @db.Text
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
 }

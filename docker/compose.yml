@@ -8,18 +8,22 @@ name: dizegno
 
 services:
   db:
-    image: postgres:16-alpine
+    image: mysql:8.0
     restart: unless-stopped
+    # Matches the server (out-bot's Ansible sets the same plugin): the MariaDB
+    # driver Prisma uses talks to MySQL over plain TCP without SSL.
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:?set in .env}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in .env}
-      POSTGRES_DB: ${POSTGRES_DB:?set in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set in .env}
+      MYSQL_USER: ${MYSQL_USER:?set in .env}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set in .env}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?set in .env}
     ports:
-      - "${POSTGRES_PORT:-5433}:5432"
+      - "${MYSQL_PORT:-3307}:3306"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysqldata:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
       interval: 3s
       timeout: 3s
       retries: 20
@@ -37,7 +41,7 @@ services:
       - .env
     environment:
       # Overrides the host-oriented DATABASE_URL from .env with the in-network one.
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
       NEXT_TELEMETRY_DISABLED: "1"
     volumes:
       - .:/app
@@ -49,6 +53,6 @@ services:
         condition: service_healthy
 
 volumes:
-  pgdata:
+  mysqldata:
   node_modules:
   next_cache:

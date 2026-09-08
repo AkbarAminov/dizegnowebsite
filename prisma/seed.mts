@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 // Run with `npm run db:seed`. Safe to re-run: projects are upserted by slug.
 try {
   process.loadEnvFile();
 } catch {}
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaMariaDb(process.env.DATABASE_URL ?? "");
 const prisma = new PrismaClient({ adapter });
 
 type SeedImage = { width: number; height: number };

@@ -49,6 +49,29 @@ export async function storeUpload({ buffer, info }: PreparedUpload): Promise<Sto
   };
 }
 
+const CONTENT_TYPES: Record<string, string> = {
+  ".jpg": "image/jpeg",
+  ".png": "image/png",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+};
+
+/** Content type for an upload filename, or null if it is not one of ours. */
+export function uploadContentType(filename: string): string | null {
+  return CONTENT_TYPES[path.extname(filename).toLowerCase()] ?? null;
+}
+
+/** Reads a stored upload; null when the name escapes the directory or is gone. */
+export async function readUpload(filename: string): Promise<Buffer | null> {
+  const file = path.join(UPLOAD_DIR, path.basename(filename));
+  if (path.dirname(file) !== UPLOAD_DIR) return null;
+  try {
+    return await fs.readFile(file);
+  } catch {
+    return null;
+  }
+}
+
 export async function removeUpload(url: string) {
   // Remote URLs (seed data, YouTube embeds) are not ours to delete.
   if (!url.startsWith(URL_PREFIX)) return;

@@ -1,0 +1,78 @@
+---
+# nginx already serves out-bot as the default_server on port 80; this role only
+# adds a name-based vhost for {{ domain }} and its certificate.
+- name: Install nginx and certbot
+  apt:
+    name:
+      - nginx
+      - certbot
+    state: present
+    update_cache: true
+
+- name: Create ACME webroot
+  file:
+    path: /var/www/certbot
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+
+- name: Check for an existing certificate
+  stat:
+    path: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+  register: le_cert
+
+- name: Deploy site config
+  template:
+    src: site.conf.j2
+    dest: "/etc/nginx/sites-available/{{ site_name }}"
+    mode: "0644"
+  vars:
+    tls_enabled: "{{ le_cert.stat.exists }}"
+  notify: Reload nginx
+
+- name: Enable site
+  file:
+    src: "/etc/nginx/sites-available/{{ site_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ site_name }}"
+    state: link
+  notify: Reload nginx
+
+- name: Check the config before nginx is reloaded
+  include_tasks: validate.yml
+
+# The HTTP vhost must be live before certbot can answer the challenge.
+- name: Apply nginx config now
+  meta: flush_handlers
+
+# Requires the domain to already resolve to this server (Cloudflare proxy is
+# fine — it forwards the challenge). Renewal runs from certbot's systemd timer.
+- name: Obtain certificate
+  command: >
+    certbot certonly --webroot -w /var/www/certbot
+    -d {{ domain }} -d www.{{ domain }}
+    --email {{ certbot_email }} --agree-tos --non-interactive
+    --deploy-hook "systemctl reload nginx"
+  when: not le_cert.stat.exists
+  register: certbot_run
+  changed_when: true
+
+- name: Re-deploy site config with TLS
+  template:
+    src: site.conf.j2
+    dest: "/etc/nginx/sites-available/{{ site_name }}"
+    mode: "0644"
+  vars:
+    tls_enabled: true
+  when: certbot_run is changed
+  notify: Reload nginx
+
+- name: Check the TLS config before nginx is reloaded
+  include_tasks: validate.yml
+  when: certbot_run is changed
+
+- name: Enable and start nginx
+  systemd:
+    name: nginx
+    enabled: true
+    state: started

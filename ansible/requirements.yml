@@ -1,0 +1,5 @@
+---
+collections:
+  - name: ansible.posix       # synchronize (rsync of the project source)
+  - name: ansible.mysql       # mysql_db, mysql_user
+  - name: community.general   # ufw

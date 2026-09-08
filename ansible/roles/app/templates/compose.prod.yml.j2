@@ -1,0 +1,22 @@
+# Managed by Ansible — edit ansible/roles/app/templates/compose.prod.yml.j2.
+name: dizegno
+
+services:
+  app:
+    image: {{ image_name }}
+    container_name: dizegno-app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ app_port }}:3000"
+    # The database is the host's system MySQL, reached over the bridge network.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file: .env
+    volumes:
+      # Admin uploads are written to disk; keep them out of the image.
+      - {{ app_dir }}/uploads:/app/public/uploads
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
