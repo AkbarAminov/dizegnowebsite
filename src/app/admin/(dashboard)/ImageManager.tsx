@@ -201,7 +201,7 @@ function SortableImage({
     <figure
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`group relative aspect-square overflow-hidden rounded-lg border border-white/10 bg-black ${
+      className={`group relative aspect-square overflow-hidden rounded-lg border border-white/10 bg-canvas ${
         isDragging ? "opacity-50" : ""
       }`}
     >

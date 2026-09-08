@@ -20,7 +20,7 @@ export const iconButtonClass =
   `rounded p-1.5 text-neutral-500 transition-colors hover:bg-white/5 hover:text-neutral-100 ${focusRing}`;
 
 /** Panel that groups one topic of a form. */
-export const cardClass = "rounded-xl border border-white/10 bg-neutral-900/60";
+export const cardClass = "rounded-xl border border-white/10 bg-panel";
 
 export const labelClass = "text-sm font-medium text-neutral-200";
 

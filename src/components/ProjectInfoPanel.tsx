@@ -11,7 +11,7 @@ export function ProjectInfoPanel({ project }: { project: Project }) {
 
   return (
     <div className="sticky top-16 z-30 md:top-20">
-      <div className="flex items-center justify-between gap-4 border-b border-white/15 bg-black px-5 py-5 md:px-8">
+      <div className="flex items-center justify-between gap-4 border-b border-white/15 bg-canvas px-5 py-5 md:px-8">
         <h1 className="project-title min-w-0 font-medium uppercase tracking-tight">{project.title}</h1>
 
         <button
@@ -39,7 +39,7 @@ export function ProjectInfoPanel({ project }: { project: Project }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-x-0 top-full z-20 border-b border-white/15 bg-black px-5 py-10 md:px-8 md:py-16"
+            className="absolute inset-x-0 top-full z-20 border-b border-white/15 bg-canvas px-5 py-10 md:px-8 md:py-16"
           >
             <div className="grid gap-10 md:grid-cols-2">
               <p className="max-w-md text-base opacity-80">{project.description}</p>

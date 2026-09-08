@@ -10,6 +10,7 @@ import { CSS } from "@dnd-kit/utilities";
 import type { MediaType } from "@/lib/types";
 import { MediaThumbnail } from "@/components/MediaThumbnail";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { LocalTime } from "./LocalTime";
 import { Switch } from "./Switch";
 import { Toast, type ToastMessage } from "./Toast";
 import { api, iconButtonClass, primaryButtonClass } from "./ui";
@@ -81,7 +82,7 @@ export function ProjectsTable({ projects }: { projects: ProjectRow[] }) {
 
   if (rows.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-white/15 bg-neutral-900/40 px-6 py-16 text-center">
+      <div className="rounded-xl border border-dashed border-white/15 bg-panel/50 px-6 py-16 text-center">
         <p className="text-sm font-medium text-neutral-200">No projects yet</p>
         <p className="mt-1 text-sm text-neutral-500">Create one, add its images, then publish it to the site.</p>
         <Link href="/admin/projects/new" className={`mt-6 ${primaryButtonClass}`}>
@@ -93,7 +94,7 @@ export function ProjectsTable({ projects }: { projects: ProjectRow[] }) {
 
   return (
     <DndContext id={dndId} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <div className="overflow-x-auto rounded-xl border border-white/10 bg-neutral-900/60">
+      <div className="overflow-x-auto rounded-xl border border-white/10 bg-panel">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-white/10 bg-white/[0.03] text-xs tracking-wide text-neutral-400 uppercase">
             <tr>
@@ -221,7 +222,9 @@ function SortableRow({
         </button>
       </td>
 
-      <td className="px-4 py-3 text-neutral-500">{new Date(row.createdAt).toLocaleDateString()}</td>
+      <td className="px-4 py-3 text-neutral-500">
+        <LocalTime iso={row.createdAt} />
+      </td>
 
       <td className="px-4 py-3">
         <div className="flex items-center justify-end gap-1">

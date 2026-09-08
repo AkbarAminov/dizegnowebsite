@@ -405,7 +405,7 @@ export function ProjectForm({
         )}
       </aside>
 
-      <div className="sticky bottom-0 z-30 -mx-4 mt-2 border-t border-white/10 bg-neutral-950/90 px-4 py-3 backdrop-blur md:-mx-8 md:px-8 lg:col-span-2">
+      <div className="sticky bottom-0 z-30 -mx-4 mt-2 border-t border-white/10 bg-surface/90 px-4 py-3 backdrop-blur md:-mx-8 md:px-8 lg:col-span-2">
         <div className="flex items-center justify-end gap-4">
           <p aria-live="polite" className="mr-auto text-sm text-neutral-400">
             {dirty ? "Unsaved changes" : projectId ? "All changes saved" : "Fill in the title to get started"}

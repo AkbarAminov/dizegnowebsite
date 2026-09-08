@@ -12,7 +12,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between bg-black px-5 text-white md:h-20 md:px-8">
+    <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between bg-canvas px-5 text-white md:h-20 md:px-8">
       <Link href="/" className="group shrink-0" aria-label="Dizegno home">
         <Logo className="h-7 w-auto" />
       </Link>

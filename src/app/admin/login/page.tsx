@@ -8,8 +8,8 @@ export default function AdminLoginPage() {
   const [state, action, pending] = useActionState(login, {});
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4 text-neutral-100">
-      <form action={action} className="w-full max-w-sm rounded-lg border border-white/10 bg-neutral-900 p-8">
+    <div className="flex min-h-screen items-center justify-center bg-surface px-4 text-neutral-100">
+      <form action={action} className="w-full max-w-sm rounded-lg border border-white/10 bg-panel p-8">
         <h1 className="text-xl font-semibold">Admin sign in</h1>
         <div className="mt-6 flex flex-col gap-4">
           <label className="flex flex-col gap-1 text-sm">

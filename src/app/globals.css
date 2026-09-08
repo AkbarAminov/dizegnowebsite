@@ -2,6 +2,12 @@
 
 @theme {
   --color-accent: #f0e10c;
+  /* Page ground of the public site: a soft charcoal, not pure black, so large
+     dark areas read as a surface instead of a void. */
+  --color-canvas: #141414;
+  /* Admin chrome sits a step lighter, with panels lighter again on top. */
+  --color-surface: #1a1a1a;
+  --color-panel: #232323;
   /* Helvetica Neue renders natively on Mac/iOS; no web font is loaded. */
   --font-sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
 }
@@ -11,7 +17,7 @@ html {
 }
 
 body {
-  background: black;
+  background: var(--color-canvas);
   color: white;
 }
 

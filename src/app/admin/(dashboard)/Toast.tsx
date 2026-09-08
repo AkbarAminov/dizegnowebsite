@@ -24,7 +24,7 @@ export function Toast({ message, onDismiss }: { message: ToastMessage; onDismiss
       className={`fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm shadow-2xl backdrop-blur ${
         isError
           ? "border-red-500/40 bg-red-950/90 text-red-200"
-          : "border-white/15 bg-neutral-900/95 text-neutral-100"
+          : "border-white/15 bg-panel/95 text-neutral-100"
       }`}
     >
       {isError ? <TriangleAlert size={16} className="shrink-0" /> : <Check size={16} className="shrink-0 text-green-400" />}
