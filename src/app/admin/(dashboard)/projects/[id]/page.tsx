@@ -2,9 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { getProjectCategories } from "@/lib/projects";
+import { getProjectCategories, pickTranslation } from "@/lib/projects";
 import { UPLOAD_RULES } from "@/lib/uploads";
-import { ProjectForm } from "../../ProjectForm";
+import { DEFAULT_LOCALE, LOCALES } from "@/lib/i18n";
+import { ProjectForm, type ProjectFormValues } from "../../ProjectForm";
 import { ImageManager } from "../../ImageManager";
 import { cardClass, secondaryButtonClass } from "../../ui";
 
@@ -13,11 +14,30 @@ export default async function EditProjectPage({ params }: PageProps<"/admin/proj
   const [project, categories] = await Promise.all([
     prisma.project.findUnique({
       where: { id },
-      include: { images: { orderBy: { order: "asc" } }, fields: { orderBy: { order: "asc" } } },
+      include: {
+        images: { orderBy: { order: "asc" } },
+        fields: { orderBy: { order: "asc" } },
+        translations: true,
+      },
     }),
     getProjectCategories(),
   ]);
   if (!project) notFound();
+
+  const displayTitle = pickTranslation(project.translations, DEFAULT_LOCALE)?.title || "Untitled";
+  const initial: ProjectFormValues = {
+    slug: project.slug,
+    year: project.year ? String(project.year) : "",
+    translations: Object.fromEntries(
+      LOCALES.map((locale) => {
+        const t = project.translations.find((row) => row.locale === locale);
+        return [locale, { title: t?.title ?? "", category: t?.category ?? "", description: t?.description ?? "", production: t?.production ?? "" }];
+      })
+    ) as ProjectFormValues["translations"],
+    fields: project.fields.map((field) => ({
+      translations: field.translations as ProjectFormValues["fields"][number]["translations"],
+    })),
+  };
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -28,7 +48,7 @@ export default async function EditProjectPage({ params }: PageProps<"/admin/proj
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold">{project.title}</h1>
+          <h1 className="text-2xl font-semibold">{displayTitle}</h1>
           <span
             className={`rounded-full px-2.5 py-1 text-xs font-medium ${
               project.published ? "bg-green-500/15 text-green-400" : "bg-white/10 text-neutral-400"
@@ -51,15 +71,7 @@ export default async function EditProjectPage({ params }: PageProps<"/admin/proj
           categories={categories}
           published={project.published}
           pinned={project.pinned}
-          initial={{
-            title: project.title,
-            slug: project.slug,
-            category: project.category ?? "",
-            year: project.year ? String(project.year) : "",
-            description: project.description ?? "",
-            production: project.production ?? "",
-            fields: project.fields.map(({ label, value }) => ({ label, value })),
-          }}
+          initial={initial}
         />
       </div>
 

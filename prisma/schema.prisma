@@ -7,24 +7,43 @@ datasource db {
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  category    String?
-  year        Int?
-  description String?  @db.Text
-  production  String?  @db.Text
-  order       Int      @default(0)
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  year      Int?
+  order     Int      @default(0)
   // Pinned projects sort before unpinned ones on the public site.
-  pinned      Boolean  @default(false)
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  pinned    Boolean  @default(false)
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  images ProjectImage[]
-  fields ProjectField[]
+  images       ProjectImage[]
+  fields       ProjectField[]
+  translations ProjectTranslation[]
 
   @@index([published, pinned, order])
+}
+
+enum Locale {
+  ru
+  en
+  uz
+}
+
+// Per-language copy for a project. Every project has up to one row per
+// locale; toProject() falls back to "en" when a locale hasn't been
+// translated yet in the admin.
+model ProjectTranslation {
+  id          String  @id @default(cuid())
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  locale      Locale
+  title       String?
+  category    String?
+  description String? @db.Text
+  production  String? @db.Text
+
+  @@unique([projectId, locale])
 }
 
 enum ProjectImageType {
@@ -51,13 +70,15 @@ model ProjectImage {
 }
 
 // Free-form credit rows (e.g. "Client", "Award") editable from the admin UI.
+// label/value are per-locale, keyed by Locale — kept as a single JSON blob
+// (rather than a 4th table) since rows are already replaced wholesale on
+// every save.
 model ProjectField {
-  id        String  @id @default(cuid())
-  projectId String
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  label     String
-  value     String  @db.Text
-  order     Int     @default(0)
+  id           String @id @default(cuid())
+  projectId    String
+  project      Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  translations Json
+  order        Int    @default(0)
 
   @@index([projectId, order])
 }

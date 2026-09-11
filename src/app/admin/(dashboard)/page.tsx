@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { pickTranslation } from "@/lib/projects";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { ProjectsTable } from "./ProjectsTable";
 import { primaryButtonClass } from "./ui";
 
 export default async function AdminProjectsPage() {
   const projects = await prisma.project.findMany({
     orderBy: { order: "asc" },
-    include: { images: { orderBy: { order: "asc" }, take: 1 } },
+    include: { images: { orderBy: { order: "asc" }, take: 1 }, translations: true },
   });
 
   const published = projects.filter((project) => project.published).length;
@@ -33,7 +35,7 @@ export default async function AdminProjectsPage() {
         <ProjectsTable
           projects={projects.map((project) => ({
             id: project.id,
-            title: project.title,
+            title: pickTranslation(project.translations, DEFAULT_LOCALE)?.title || "Untitled",
             slug: project.slug,
             published: project.published,
             pinned: project.pinned,

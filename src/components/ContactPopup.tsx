@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import type { Dictionary } from "@/lib/i18n";
 import { ContactForm } from "./ContactForm";
 import { ContactLinks } from "./ContactLinks";
 import { useLockBodyScroll } from "./useLockBodyScroll";
@@ -21,7 +22,7 @@ export function useContactPopup() {
   return context;
 }
 
-export function ContactPopup() {
+export function ContactPopup({ dict }: { dict: Dictionary }) {
   const { open, setOpen } = useContactPopup();
   useLockBodyScroll(open);
 
@@ -39,7 +40,7 @@ export function ContactPopup() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Open contact form"
+        aria-label={dict.contactPopup.openAria}
         className="fixed right-5 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl leading-none text-black shadow-[0_4px_24px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-105 md:right-8 md:bottom-8"
       >
         +
@@ -69,22 +70,20 @@ export function ContactPopup() {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="Close"
+                aria-label={dict.contactPopup.closeAria}
                 className="absolute top-4 right-4 text-2xl leading-none transition-opacity duration-200 hover:opacity-60"
               >
                 &times;
               </button>
 
               <h2 id="contact-popup-title" className="text-2xl font-medium uppercase tracking-tight md:text-3xl">
-                Get in touch
+                {dict.contactPopup.title}
               </h2>
-              <p className="mt-3 max-w-sm text-sm opacity-70">
-                Have a project in mind? Send a short note and we&apos;ll get back to you.
-              </p>
+              <p className="mt-3 max-w-sm text-sm opacity-70">{dict.contactPopup.intro}</p>
               <ContactLinks className="mt-4 gap-1" />
 
               <div className="mt-8">
-                <ContactForm />
+                <ContactForm dict={dict.contact} />
               </div>
             </motion.div>
           </motion.div>

@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import type { Dictionary } from "@/lib/i18n";
 
 type Status = "idle" | "submitting" | "success" | "error";
 type FieldErrors = Partial<Record<"name" | "email" | "message", string[]>>;
 
-export function ContactForm() {
+export function ContactForm({ dict }: { dict: Dictionary["contact"] }) {
   const [status, setStatus] = useState<Status>("idle");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
@@ -38,19 +39,19 @@ export function ContactForm() {
   if (status === "success") {
     return (
       <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-lg">
-        Thanks — your message has been sent.
+        {dict.formSuccess}
       </motion.p>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex max-w-xl flex-col gap-6">
-      <Field name="name" label="Name" errors={fieldErrors.name} />
-      <Field name="email" label="Email" type="email" errors={fieldErrors.email} />
-      <Field name="message" label="Message" as="textarea" errors={fieldErrors.message} />
+      <Field name="name" label={dict.formName} errors={fieldErrors.name} />
+      <Field name="email" label={dict.formEmail} type="email" errors={fieldErrors.email} />
+      <Field name="message" label={dict.formMessage} as="textarea" errors={fieldErrors.message} />
 
       {status === "error" && Object.keys(fieldErrors).length === 0 && (
-        <p className="text-sm text-red-500">Something went wrong. Please try again.</p>
+        <p className="text-sm text-red-500">{dict.formError}</p>
       )}
 
       <button
@@ -58,7 +59,7 @@ export function ContactForm() {
         disabled={status === "submitting"}
         className="w-fit border border-accent px-6 py-3 text-sm uppercase tracking-tight text-accent transition-colors duration-200 hover:bg-accent hover:text-black disabled:opacity-50"
       >
-        {status === "submitting" ? "Sending..." : "Send"}
+        {status === "submitting" ? dict.formSubmitting : dict.formSubmit}
       </button>
     </form>
   );

@@ -1,19 +1,24 @@
 import { prisma } from "@/lib/prisma";
 import { isUniqueViolation, jsonError, parseBody } from "@/lib/api";
-import { projectSchema } from "@/lib/validation";
+import { projectSchema, validateProjectInput } from "@/lib/validation";
 import { revalidatePublicSite } from "@/lib/projects";
+import { LOCALES } from "@/lib/i18n";
 
 export async function POST(request: Request) {
   const parsed = await parseBody(request, projectSchema);
   if (!parsed.ok) return parsed.response;
-  const { fields, ...data } = parsed.data;
+  const titleError = validateProjectInput(parsed.data);
+  if (titleError) return jsonError(titleError, 400);
+
+  const { fields, translations, ...data } = parsed.data;
 
   try {
     const project = await prisma.project.create({
       data: {
         ...data,
         order: await prisma.project.count(),
-        fields: { create: fields.map((field, order) => ({ ...field, order })) },
+        translations: { create: LOCALES.map((locale) => ({ locale, ...translations[locale] })) },
+        fields: { create: fields.map((field, order) => ({ order, translations: field.translations })) },
       },
     });
     revalidatePublicSite();

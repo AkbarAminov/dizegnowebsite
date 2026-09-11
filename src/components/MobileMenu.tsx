@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { NAV_LINKS } from "@/lib/site";
+import { localeHref, type Dictionary, type Locale } from "@/lib/i18n";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLockBodyScroll } from "./useLockBodyScroll";
 
 const listVariants = {
@@ -15,7 +17,17 @@ const itemVariants = {
   closed: { opacity: 0, y: 16, transition: { duration: 0.2 } },
 };
 
-export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function MobileMenu({
+  open,
+  onClose,
+  lang,
+  dict,
+}: {
+  open: boolean;
+  onClose: () => void;
+  lang: Locale;
+  dict: Dictionary;
+}) {
   useLockBodyScroll(open);
 
   return (
@@ -38,14 +50,17 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
             {NAV_LINKS.map((link) => (
               <motion.li key={link.href} variants={itemVariants}>
                 <Link
-                  href={link.href}
+                  href={localeHref(lang, link.href)}
                   onClick={onClose}
                   className="text-[12vw] leading-[1.1] font-medium uppercase tracking-tight"
                 >
-                  {link.label}
+                  {dict.nav[link.key]}
                 </Link>
               </motion.li>
             ))}
+            <motion.li variants={itemVariants} className="pt-4">
+              <LanguageSwitcher className="!text-base" />
+            </motion.li>
           </motion.ul>
         </motion.div>
       )}

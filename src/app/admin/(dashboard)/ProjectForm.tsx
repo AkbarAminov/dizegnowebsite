@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import type { ProjectInput } from "@/lib/validation";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS, mapLocales, type Locale } from "@/lib/i18n";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { Switch } from "./Switch";
 import { Toast, type ToastMessage } from "./Toast";
@@ -20,29 +21,43 @@ import {
   secondaryButtonClass,
 } from "./ui";
 
-type FieldRow = { label: string; value: string };
+type LocaleTranslation = { title: string; category: string; description: string; production: string };
+type FieldTranslation = { label: string; value: string };
+type FieldRow = { translations: Record<Locale, FieldTranslation> };
 
 export type ProjectFormValues = {
-  title: string;
   slug: string;
-  category: string;
   year: string;
-  description: string;
-  production: string;
+  translations: Record<Locale, LocaleTranslation>;
   fields: FieldRow[];
 };
 
-type Errors = { title?: string; slug?: string; year?: string; fields?: Record<number, string> };
+type Errors = {
+  title?: string;
+  slug?: string;
+  year?: string;
+  fields?: Record<number, Partial<Record<Locale, string>>>;
+};
+
+const EMPTY_TRANSLATION: LocaleTranslation = { title: "", category: "", description: "", production: "" };
+const EMPTY_FIELD_TRANSLATION: FieldTranslation = { label: "", value: "" };
 
 const EMPTY: ProjectFormValues = {
-  title: "",
   slug: "",
-  category: "",
   year: "",
-  description: "",
-  production: "",
+  translations: { ru: { ...EMPTY_TRANSLATION }, en: { ...EMPTY_TRANSLATION }, uz: { ...EMPTY_TRANSLATION } },
   fields: [],
 };
+
+function emptyFieldRow(): FieldRow {
+  return {
+    translations: {
+      ru: { ...EMPTY_FIELD_TRANSLATION },
+      en: { ...EMPTY_FIELD_TRANSLATION },
+      uz: { ...EMPTY_FIELD_TRANSLATION },
+    },
+  };
+}
 
 /** "Kinetic Motion Reel" → "kinetic-motion-reel"; non-latin titles yield "". */
 function slugify(title: string) {
@@ -56,7 +71,7 @@ function slugify(title: string) {
 
 function validate(values: ProjectFormValues): Errors {
   const errors: Errors = {};
-  if (!values.title.trim()) errors.title = "Give the project a title";
+  if (!values.translations[DEFAULT_LOCALE].title.trim()) errors.title = "Give the project a title";
   if (!values.slug.trim()) errors.slug = "The URL cannot be empty";
   else if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(values.slug.trim()))
     errors.slug = "Only lowercase letters, digits and hyphens";
@@ -64,13 +79,18 @@ function validate(values: ProjectFormValues): Errors {
   const year = values.year.trim();
   if (year && !(Number(year) >= 1900 && Number(year) <= 2100)) errors.year = "Enter a year between 1900 and 2100";
 
-  // A row with only one half filled would be rejected by the API; catch it here
-  // where the user can see which row is at fault.
-  const rows: Record<number, string> = {};
+  // A row with only one half filled (in a given language) would be rejected
+  // by the API; catch it here where the user can see which row is at fault.
+  const rows: Record<number, Partial<Record<Locale, string>>> = {};
   values.fields.forEach((field, index) => {
-    const hasLabel = Boolean(field.label.trim());
-    const hasValue = Boolean(field.value.trim());
-    if (hasLabel !== hasValue) rows[index] = hasLabel ? "Add a value" : "Add a label";
+    for (const locale of LOCALES) {
+      const { label, value } = field.translations[locale];
+      const hasLabel = Boolean(label.trim());
+      const hasValue = Boolean(value.trim());
+      if (hasLabel !== hasValue) {
+        rows[index] = { ...rows[index], [locale]: hasLabel ? "Add a value" : "Add a label" };
+      }
+    }
   });
   if (Object.keys(rows).length) errors.fields = rows;
 
@@ -87,7 +107,7 @@ export function ProjectForm({
   // Absent when creating a new project.
   projectId?: string;
   initial?: ProjectFormValues;
-  categories: string[];
+  categories: Record<Locale, string[]>;
   published?: boolean;
   pinned?: boolean;
 }) {
@@ -99,8 +119,10 @@ export function ProjectForm({
   const [toast, setToast] = useState<ToastMessage>(null);
   const [visibility, setVisibility] = useState({ published, pinned });
   const [confirmingDelete, setConfirmingDelete] = useState(false);
-  // The slug follows the title until it is edited by hand, so a new project
-  // never needs the URL typed out — and an existing URL is never rewritten.
+  const [activeLocale, setActiveLocale] = useState<Locale>(DEFAULT_LOCALE);
+  // The slug follows the default-locale title until it is edited by hand,
+  // so a new project never needs the URL typed out — and an existing URL is
+  // never rewritten.
   const [slugLocked, setSlugLocked] = useState(Boolean(projectId));
 
   const dismissToast = useCallback(() => setToast(null), []);
@@ -116,23 +138,48 @@ export function ProjectForm({
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
-  function set<K extends keyof ProjectFormValues>(key: K, value: ProjectFormValues[K]) {
+  function set<K extends "slug" | "year">(key: K, value: ProjectFormValues[K]) {
     setValues((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: undefined }));
   }
 
-  function setTitle(title: string) {
-    setValues((current) => ({ ...current, title, slug: slugLocked ? current.slug : slugify(title) }));
-    setErrors((current) => ({ ...current, title: undefined, slug: undefined }));
+  function setTranslation(locale: Locale, key: keyof LocaleTranslation, value: string) {
+    setValues((current) => ({
+      ...current,
+      translations: { ...current.translations, [locale]: { ...current.translations[locale], [key]: value } },
+      slug:
+        key === "title" && locale === DEFAULT_LOCALE && !slugLocked ? slugify(value) : current.slug,
+    }));
+    if (key === "title") setErrors((current) => ({ ...current, title: undefined, slug: undefined }));
   }
 
-  function updateField(index: number, patch: Partial<FieldRow>) {
-    set(
-      "fields",
-      values.fields.map((field, i) => (i === index ? { ...field, ...patch } : field))
-    );
+  function updateFieldTranslation(index: number, locale: Locale, patch: Partial<FieldTranslation>) {
+    setValues((current) => ({
+      ...current,
+      fields: current.fields.map((field, i) =>
+        i === index
+          ? { translations: { ...field.translations, [locale]: { ...field.translations[locale], ...patch } } }
+          : field
+      ),
+    }));
     setErrors((current) => ({ ...current, fields: undefined }));
   }
+
+  function addFieldRow() {
+    setValues((current) => ({ ...current, fields: [...current.fields, emptyFieldRow()] }));
+  }
+
+  function removeFieldRow(index: number) {
+    setValues((current) => ({ ...current, fields: current.fields.filter((_, i) => i !== index) }));
+    setErrors((current) => ({ ...current, fields: undefined }));
+  }
+
+  // Which tabs currently have a validation error, so the tab strip itself
+  // can flag them without the user needing to click through each one.
+  const errorLocales = new Set<Locale>([
+    ...(errors.title ? [DEFAULT_LOCALE] : []),
+    ...(errors.fields ? (Object.values(errors.fields).flatMap((byLocale) => Object.keys(byLocale)) as Locale[]) : []),
+  ]);
 
   async function toggleVisibility(patch: Partial<typeof visibility>, done: string) {
     if (!projectId) return;
@@ -154,18 +201,27 @@ export function ProjectForm({
     const found = validate(values);
     if (Object.keys(found).length) {
       setErrors(found);
+      if (found.title) setActiveLocale(DEFAULT_LOCALE);
       setToast({ text: "Check the highlighted fields", tone: "error" });
       return;
     }
 
     setSaving(true);
     const payload: ProjectInput = {
-      ...values,
-      title: values.title.trim(),
       slug: values.slug.trim(),
       year: values.year ? Number(values.year) : null,
-      // Rows left completely blank are dropped rather than rejected.
-      fields: values.fields.filter((field) => field.label.trim() || field.value.trim()),
+      translations: mapLocales(values.translations, (t) => ({
+        title: t.title.trim(),
+        category: t.category.trim(),
+        description: t.description.trim(),
+        production: t.production.trim(),
+      })),
+      // Rows left completely blank (in every language) are dropped rather than rejected.
+      fields: values.fields
+        .filter((field) => LOCALES.some((l) => field.translations[l].label.trim() || field.translations[l].value.trim()))
+        .map((field) => ({
+          translations: mapLocales(field.translations, (t) => ({ label: t.label.trim(), value: t.value.trim() })),
+        })),
     };
 
     const result = projectId
@@ -196,20 +252,29 @@ export function ProjectForm({
     else setToast({ text: result.error, tone: "error" });
   }
 
+  const t = values.translations[activeLocale];
+
   return (
     <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
       <div className="flex flex-col gap-6">
+        <LocaleTabs active={activeLocale} onChange={setActiveLocale} errorLocales={errorLocales} />
+
         <section className={cardClass}>
           <SectionHeader title="Basics" hint="Title and address of the project page." />
           <div className="flex flex-col gap-5 p-5 pt-0">
-            <Field label="Title" error={errors.title} htmlFor="project-title">
+            <Field
+              label={`Title (${LOCALE_LABELS[activeLocale]})`}
+              error={activeLocale === DEFAULT_LOCALE ? errors.title : undefined}
+              htmlFor="project-title"
+              hint={activeLocale !== DEFAULT_LOCALE ? "Optional — falls back to the English copy until filled in." : undefined}
+            >
               <input
                 id="project-title"
-                value={values.title}
-                onChange={(event) => setTitle(event.target.value)}
+                value={t.title}
+                onChange={(event) => setTranslation(activeLocale, "title", event.target.value)}
                 placeholder="North Star Identity"
                 autoComplete="off"
-                className={`${inputClass} ${errors.title ? invalidInputClass : ""}`}
+                className={`${inputClass} ${activeLocale === DEFAULT_LOCALE && errors.title ? invalidInputClass : ""}`}
               />
             </Field>
 
@@ -219,8 +284,8 @@ export function ProjectForm({
               htmlFor="project-slug"
               hint={
                 projectId
-                  ? "Changing this breaks links that already point to the project."
-                  : "Filled in from the title — edit it if you want a different address."
+                  ? "Changing this breaks links that already point to the project. Shared across all languages."
+                  : "Filled in from the default-language title — edit it if you want a different address."
               }
             >
               <div
@@ -246,23 +311,27 @@ export function ProjectForm({
             </Field>
 
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Category" htmlFor="project-category" hint="Shown under the title. Reuse one or type a new one.">
+              <Field
+                label={`Category (${LOCALE_LABELS[activeLocale]})`}
+                htmlFor="project-category"
+                hint="Shown under the title. Reuse one or type a new one."
+              >
                 <input
                   id="project-category"
-                  value={values.category}
-                  onChange={(event) => set("category", event.target.value)}
+                  value={t.category}
+                  onChange={(event) => setTranslation(activeLocale, "category", event.target.value)}
                   list="category-options"
                   placeholder="Branding"
                   className={inputClass}
                 />
                 <datalist id="category-options">
-                  {categories.map((category) => (
+                  {categories[activeLocale].map((category) => (
                     <option key={category} value={category} />
                   ))}
                 </datalist>
               </Field>
 
-              <Field label="Year" error={errors.year} htmlFor="project-year" hint="Optional.">
+              <Field label="Year" error={errors.year} htmlFor="project-year" hint="Optional. Shared across all languages.">
                 <input
                   id="project-year"
                   type="number"
@@ -282,21 +351,25 @@ export function ProjectForm({
         <section className={cardClass}>
           <SectionHeader title="Story" hint="The text that runs beside the images on the project page." />
           <div className="flex flex-col gap-5 p-5 pt-0">
-            <Field label="Description" htmlFor="project-description">
+            <Field label={`Description (${LOCALE_LABELS[activeLocale]})`} htmlFor="project-description">
               <textarea
                 id="project-description"
-                value={values.description}
-                onChange={(event) => set("description", event.target.value)}
+                value={t.description}
+                onChange={(event) => setTranslation(activeLocale, "description", event.target.value)}
                 rows={5}
                 placeholder="What the project was and what you made."
                 className={inputClass}
               />
             </Field>
-            <Field label="Production" htmlFor="project-production" hint="Who produced it. Appears with the credits.">
+            <Field
+              label={`Production (${LOCALE_LABELS[activeLocale]})`}
+              htmlFor="project-production"
+              hint="Who produced it. Appears with the credits."
+            >
               <input
                 id="project-production"
-                value={values.production}
-                onChange={(event) => set("production", event.target.value)}
+                value={t.production}
+                onChange={(event) => setTranslation(activeLocale, "production", event.target.value)}
                 placeholder="Dizegno Studio"
                 className={inputClass}
               />
@@ -305,52 +378,49 @@ export function ProjectForm({
         </section>
 
         <section className={cardClass}>
-          <SectionHeader title="Credits" hint="Extra rows such as Client, Photography or Award." />
+          <SectionHeader title="Credits" hint={`Extra rows such as Client, Photography or Award (${LOCALE_LABELS[activeLocale]}).`} />
           <div className="p-5 pt-0">
             {values.fields.length > 0 && (
               <ul className="flex flex-col gap-2">
-                {values.fields.map((field, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <div className="grid flex-1 gap-2 sm:grid-cols-[14rem_minmax(0,1fr)]">
-                      <input
-                        aria-label={`Credit ${index + 1} label`}
-                        placeholder="Client"
-                        value={field.label}
-                        onChange={(event) => updateField(index, { label: event.target.value })}
-                        className={`${inputClass} ${errors.fields?.[index] ? invalidInputClass : ""}`}
-                      />
-                      <input
-                        aria-label={`Credit ${index + 1} value`}
-                        placeholder="Acme Corp"
-                        value={field.value}
-                        onChange={(event) => updateField(index, { value: event.target.value })}
-                        className={`${inputClass} ${errors.fields?.[index] ? invalidInputClass : ""}`}
-                      />
-                      {errors.fields?.[index] && (
-                        <p className="text-xs text-red-400 sm:col-span-2">{errors.fields[index]}</p>
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        set(
-                          "fields",
-                          values.fields.filter((_, i) => i !== index)
-                        )
-                      }
-                      className={`${iconButtonClass} mt-1 hover:bg-red-500/10 hover:text-red-400`}
-                      title="Remove this credit"
-                    >
-                      <Trash2 size={16} />
-                      <span className="sr-only">Remove credit {index + 1}</span>
-                    </button>
-                  </li>
-                ))}
+                {values.fields.map((field, index) => {
+                  const rowTranslation = field.translations[activeLocale];
+                  const rowError = errors.fields?.[index]?.[activeLocale];
+                  return (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="grid flex-1 gap-2 sm:grid-cols-[14rem_minmax(0,1fr)]">
+                        <input
+                          aria-label={`Credit ${index + 1} label`}
+                          placeholder="Client"
+                          value={rowTranslation.label}
+                          onChange={(event) => updateFieldTranslation(index, activeLocale, { label: event.target.value })}
+                          className={`${inputClass} ${rowError ? invalidInputClass : ""}`}
+                        />
+                        <input
+                          aria-label={`Credit ${index + 1} value`}
+                          placeholder="Acme Corp"
+                          value={rowTranslation.value}
+                          onChange={(event) => updateFieldTranslation(index, activeLocale, { value: event.target.value })}
+                          className={`${inputClass} ${rowError ? invalidInputClass : ""}`}
+                        />
+                        {rowError && <p className="text-xs text-red-400 sm:col-span-2">{rowError}</p>}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFieldRow(index)}
+                        className={`${iconButtonClass} mt-1 hover:bg-red-500/10 hover:text-red-400`}
+                        title="Remove this credit"
+                      >
+                        <Trash2 size={16} />
+                        <span className="sr-only">Remove credit {index + 1}</span>
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             )}
             <button
               type="button"
-              onClick={() => set("fields", [...values.fields, { label: "", value: "" }])}
+              onClick={addFieldRow}
               className={`${secondaryButtonClass} ${values.fields.length ? "mt-3" : ""}`}
             >
               <Plus size={16} />
@@ -424,13 +494,41 @@ export function ProjectForm({
 
       <ConfirmDialog
         open={confirmingDelete}
-        title={`Delete "${saved.title}"?`}
+        title={`Delete "${saved.translations[DEFAULT_LOCALE].title}"?`}
         description="The project and all of its images will be removed from the site. This cannot be undone."
         onConfirm={handleDelete}
         onCancel={() => setConfirmingDelete(false)}
       />
       <Toast message={toast} onDismiss={dismissToast} />
     </form>
+  );
+}
+
+function LocaleTabs({
+  active,
+  onChange,
+  errorLocales,
+}: {
+  active: Locale;
+  onChange: (locale: Locale) => void;
+  errorLocales: Set<Locale>;
+}) {
+  return (
+    <div className="flex w-fit gap-1 rounded-md border border-white/10 bg-panel p-1">
+      {LOCALES.map((locale) => (
+        <button
+          key={locale}
+          type="button"
+          onClick={() => onChange(locale)}
+          className={`rounded px-3 py-1.5 text-xs font-semibold tracking-wide uppercase transition-colors ${
+            active === locale ? "bg-white text-black" : "text-neutral-400 hover:text-white"
+          }`}
+        >
+          {LOCALE_LABELS[locale]}
+          {errorLocales.has(locale) && <span className="ml-1 text-red-400">•</span>}
+        </button>
+      ))}
+    </div>
   );
 }
 

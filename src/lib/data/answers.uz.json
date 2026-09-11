@@ -1,0 +1,112 @@
+[
+  {
+    "title": "Asosiy savollar",
+    "items": [
+      {
+        "number": "01",
+        "question": "Dizegno nima bilan shug'ullanadi?",
+        "answer": "Dizegno — brending agentligi: biznes uchun identifikatsiya, vizual tizimlar va kommunikatsiya. Bu logotip va gaydlayndan tortib, mijozga haqiqatan ham kerak bo'lsa, to'liq brend strategiyasigacha bo'lishi mumkin."
+      },
+      {
+        "number": "02",
+        "question": "Faqat logotip qilasizmi yoki undan ko'proq?",
+        "answer": "Logotip odatda ishning eng kichik qismi. Ko'pchilik loyihalar oxir-oqibat butun vizual tizimni qamrab oladi — gaydlaynlar, tipografika, qadoqlash, navigatsiya — brend dunyoga chiqqanda birlashib turishi uchun kerak bo'lgan hamma narsa."
+      },
+      {
+        "number": "03",
+        "question": "Qanday mijozlar bilan ishlaysiz?",
+        "answer": "Asosan banking va fintech, chakana savdo va sport tadbirlari — so'nggi ishlar orasida Ipoteka Bank, Wolt, Toyota Central Asia, Anorbank, Uzinsurance, Respublika Shoshilinch tibbiy yordam xizmati va Samarkand Marathon poyga seriyasi (Sky Camp, Zaamin Ultra, Bukhara Night Race, Aral Ultra) bor."
+      },
+      {
+        "number": "04",
+        "question": "Qayerda joylashgansiz?",
+        "answer": "Toshkent, O'zbekiston. Ishning katta qismi MDH mintaqasidagi mijozlar bilan, lekin bu qattiq chegara emas — ko'proq aloqalar qayerdan boshlanganiga bog'liq."
+      }
+    ]
+  },
+  {
+    "title": "Nega Dizegno",
+    "items": [
+      {
+        "number": "05",
+        "question": "Nega Dizegno-ni tanlash kerak?",
+        "answer": "Dizegno bitta dizaynerning amaliyotidan mijozlar qaytib keladigan agentlikka aylandi — shunchaki portfolio uchun emas, izchillik va sifat uchun. Banking, avtomobil sanoati, ovqat yetkazib berish, tibbiyot va sport tadbirlarida olti yildan ortiq tajriba shuni anglatadiki, studiya yangi mijoz duch kelayotgan vazifaga yaqin masalani odatda allaqachon hal qilgan bo'ladi. Har bir loyiha brifdan topshirishgacha shaxsan nazorat qilinadi, shuning uchun mas'uliyat hech qachon turli qo'llar orasida bo'linmaydi."
+      },
+      {
+        "number": "06",
+        "question": "Dizegno ortida kim turibdi?",
+        "answer": "Dizegno-ni Akbar Aminov asos solgan — u mustaqil dizayner sifatida boshlab, amaliyotini bosqichma-bosqich agentlikka aylantirgan. Bugun studiya yirik loyihalarni jamoa hajmi emas, balki ishning sifati bilan yutib olmoqda. Akbar hamon studiyaning ijodiy direktori bo'lib qolmoqda va har bir yirik loyihani shaxsan nazorat qiladi."
+      },
+      {
+        "number": "07",
+        "question": "Dizegno jamoasi qancha katta?",
+        "answer": "Dizegno ataylab kichik jamoada ishlaydi — har bir loyiha ustida to'g'ridan-to'g'ri nazorat bilan, aккaunt-menejerlar va junior mutaxassislar orasida ish suyultirilib ketadigan katta shtat o'rniga. Aynan shu tuzilma studiya kattaroq mijozlarni jalb qilsa ham, har bir yangi loyihada resursni tarqatib yubormay, sifatni barqaror ushlab turadi."
+      },
+      {
+        "number": "08",
+        "question": "Ish jarayoni nimasi bilan farq qiladi?",
+        "answer": "Strategiya, dizayn va prodakshn orasida loyiha boshqa qo'lga o'tkazilmaydi — loyihani boshlagan odam uni yakuniy fayllargacha olib boradi. Ko'pchilik studiyalar o'sish jarayonida aynan shu uzluksizlikni yo'qotadi, Dizegno esa buni ataylab saqlab qolgan."
+      }
+    ]
+  },
+  {
+    "title": "Ish qanday amalga oshadi",
+    "items": [
+      {
+        "number": "09",
+        "question": "Bu ish bilan qancha vaqtdan beri shug'ullanasiz?",
+        "answer": "Brendingda olti yildan ortiq tajriba, asosan identifikatsiya tizimlari, qadoqlash va kampaniyalar orasida."
+      },
+      {
+        "number": "10",
+        "question": "Odatiy loyiha haftama-hafta qanday ko'rinadi?",
+        "answer": "Avval tadqiqot va yo'nalish — odatda birinchi taqdimotdan oldin bir-ikki hafta tadqiqot va kontseptsiya ishlari. Keyin dizaynni bosqichma-bosqich ishlab chiqish, har bosqichdan so'ng ko'rib chiqish bilan, tizim yakunlanguncha. Prodakshn va fayllarni topshirish — hammasi tasdiqlangandan so'ng, eng oxirida."
+      },
+      {
+        "number": "11",
+        "question": "Prodakshn bilan ham shug'ullanasizmi — qadoqlash, navigatsiya, bosmaga tayyor fayllar?",
+        "answer": "Ha. Agar brendga bosmaga tayyor qadoqlash sxemalari, navigatsiya spetsifikatsiyalari yoki nashriyotga tayyor fayllar kerak bo'lsa, bu alohida smeta emas, ishning bir qismi. Men tizimni PDF topshirib, u omon qolishiga umid qilishdan ko'ra, tokchagacha yoki devorgacha olib borishni afzal ko'raman."
+      }
+    ]
+  },
+  {
+    "title": "Loyihani boshlashdan oldin",
+    "items": [
+      {
+        "number": "12",
+        "question": "Loyihalar odatda qanday boshlanadi?",
+        "answer": "Odatda qisqa suhbatdan. Aloqa sahifasi yoki burchakdagi tugma orqali yozing — nima kerakligini taxminan aytib bering, qolganini hajm va muddatlar bo'yicha birga aniqlaymiz."
+      },
+      {
+        "number": "13",
+        "question": "Murojaat qilishdan oldin nimani tayyorlab qo'yish kerak?",
+        "answer": "Rasmiy hech narsa shart emas — muammoning taxminiy tasavvuri yetarli. Agar sizda allaqachon brend-buk, oldingi dizayn ishlari yoki yoqadigan (yoki yoqmaydigan) raqobatchi bo'lsa, ularni ham yuboring — bu keyinchalik bir bosqich yozishmani tejaydi."
+      },
+      {
+        "number": "14",
+        "question": "Agar hali aniq brifim bo'lmasa-chi?",
+        "answer": "Bu normal holat va, aslida, tayyor brif bilan kelishdan ko'ra ko'proq uchraydi. Birinchi suhbatning bir qismi — aynan noaniq g'oyani ishlaydigan vazifaga aylantirish: muammo, auditoriya, muvaffaqiyat qanday ko'rinishi — dizayn ishi boshlanishidan oldin."
+      },
+      {
+        "number": "15",
+        "question": "Ichki jamoa yoki boshqa agentlik bilan birga ishlay olasizmi?",
+        "answer": "Muntazam ravishda. Ba'zan butun tizimni noldan quraman, ba'zan esa faqat bitta vazifa uchun — rebrending, qadoqlash liniyasi — jalb qilinaman, u katta jamoaning mavjud jarayoniga mos kelishi kerak bo'ladi. Ikkala holat ham yaxshi ishlaydi."
+      }
+    ]
+  },
+  {
+    "title": "Narx va muddatlar",
+    "items": [
+      {
+        "number": "16",
+        "question": "Narx qanday shakllanadi?",
+        "answer": "Soatbay emas, loyiha bo'yicha to'lov — narx sarflangan vaqtga emas, hajmga (nechta natija, nechta bosqich, qancha prodakshn ishi) qarab belgilanadi. Ish boshlanishidan oldin siz aniq raqamni olasiz, ochiq bahoni emas."
+      },
+      {
+        "number": "17",
+        "question": "Odatiy identifikatsiya loyihasi qancha vaqt oladi?",
+        "answer": "To'liq identifikatsiya tizimi uchun to'rt-sakkiz hafta — bu ustiga qancha prodakshn ishi qo'shilishiga bog'liq: qadoqlash va navigatsiya vaqtni oshiradi. Mavjud belgini yangilash kabi kichikroq vazifalar tezroq bajariladi."
+      }
+    ]
+  }
+]

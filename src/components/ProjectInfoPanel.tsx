@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Project } from "@/lib/types";
+import type { Dictionary } from "@/lib/i18n";
 
 // Sticky title bar; the details panel drops down over the gallery instead
 // of pushing it.
-export function ProjectInfoPanel({ project }: { project: Project }) {
+export function ProjectInfoPanel({ project, dict }: { project: Project; dict: Dictionary["projectInfo"] }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,7 +21,7 @@ export function ProjectInfoPanel({ project }: { project: Project }) {
           aria-expanded={open}
           className="flex shrink-0 items-center gap-2 whitespace-nowrap text-sm uppercase tracking-tight text-accent transition-opacity duration-200 hover:opacity-70"
         >
-          Project info
+          {dict.toggle}
           <motion.span
             animate={{ rotate: open ? 45 : 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
@@ -41,8 +42,8 @@ export function ProjectInfoPanel({ project }: { project: Project }) {
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="absolute inset-x-0 top-full z-20 border-b border-white/15 bg-canvas px-5 py-10 md:px-8 md:py-16"
           >
-            <div className="grid gap-10 md:grid-cols-2">
-              <p className="max-w-md text-base opacity-80">{project.description}</p>
+            <div className="grid gap-10 md:grid-cols-[3fr_2fr]">
+              <p className="max-w-2xl text-base opacity-80">{project.description}</p>
 
               <div>
                 {project.credits.map((credit, i) => (

@@ -4,36 +4,40 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "@/lib/site";
+import { localeHref, stripLocale, type Dictionary, type Locale } from "@/lib/i18n";
 import { MobileMenu } from "./MobileMenu";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Logo } from "./Logo";
 
-export function Header() {
+export function Header({ lang, dict }: { lang: Locale; dict: Dictionary }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { path: activePath } = stripLocale(pathname);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between bg-canvas px-5 text-white md:h-20 md:px-8">
-      <Link href="/" className="group shrink-0" aria-label="Dizegno home">
+      <Link href={localeHref(lang, "/")} className="group shrink-0" aria-label={dict.nav.homeAria}>
         <Logo className="h-7 w-auto" />
       </Link>
 
-      <nav className="hidden gap-6 text-sm uppercase tracking-tight md:flex">
+      <nav className="hidden items-center gap-6 text-sm uppercase tracking-tight md:flex">
         {NAV_LINKS.map((link) => (
           <Link
             key={link.href}
-            href={link.href}
+            href={localeHref(lang, link.href)}
             className={`transition-opacity duration-200 hover:opacity-60 ${
-              pathname.startsWith(link.href) ? "opacity-100" : "opacity-70"
+              activePath.startsWith(link.href) ? "opacity-100" : "opacity-70"
             }`}
           >
-            {link.label}
+            {dict.nav[link.key]}
           </Link>
         ))}
+        <LanguageSwitcher className="ml-2" />
       </nav>
 
       <button
         type="button"
-        aria-label={menuOpen ? "Close menu" : "Open menu"}
+        aria-label={menuOpen ? dict.nav.menuCloseAria : dict.nav.menuOpenAria}
         aria-expanded={menuOpen}
         onClick={() => setMenuOpen((open) => !open)}
         className="relative z-50 flex h-6 w-7 flex-col justify-between md:hidden"
@@ -53,7 +57,7 @@ export function Header() {
         />
       </button>
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} lang={lang} dict={dict} />
     </header>
   );
 }
