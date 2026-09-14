@@ -42,7 +42,8 @@ export function stripLocale(pathname: string): { locale: Locale; path: string } 
 export type Dictionary = {
   nav: { work: string; answers: string; contact: string; homeAria: string; menuOpenAria: string; menuCloseAria: string };
   work: { title: string; all: string };
-  projectNav: { previous: string; next: string; related: string };
+  partners: { title: string };
+  projectNav: { back: string; previous: string; next: string; related: string };
   projectInfo: { toggle: string };
   gallery: { view: string; openImage: string; openVideo: string };
   answers: { title: string };

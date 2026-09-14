@@ -34,18 +34,23 @@ export default async function ProjectPage({ params }: Props) {
   // Prev/next wrap around so every project has both links.
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
-  const related = projects.filter((p) => p.slug !== slug).slice(0, 6);
+  const related = projects.filter((p) => p.slug !== slug).slice(0, 3);
 
   return (
     <>
-      <section className="min-h-screen pt-16 md:pt-20">
+      <section className="min-h-dvh pt-16 md:pt-20">
         <div className="relative">
-          <ProjectInfoPanel project={project} dict={dict.projectInfo} />
+          <ProjectInfoPanel
+            project={project}
+            lang={lang}
+            toggleLabel={dict.projectInfo.toggle}
+            backLabel={dict.projectNav.back}
+          />
           <ProjectGallery images={project.gallery} alt={project.title} dict={dict.gallery} />
         </div>
 
         {projects.length > 1 && (
-          <nav className="mt-10 flex items-center justify-between border-t border-white/15 px-5 py-6 text-sm uppercase tracking-tight md:px-8">
+          <nav className="mt-10 flex items-center justify-between border-t border-white/15 px-5 py-6 text-xs uppercase tracking-tight md:px-8 lg:text-sm">
             <Link
               href={localeHref(lang, `/work/${prev.slug}/`)}
               className="group flex items-center gap-2 transition-opacity duration-200 hover:opacity-70"

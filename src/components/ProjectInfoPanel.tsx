@@ -1,27 +1,49 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 import type { Project } from "@/lib/types";
-import type { Dictionary } from "@/lib/i18n";
+import { localeHref, type Locale } from "@/lib/i18n";
 
 // Sticky title bar; the details panel drops down over the gallery instead
-// of pushing it.
-export function ProjectInfoPanel({ project, dict }: { project: Project; dict: Dictionary["projectInfo"] }) {
+// of pushing it. Below lg (tablet and phone) a back-to-work link is shown
+// and the row groups left instead of spreading title/toggle to opposite
+// edges, which felt cramped against a long title on a narrow screen.
+export function ProjectInfoPanel({
+  project,
+  lang,
+  toggleLabel,
+  backLabel,
+}: {
+  project: Project;
+  lang: Locale;
+  toggleLabel: string;
+  backLabel: string;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="sticky top-16 z-30 md:top-20">
-      <div className="flex items-center justify-between gap-4 border-b border-white/15 bg-canvas px-5 py-5 md:px-8">
-        <h1 className="project-title min-w-0 font-medium uppercase tracking-tight">{project.title}</h1>
+      <div className="border-b border-white/15 bg-canvas px-5 py-5 md:px-8 lg:flex lg:items-center lg:justify-between lg:gap-4">
+        <Link
+          href={localeHref(lang, "/work/")}
+          className="flex items-center gap-1.5 text-sm uppercase tracking-tight text-white/60 transition-colors duration-200 hover:text-white lg:hidden"
+        >
+          <ArrowLeft size={16} />
+          {backLabel}
+        </Link>
+
+        <h1 className="project-title mt-3.5 min-w-0 font-medium uppercase tracking-tight lg:mt-0">{project.title}</h1>
 
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
-          className="flex shrink-0 items-center gap-2 whitespace-nowrap text-sm uppercase tracking-tight text-accent transition-opacity duration-200 hover:opacity-70"
+          className="mt-4 flex items-center gap-2 whitespace-nowrap text-sm uppercase tracking-tight text-accent transition-opacity duration-200 hover:opacity-70 lg:mt-0 lg:shrink-0"
         >
-          {dict.toggle}
+          {toggleLabel}
           <motion.span
             animate={{ rotate: open ? 45 : 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}

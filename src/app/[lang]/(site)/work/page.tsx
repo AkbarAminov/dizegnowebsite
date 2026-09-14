@@ -20,7 +20,7 @@ export default async function WorkPage({ params }: PageProps<"/[lang]/work">) {
 
   return (
     <>
-      <section className="min-h-screen pt-28 pb-20 md:pt-36">
+      <section className="min-h-dvh pt-28 pb-20 md:pt-36">
         <RevealOnScroll className="mb-10 px-5 md:px-8">
           <h1 className="text-4xl font-medium uppercase tracking-tight md:text-6xl">{dict.work.title}</h1>
         </RevealOnScroll>

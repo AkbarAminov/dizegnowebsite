@@ -26,3 +26,22 @@ body {
 .project-title {
   font-size: clamp(1.75rem, 2.2vw, 3.5rem);
 }
+
+/* Partner-logo conveyor: the track holds the logo list twice back to back,
+   scrolling by exactly one set's width (-50%) so the loop is seamless. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

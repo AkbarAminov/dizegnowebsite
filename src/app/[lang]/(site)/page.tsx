@@ -1,4 +1,5 @@
 import { WorkGrid } from "@/components/WorkGrid";
+import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { EndCTA } from "@/components/EndCTA";
 import { getPublishedProjects } from "@/lib/projects";
 import { getDictionary } from "@/lib/getDictionary";
@@ -11,9 +12,10 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
-      <section className="min-h-screen pt-24 pb-20 md:pt-28">
+      <section className="pt-24 pb-20 md:pt-28">
         <WorkGrid projects={projects} lang={lang} />
       </section>
+      <PartnersMarquee title={dict.partners.title} />
       <EndCTA dict={dict.endCta} />
     </>
   );

@@ -10,9 +10,11 @@ const dictionary: Dictionary = {
     menuCloseAria: "Close menu",
   },
   work: { title: "Work", all: "All" },
+  partners: { title: "Partners & Clients" },
   projectNav: {
-    previous: "Previous project",
-    next: "Next project",
+    back: "Back",
+    previous: "Previous",
+    next: "Next",
     related: "Related projects",
   },
   projectInfo: { toggle: "Project info" },

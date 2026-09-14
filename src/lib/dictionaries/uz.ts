@@ -10,9 +10,11 @@ const dictionary: Dictionary = {
     menuCloseAria: "Menyuni yopish",
   },
   work: { title: "Ishlar", all: "Barchasi" },
+  partners: { title: "Hamkorlar va mijozlar" },
   projectNav: {
-    previous: "Oldingi loyiha",
-    next: "Keyingi loyiha",
+    back: "Orqaga",
+    previous: "Oldingi",
+    next: "Keyingi",
     related: "O'xshash loyihalar",
   },
   projectInfo: { toggle: "Loyiha haqida" },

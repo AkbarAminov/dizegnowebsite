@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { Globe } from "lucide-react";
 import { NAV_LINKS } from "@/lib/site";
-import { localeHref, type Dictionary, type Locale } from "@/lib/i18n";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { LOCALES, LOCALE_LABELS, localeHref, stripLocale, type Dictionary, type Locale } from "@/lib/i18n";
 import { useLockBodyScroll } from "./useLockBodyScroll";
 
 const listVariants = {
@@ -29,6 +30,10 @@ export function MobileMenu({
   dict: Dictionary;
 }) {
   useLockBodyScroll(open);
+  const { path } = stripLocale(usePathname());
+  // The current language always leads; English (when not itself the
+  // current one) keeps the middle spot, so RU/UZ trade the outer slots.
+  const orderedLocales = [lang, ...LOCALES.filter((l) => l !== lang).sort((a, b) => (a === "en" ? -1 : b === "en" ? 1 : 0))];
 
   return (
     <AnimatePresence>
@@ -58,8 +63,27 @@ export function MobileMenu({
                 </Link>
               </motion.li>
             ))}
-            <motion.li variants={itemVariants} className="pt-4">
-              <LanguageSwitcher className="!text-base" />
+            <motion.li
+              variants={itemVariants}
+              className="mt-4 flex items-center gap-3 text-2xl font-medium uppercase tracking-tight"
+            >
+              <Globe size={22} strokeWidth={1.75} aria-hidden />
+              {orderedLocales.map((locale, i) => (
+                <span key={locale} className="flex items-center gap-3">
+                  {i > 0 && <span className="text-white/20">|</span>}
+                  <Link
+                    href={localeHref(locale, path)}
+                    onClick={onClose}
+                    className={
+                      locale === lang
+                        ? "text-white"
+                        : "text-white/40 transition-colors duration-200 hover:text-white/70"
+                    }
+                  >
+                    {LOCALE_LABELS[locale]}
+                  </Link>
+                </span>
+              ))}
             </motion.li>
           </motion.ul>
         </motion.div>
