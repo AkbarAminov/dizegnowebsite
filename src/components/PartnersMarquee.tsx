@@ -43,12 +43,12 @@ export function PartnersMarquee({ title }: { title: string }) {
       <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
         <div className="animate-marquee flex w-max items-center gap-16" style={{ animationDuration: `${durationSeconds}s` }}>
           {track.map((file, i) => (
-            <div key={`${file}-${i}`} className="relative h-10 w-28 shrink-0 md:h-12 md:w-36" aria-hidden={i >= logos.length}>
+            <div key={`${file}-${i}`} className="relative h-14 w-36 shrink-0 md:h-16 md:w-44" aria-hidden={i >= logos.length}>
               <Image
                 src={`/partners/${file}`}
                 alt={i < logos.length ? labelFromFilename(file) : ""}
                 fill
-                sizes="160px"
+                sizes="200px"
                 className="object-contain opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
                 unoptimized={file.toLowerCase().endsWith(".svg")}
               />

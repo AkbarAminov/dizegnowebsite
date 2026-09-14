@@ -41,7 +41,3 @@ body {
 .animate-marquee {
   animation: marquee linear infinite;
 }
-
-.animate-marquee:hover {
-  animation-play-state: paused;
-}
