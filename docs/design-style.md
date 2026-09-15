@@ -39,7 +39,7 @@ Use CSS transitions for hover/simple state; Framer Motion for reveal, route, and
 
 - **Signature easing: `[0.16, 1, 0.3, 1]`** (ease-out-expo). Use it for meaningful entrances/transitions.
 - Scroll reveal: wrap in `<RevealOnScroll>` — `opacity 0→1`, `y 24→0`, `0.6s`, `viewport once amount 0.2`. Stagger lists with `delay={Math.min(index * 0.06, 0.3)}`.
-- Route change: `PageTransition` (keyed by pathname, fade + rise, `0.45s`) — already in the site layout.
+- Route change: `PageTransition` (keyed by pathname, CSS `page-in` keyframes in `globals.css`: fade + rise, `0.45s`, none on first paint) — already in the site layout. Deliberately CSS with no exit animation: in the App Router the outgoing element already holds the new page, so an exit fade blanks it, and a JS-driven entrance can leave the page invisible while the main thread is busy.
 - Modal: overlay `opacity` `0.25s`; panel `scale 0.94→1` `0.3s` (`ContactPopup.tsx`).
 - Hover: `transition-* duration-200` for color/opacity; image zoom `duration-700 ease-out group-hover:scale-[1.03]`.
 - Marquee (`PartnersMarquee`): CSS `@keyframes marquee` translates `0 → -50%` over a track duplicated twice; loop is seamless because of the doubling.
