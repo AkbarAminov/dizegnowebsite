@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { LocaleTransition } from "@/components/LocaleTransition";
 import "./globals.css";
 
 // Root layout owns <html>/<body> only. The public site and /admin each add
@@ -21,9 +20,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full antialiased" data-scroll-behavior="smooth">
-      <body className="min-h-full">
-        <LocaleTransition>{children}</LocaleTransition>
-      </body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

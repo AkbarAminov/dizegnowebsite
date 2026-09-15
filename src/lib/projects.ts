@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 import type { Project } from "./types";
 import { DEFAULT_LOCALE, type Locale } from "./i18n";
+import { preventOrphans } from "./typography";
 
 const include = {
   images: { orderBy: { order: "asc" } },
@@ -61,18 +62,22 @@ function toProject(row: ProjectRow, locale: Locale): Project {
 
   return {
     slug: row.slug,
-    title: t?.title ?? "",
-    category: t?.category ?? null,
-    description: t?.description ?? "",
+    title: preventOrphans(t?.title ?? "", locale),
+    category: t?.category ? preventOrphans(t.category, locale) : null,
+    description: preventOrphans(t?.description ?? "", locale),
     // A YouTube embed cannot be a card thumbnail; prefer the first real image.
     thumbnail: (gallery.find((image) => image.type !== "youtube") ?? gallery[0])?.src ?? null,
     gallery,
     credits: [
-      ...(row.year ? [{ label: labels.year, value: String(row.year) }] : []),
-      ...(t?.production ? [{ label: labels.production, value: t.production }] : []),
+      ...(row.year ? [{ label: preventOrphans(labels.year, locale), value: String(row.year) }] : []),
+      ...(t?.production
+        ? [{ label: preventOrphans(labels.production, locale), value: preventOrphans(t.production, locale) }]
+        : []),
       ...row.fields.flatMap((field) => {
         const translation = pickFieldTranslation(field.translations, locale);
-        return translation ? [{ label: translation.label, value: translation.value }] : [];
+        return translation
+          ? [{ label: preventOrphans(translation.label, locale), value: preventOrphans(translation.value, locale) }]
+          : [];
       }),
     ],
   };

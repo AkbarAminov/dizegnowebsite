@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import type { Dictionary, Locale } from "./i18n";
+import { preventOrphansDeep } from "./typography";
 
 const loaders: Record<Locale, () => Promise<Dictionary>> = {
   ru: () => import("./dictionaries/ru").then((m) => m.default),
@@ -8,4 +9,4 @@ const loaders: Record<Locale, () => Promise<Dictionary>> = {
   uz: () => import("./dictionaries/uz").then((m) => m.default),
 };
 
-export const getDictionary = cache((locale: Locale) => loaders[locale]());
+export const getDictionary = cache(async (locale: Locale) => preventOrphansDeep(await loaders[locale](), locale));

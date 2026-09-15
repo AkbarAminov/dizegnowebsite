@@ -8,8 +8,12 @@ export const NAV_LINKS = [
 
 export const CONTACT = {
   email: "dizegno.design@gmail.com",
-  phone: "+998 93 393 82 74",
-  phoneHref: "tel:+998933938274",
-  telegram: "@Here_for",
-  telegramHref: "https://t.me/Here_for",
+  phones: [
+    { number: "+998 (93) 393 82 74", href: "tel:+998933938274" },
+    { number: "+998 (95) 103 40 33", href: "tel:+998951034033" },
+  ],
+  telegram: "@dizegnoagency",
+  telegramHref: "https://t.me/dizegnoagency",
+  instagram: "@dizegnoagency",
+  instagramHref: "https://instagram.com/dizegnoagency",
 } as const;

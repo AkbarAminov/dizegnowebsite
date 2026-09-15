@@ -38,8 +38,8 @@ export default async function AnswersPage({ params }: PageProps<"/[lang]/answers
                     className="border-b border-white/15 py-6 md:py-8"
                   >
                     <span className="text-sm opacity-40">{item.number}</span>
-                    <h3 className="mt-1 text-lg font-medium md:text-xl">{item.question}</h3>
-                    <p className="mt-3 max-w-md text-base opacity-70">{item.answer}</p>
+                    <h3 className="mt-[18px] max-w-xl text-lg font-medium md:text-xl">{item.question}</h3>
+                    <p className="mt-[26px] max-w-xl text-base opacity-70">{item.answer}</p>
                   </RevealOnScroll>
                 ))}
               </div>

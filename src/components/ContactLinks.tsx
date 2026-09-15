@@ -8,11 +8,21 @@ export function ContactLinks({ className = "" }: { className?: string }) {
       <a href={`mailto:${CONTACT.email}`} className={linkClass}>
         {CONTACT.email}
       </a>
-      <a href={CONTACT.phoneHref} className={linkClass}>
-        {CONTACT.phone}
-      </a>
+      <div className="flex flex-wrap items-center gap-2">
+        {CONTACT.phones.map((phone, i) => (
+          <span key={phone.href} className="flex items-center gap-2">
+            {i > 0 && <span className="opacity-40">|</span>}
+            <a href={phone.href} className={linkClass}>
+              {phone.number}
+            </a>
+          </span>
+        ))}
+      </div>
       <a href={CONTACT.telegramHref} target="_blank" rel="noopener noreferrer" className={linkClass}>
         Telegram — {CONTACT.telegram}
+      </a>
+      <a href={CONTACT.instagramHref} target="_blank" rel="noopener noreferrer" className={linkClass}>
+        Instagram — {CONTACT.instagram}
       </a>
     </div>
   );
