@@ -14,9 +14,24 @@ export function EndCTA({ dict }: { dict: Dictionary["endCta"] }) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mx-auto mt-2 block max-w-3xl cursor-pointer uppercase leading-[1.2] text-accent transition-opacity duration-200 hover:opacity-70"
+          className="mx-auto mt-2 flex max-w-3xl cursor-pointer items-center justify-center gap-1 uppercase leading-[1.2] text-accent transition-opacity duration-200 hover:opacity-70"
         >
           {dict.cta}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="square"
+            strokeLinejoin="miter"
+            className="h-[0.75em] w-[0.75em] shrink-0 pt-[0.1em]"
+            aria-hidden
+          >
+            <path d="M7 7h10v10" />
+            <path d="M8 17 15 9" />
+          </svg>
         </button>
       </RevealOnScroll>
     </div>

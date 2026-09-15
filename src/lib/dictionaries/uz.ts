@@ -22,8 +22,7 @@ const dictionary: Dictionary = {
   answers: { title: "Savollar" },
   contact: {
     title: "Aloqa",
-    intro:
-      "Brendingiz, mahsulotingiz yoki g'oyangiz haqida yozing — bir kun ichida javob beramiz va agar mos kelsa, taklif yuboramiz.",
+    intro: "Vazifangiz haqida yozing — bir kun ichida taklif bilan qaytamiz.",
     addressLine2: "Toshkent, O'zbekiston",
     formName: "Ism",
     formEmail: "Email",
@@ -35,13 +34,13 @@ const dictionary: Dictionary = {
   },
   contactPopup: {
     title: "Bog'lanish",
-    intro: "Loyiha g'oyangiz bormi? Qisqa xabar yuboring — biz siz bilan bog'lanamiz.",
+    intro: "Vazifangiz haqida yozing — bir kun ichida taklif bilan qaytamiz.",
     closeAria: "Yopish",
     openAria: "Aloqa formasini ochish",
   },
   endCta: {
-    line1: "Oxirigacha yetib keldingiz —",
-    cta: "Loyihangiz haqida gaplashaylik",
+    line1: "Murosasiz brending",
+    cta: "Loyihani muhokama qilish",
   },
 };
 

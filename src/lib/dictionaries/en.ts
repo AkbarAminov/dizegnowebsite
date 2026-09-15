@@ -22,8 +22,7 @@ const dictionary: Dictionary = {
   answers: { title: "Answers" },
   contact: {
     title: "Contact",
-    intro:
-      "Tell us about your brand, product, or idea — we'll reply within a day with next steps and, if it's a fit, a proposal.",
+    intro: "Tell us about the task — and we'll come back with a proposal within a day.",
     addressLine2: "Tashkent, Uzbekistan",
     formName: "Name",
     formEmail: "Email",
@@ -35,13 +34,13 @@ const dictionary: Dictionary = {
   },
   contactPopup: {
     title: "Get in touch",
-    intro: "Have a project in mind? Send a short note and we'll get back to you.",
+    intro: "Tell us about the task — and we'll come back with a proposal within a day.",
     closeAria: "Close",
     openAria: "Open contact form",
   },
   endCta: {
-    line1: "You made it to the end —",
-    cta: "Let's talk about your project instead",
+    line1: "Branding without compromise",
+    cta: "Discuss the project",
   },
 };
 
