@@ -5,9 +5,12 @@ import { ProjectInfoPanel } from "@/components/ProjectInfoPanel";
 import { ProjectGallery } from "@/components/ProjectGallery";
 import { WorkGrid } from "@/components/WorkGrid";
 import { EndCTA } from "@/components/EndCTA";
+import { JsonLd } from "@/components/JsonLd";
 import { getPublishedProjects } from "@/lib/projects";
 import { getDictionary } from "@/lib/getDictionary";
 import { DEFAULT_LOCALE, isLocale, localeHref } from "@/lib/i18n";
+import { absoluteUrl, pageMetadata, plainText, truncate } from "@/lib/seo";
+import { breadcrumbJsonLd, projectJsonLd } from "@/lib/structuredData";
 
 type Props = PageProps<"/[lang]/work/[slug]">;
 
@@ -19,8 +22,20 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang: rawLang, slug } = await params;
   const lang = isLocale(rawLang) ? rawLang : DEFAULT_LOCALE;
-  const project = (await getPublishedProjects(lang)).find((p) => p.slug === slug);
-  return { title: project?.title ?? "Work" };
+  const [projects, dict] = await Promise.all([getPublishedProjects(lang), getDictionary(lang)]);
+  const project = projects.find((p) => p.slug === slug);
+  if (!project) return { title: dict.notFound.title, robots: { index: false } };
+
+  const title = plainText(project.title);
+  return pageMetadata({
+    lang,
+    path: `/work/${project.slug}/`,
+    title,
+    description: project.description
+      ? truncate(project.description)
+      : plainText(dict.seo.projectFallback).replace("{title}", title),
+    image: project.thumbnail ? { url: absoluteUrl(project.thumbnail), alt: title } : undefined,
+  });
 }
 
 export default async function ProjectPage({ params }: Props) {
@@ -44,6 +59,7 @@ export default async function ProjectPage({ params }: Props) {
             project={project}
             lang={lang}
             toggleLabel={dict.projectInfo.toggle}
+            aboutLabel={dict.projectInfo.aboutLabel}
             backLabel={dict.projectNav.back}
           />
           <ProjectGallery images={project.gallery} alt={project.title} dict={dict.gallery} />
@@ -80,6 +96,17 @@ export default async function ProjectPage({ params }: Props) {
         )}
       </section>
       <EndCTA dict={dict.endCta} />
+
+      <JsonLd data={projectJsonLd(project, lang)} />
+      <JsonLd
+        data={breadcrumbJsonLd(
+          [
+            { name: dict.nav.work, path: "/work/" },
+            { name: project.title, path: `/work/${project.slug}/` },
+          ],
+          lang
+        )}
+      />
     </>
   );
 }

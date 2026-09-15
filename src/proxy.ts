@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE, isValidSessionToken } from "@/lib/auth";
 import { DEFAULT_LOCALE, LOCALES } from "@/lib/i18n";
 
+const METADATA_ROUTE = /^\/(icon|apple-icon|opengraph-image|twitter-image)(\d*|\/.*)?$/;
+
 // Guards the admin UI and its API: unauthenticated pages redirect to the
 // login form, unauthenticated API calls get a 401. Every other path is a
 // public-site route; Russian is the unprefixed default, so anything that
@@ -24,9 +26,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
-  // Other API routes (e.g. the public contact form) aren't part of the
-  // localized page tree and never get a locale prefix.
-  if (pathname.startsWith("/api/")) return NextResponse.next();
+  // Other API routes (e.g. the public contact form) and the extensionless
+  // metadata routes Next generates from apple-icon.tsx & co. aren't part of
+  // the localized page tree and never get a locale prefix.
+  if (pathname.startsWith("/api/") || METADATA_ROUTE.test(pathname)) return NextResponse.next();
 
   const hasLocalePrefix = LOCALES.some(
     (locale) => locale !== DEFAULT_LOCALE && (pathname === `/${locale}` || pathname.startsWith(`/${locale}/`))

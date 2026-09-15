@@ -5,12 +5,13 @@ import { EndCTA } from "@/components/EndCTA";
 import { getPublishedProjects } from "@/lib/projects";
 import { getDictionary } from "@/lib/getDictionary";
 import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/work">): Promise<Metadata> {
   const { lang: rawLang } = await params;
   const lang = isLocale(rawLang) ? rawLang : DEFAULT_LOCALE;
   const dict = await getDictionary(lang);
-  return { title: dict.work.title };
+  return pageMetadata({ lang, path: "/work/", title: dict.seo.work.title, description: dict.seo.work.description });
 }
 
 export default async function WorkPage({ params }: PageProps<"/[lang]/work">) {
@@ -21,8 +22,9 @@ export default async function WorkPage({ params }: PageProps<"/[lang]/work">) {
   return (
     <>
       <section className="min-h-dvh pt-28 pb-20 md:pt-36">
-        <RevealOnScroll className="mb-10 px-5 md:px-8">
+        <RevealOnScroll className="mb-10 grid gap-6 px-5 md:mb-14 md:grid-cols-2 md:items-end md:px-8">
           <h1 className="text-4xl font-medium uppercase tracking-tight md:text-6xl">{dict.work.title}</h1>
+          <p className="max-w-md text-base opacity-70 md:justify-self-end">{dict.work.intro}</p>
         </RevealOnScroll>
 
         <WorkFilter projects={projects} lang={lang} allLabel={dict.work.all} />

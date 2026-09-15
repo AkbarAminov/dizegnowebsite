@@ -24,7 +24,8 @@ Comments explain **why**, never what. Match the existing density: every non-obvi
 - **Never hand-write route param types.** Use the generated globals (no import): `PageProps<"/[lang]/work/[slug]">`, `LayoutProps<"/[lang]">`, `RouteContext<"/api/admin/projects/[id]">`. They're produced by `next dev`/`next typegen`.
 - **Middleware is `src/proxy.ts`** — exports `proxy(request)` and `config`, not `middleware`.
 - **Server Components by default.** Add `"use client"` only for interactivity (state, effects, event handlers, Framer Motion).
-- Rendering intent is explicit: `export const revalidate = 3600` (public), `force-dynamic` (admin). Don't remove these.
+- Rendering intent is explicit: `export const revalidate = 3600` (public, in `src/app/[lang]/layout.tsx`), `force-dynamic` (admin). Don't remove these.
+- **Public pages export `generateMetadata` built with `pageMetadata()`** (`src/lib/seo.ts`) — never hand-write canonical/hreflang/OG tags. A new page also needs a `dict.seo.<page>` entry and a row in `src/app/sitemap.ts`.
 - Server Actions: `"use server"` + `useActionState` (see `src/app/admin/actions.ts`, `src/app/admin/login/page.tsx`).
 
 ## API routes (`src/app/api/**`)
@@ -52,7 +53,7 @@ export async function PATCH(request: Request, { params }: RouteContext<"/api/adm
 
 ## i18n (`src/lib/i18n.ts`)
 - Locales `["ru", "en", "uz"]`; `ru` is the unprefixed default (`/work/`), others are prefixed (`/en/work/`).
-- **Static UI copy** → typed `Dictionary` in `src/lib/dictionaries/<locale>.ts`, loaded via `getDictionary(locale)`. Add a key to the `Dictionary` type first — all three locales must implement it.
+- **Static UI copy** → typed `Dictionary` in `src/lib/dictionaries/<locale>.ts`, loaded via `getDictionary(locale)`. Add a key to the `Dictionary` type first — all three locales must implement it. Pass client components only the slice they need (`dict.nav`, `dict.contact`), not the whole dictionary — it is serialized into the page.
 - **DB content** → `ProjectTranslation`; read with `pickTranslation` (falls back to `en`, then any filled).
 - Build hrefs with `localeHref(lang, "/work/")`, never string-concat a locale prefix. Split with `stripLocale`.
 - All rendered content strings pass through `preventOrphans` (`src/lib/typography.ts`) — `toProject` and `getDictionary` already apply it; don't double-apply.

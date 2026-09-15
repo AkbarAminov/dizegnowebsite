@@ -8,7 +8,7 @@ import { localeHref, type Locale } from "@/lib/i18n";
 import { RevealOnScroll } from "./RevealOnScroll";
 
 const COLUMN_CLASSES = {
-  2: "grid-cols-1 gap-5 px-5 sm:grid-cols-2",
+  2: "grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:px-8",
   3: "grid-cols-1 gap-3 px-5 sm:grid-cols-2 sm:gap-4 md:px-8 lg:grid-cols-3 lg:gap-5",
 };
 

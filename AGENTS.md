@@ -21,9 +21,10 @@ Details and canonical files are in the docs above.
 1. **Public site is static/ISR; every admin mutation calls `revalidatePublicSite()`** (`src/lib/projects.ts`), or the site goes stale.
 2. **Validate every external input with Zod** (`src/lib/validation.ts`); parse request bodies with `parseBody` (`src/lib/api.ts`).
 3. **Trailing slash on all internal URLs** (`trailingSlash: true`).
-4. **`params` are Promises; use the generated `PageProps`/`LayoutProps`/`RouteContext` types** — never hand-write route param types. Middleware lives in `src/proxy.ts`.
+4. **`params` are Promises; use the generated `PageProps`/`LayoutProps`/`RouteContext` types** — never hand-write route param types. Middleware lives in `src/proxy.ts`. Two root layouts: `src/app/[lang]/layout.tsx` (public, `<html lang>`) and `src/app/admin/layout.tsx`.
 5. **Tailwind only**, tokens in `src/app/globals.css` (`canvas`/`surface`/`panel`/`accent`); never pure black. Public site and admin are different design languages.
 6. **The public site consumes only `Project`** (`src/lib/types.ts`), built by `toProject`.
+8. **Every public page gets its metadata from `pageMetadata()`** (`src/lib/seo.ts`) and its copy from `dict` — a new page needs a `dict.seo` entry (RU/EN/UZ) and a `sitemap.ts` row.
 7. **Schema change** → edit `prisma/schema.prisma` → `make migrate name=<change>` → commit the migration.
 
 ## Verify (before calling anything done)

@@ -11,6 +11,7 @@ type MessageRow = {
   id: string;
   name: string;
   email: string;
+  phone: string | null;
   message: string;
   read: boolean;
   createdAt: string;
@@ -101,6 +102,7 @@ export function MessagesTable({ messages }: { messages: MessageRow[] }) {
                     >
                       {row.email}
                     </a>
+                    {row.phone && <p className="text-sm text-neutral-400">{row.phone}</p>}
                   </div>
 
                   <div className="flex shrink-0 items-center gap-1">

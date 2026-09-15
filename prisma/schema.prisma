@@ -87,6 +87,9 @@ model ContactMessage {
   id        String   @id @default(cuid())
   name      String
   email     String
+  // Optional phone number or Telegram handle — the channel most clients in
+  // the region actually answer on.
+  phone     String?
   message   String  @db.Text
   read      Boolean  @default(false)
   createdAt DateTime @default(now())

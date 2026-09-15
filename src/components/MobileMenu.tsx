@@ -22,12 +22,12 @@ export function MobileMenu({
   open,
   onClose,
   lang,
-  dict,
+  nav,
 }: {
   open: boolean;
   onClose: () => void;
   lang: Locale;
-  dict: Dictionary;
+  nav: Dictionary["nav"];
 }) {
   useLockBodyScroll(open);
   const { path } = stripLocale(usePathname());
@@ -59,7 +59,7 @@ export function MobileMenu({
                   onClick={onClose}
                   className="text-[12vw] leading-[1.1] font-medium uppercase tracking-tight"
                 >
-                  {dict.nav[link.key]}
+                  {nav[link.key]}
                 </Link>
               </motion.li>
             ))}

@@ -9,14 +9,14 @@ import { MobileMenu } from "./MobileMenu";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Logo } from "./Logo";
 
-export function Header({ lang, dict }: { lang: Locale; dict: Dictionary }) {
+export function Header({ lang, nav }: { lang: Locale; nav: Dictionary["nav"] }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const { path: activePath } = stripLocale(pathname);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between bg-canvas px-5 text-white md:h-20 md:px-8">
-      <Link href={localeHref(lang, "/")} className="group shrink-0" aria-label={dict.nav.homeAria}>
+      <Link href={localeHref(lang, "/")} className="group shrink-0" aria-label={nav.homeAria}>
         <Logo className="h-7 w-auto" />
       </Link>
 
@@ -29,7 +29,7 @@ export function Header({ lang, dict }: { lang: Locale; dict: Dictionary }) {
               activePath.startsWith(link.href) ? "opacity-100" : "opacity-70"
             }`}
           >
-            {dict.nav[link.key]}
+            {nav[link.key]}
           </Link>
         ))}
         <LanguageSwitcher className="ml-2" />
@@ -37,7 +37,7 @@ export function Header({ lang, dict }: { lang: Locale; dict: Dictionary }) {
 
       <button
         type="button"
-        aria-label={menuOpen ? dict.nav.menuCloseAria : dict.nav.menuOpenAria}
+        aria-label={menuOpen ? nav.menuCloseAria : nav.menuOpenAria}
         aria-expanded={menuOpen}
         onClick={() => setMenuOpen((open) => !open)}
         className="relative z-50 flex h-6 w-7 flex-col justify-between md:hidden"
@@ -57,7 +57,7 @@ export function Header({ lang, dict }: { lang: Locale; dict: Dictionary }) {
         />
       </button>
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} lang={lang} dict={dict} />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} lang={lang} nav={nav} />
     </header>
   );
 }

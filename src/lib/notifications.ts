@@ -4,6 +4,12 @@ import type { ContactInput } from "./validation";
 // Each channel is optional: without its env vars it is skipped, and a
 // delivery failure is logged rather than failing the contact-form request.
 
+function contactLines(input: ContactInput) {
+  return [`Name: ${input.name}`, `Email: ${input.email}`, input.phone && `Phone / Telegram: ${input.phone}`]
+    .filter(Boolean)
+    .join("\n");
+}
+
 export async function notifyContact(input: ContactInput) {
   await Promise.all([sendTelegram(input), sendEmail(input)]);
 }
@@ -12,7 +18,7 @@ async function sendTelegram(input: ContactInput) {
   const { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID } = process.env;
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
 
-  const text = `New contact form submission\nName: ${input.name}\nEmail: ${input.email}\n\n${input.message}`;
+  const text = `New contact form submission\n${contactLines(input)}\n\n${input.message}`;
   try {
     const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: "POST",
@@ -42,7 +48,7 @@ async function sendEmail(input: ContactInput) {
       to: EMAIL_TO || EMAIL_USER,
       replyTo: input.email,
       subject: `New contact form message from ${input.name}`,
-      text: `Name: ${input.name}\nEmail: ${input.email}\n\n${input.message}`,
+      text: `${contactLines(input)}\n\n${input.message}`,
     });
   } catch (error) {
     console.error("Email notification failed:", error);

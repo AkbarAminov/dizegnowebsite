@@ -22,7 +22,7 @@ export function useContactPopup() {
   return context;
 }
 
-export function ContactPopup({ dict }: { dict: Dictionary }) {
+export function ContactPopup({ popup, form }: { popup: Dictionary["contactPopup"]; form: Dictionary["contact"] }) {
   const { open, setOpen } = useContactPopup();
   useLockBodyScroll(open);
 
@@ -40,7 +40,7 @@ export function ContactPopup({ dict }: { dict: Dictionary }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={dict.contactPopup.openAria}
+        aria-label={popup.openAria}
         className="fixed right-5 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl leading-none text-black shadow-[0_4px_24px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-105 md:right-8 md:bottom-8"
       >
         +
@@ -70,20 +70,20 @@ export function ContactPopup({ dict }: { dict: Dictionary }) {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label={dict.contactPopup.closeAria}
+                aria-label={popup.closeAria}
                 className="absolute top-4 right-4 text-2xl leading-none transition-opacity duration-200 hover:opacity-60"
               >
                 &times;
               </button>
 
               <h2 id="contact-popup-title" className="text-2xl font-medium uppercase tracking-tight md:text-3xl">
-                {dict.contactPopup.title}
+                {popup.title}
               </h2>
-              <p className="mt-3 max-w-sm text-sm opacity-70">{dict.contactPopup.intro}</p>
+              <p className="mt-3 max-w-sm text-sm opacity-70">{popup.intro}</p>
               <ContactLinks className="mt-4 gap-1" />
 
               <div className="mt-8">
-                <ContactForm dict={dict.contact} />
+                <ContactForm dict={form} />
               </div>
             </motion.div>
           </motion.div>

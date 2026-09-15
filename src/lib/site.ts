@@ -2,6 +2,7 @@
 // current locale; only the (unprefixed, ru-default) href lives here.
 export const NAV_LINKS = [
   { href: "/work/", key: "work" },
+  { href: "/services/", key: "services" },
   { href: "/answers/", key: "answers" },
   { href: "/contact/", key: "contact" },
 ] as const;
@@ -16,4 +17,15 @@ export const CONTACT = {
   telegramHref: "https://t.me/dizegnoagency",
   instagram: "@dizegnoagency",
   instagramHref: "https://instagram.com/dizegnoagency",
+} as const;
+
+// Facts about the company that never change per locale — used by the
+// structured data (schema.org) and the footer.
+export const SITE = {
+  legalName: "Dizegno Branding Agency",
+  founder: "Akbar Aminov",
+  founderRole: "Founder & Creative Director",
+  city: "Tashkent",
+  countryCode: "UZ",
+  areaServed: ["Uzbekistan", "Kazakhstan", "Russia", "CIS"],
 } as const;

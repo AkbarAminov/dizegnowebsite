@@ -26,7 +26,10 @@ Defined in `src/app/globals.css` `@theme`; use as Tailwind utilities (`bg-canvas
 
 ## Spacing & layout
 - **Horizontal gutter rhythm: `px-5 md:px-8`** on full-width sections. Reuse it; don't pick arbitrary paddings.
-- Fixed header `h-16 md:h-20`; pages offset the top: standard `pt-16 md:pt-20`, home hero `pt-24 md:pt-28`.
+- Fixed header `h-16 md:h-20`; pages offset the top: standard `pt-28 md:pt-36` for a page with an H1, home hero `pt-28 md:pt-40`, project page `pt-16 md:pt-20`.
+- Home-page sections share `SectionHeader` (title left, intro right) and are separated by `border-t border-white/10` with `py-16 md:py-24`. Numbered rows/steps use `String(i + 1).padStart(2, "0")` in `opacity-40` (or `text-accent` for steps).
+- CTAs: `primaryCtaClass` / `secondaryCtaClass` from `src/components/buttons.ts` (accent border, fill on hover; white/30 border). `ContactTrigger` opens the contact modal from server components.
+- The footer (`Footer.tsx`) closes every public page: wordmark + tagline, nav, contacts, social, language links, copyright line.
 - Project grid: `WorkGrid` with `columns={2}` (default) or `3`; cards are `aspect-[4/3]`, image `object-cover`. Reuse `WorkGrid` for any card grid (home, work, related).
 - Widths: forms `max-w-xl`, modal `max-w-md`, intro copy `max-w-sm`.
 - Mobile-first; add `sm:`/`md:`/`lg:` up. Check the 3 breakpoints used in `COLUMN_CLASSES` before adding new ones.

@@ -2,9 +2,16 @@ import { z } from "zod";
 import { DEFAULT_LOCALE } from "./i18n";
 
 export const contactSchema = z.object({
-  name: z.string().trim().min(2, "Name must be at least 2 characters"),
-  email: z.email("Enter a valid email address"),
-  message: z.string().trim().min(10, "Message must be at least 10 characters"),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(120),
+  email: z.email("Enter a valid email address").max(200),
+  // Phone number or messenger handle; optional, so an empty field becomes null.
+  phone: z
+    .string()
+    .trim()
+    .max(80, "Keep the phone or handle under 80 characters")
+    .optional()
+    .transform((value) => value || null),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(5000),
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
