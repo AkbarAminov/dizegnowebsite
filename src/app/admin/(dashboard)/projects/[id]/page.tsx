@@ -34,9 +34,16 @@ export default async function EditProjectPage({ params }: PageProps<"/admin/proj
         return [locale, { title: t?.title ?? "", category: t?.category ?? "", description: t?.description ?? "", production: t?.production ?? "" }];
       })
     ) as ProjectFormValues["translations"],
-    fields: project.fields.map((field) => ({
-      translations: field.translations as ProjectFormValues["fields"][number]["translations"],
-    })),
+    // Rows migrated from the pre-i18n schema only carry "en"; the form
+    // expects every locale, so fill the gaps with empty label/value pairs.
+    fields: project.fields.map((field) => {
+      const stored = field.translations as Partial<ProjectFormValues["fields"][number]["translations"]>;
+      return {
+        translations: Object.fromEntries(
+          LOCALES.map((locale) => [locale, { label: stored[locale]?.label ?? "", value: stored[locale]?.value ?? "" }])
+        ) as ProjectFormValues["fields"][number]["translations"],
+      };
+    }),
   };
 
   return (
