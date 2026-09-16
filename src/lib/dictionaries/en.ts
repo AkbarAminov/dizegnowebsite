@@ -49,7 +49,7 @@ const dictionary: Dictionary = {
       {
         title: "Identity and visual system",
         summary:
-          "The studio's core format. We design the visual system — mark, colour, typography, graphic language and the rules for applying them. The system is built to stay coherent once other people start working with it: your in-house marketing, the printer, signage contractors, the digital team.",
+          "The agency's core format. We design the visual system — mark, colour, typography, graphic language and the rules for applying them. The system is built to stay coherent once other people start working with it: your in-house marketing, the printer, signage contractors, the digital team.",
         includes: [
           "Mark and logo: variants, clear space, scaling rules",
           "Colour system with technical values for print and screen",
@@ -64,7 +64,7 @@ const dictionary: Dictionary = {
       {
         title: "Brand strategy and positioning",
         summary:
-          "For when it's unclear what sets the brand apart and what to say to the audience. We research the category, the competitive field and current perception, formulate the brand platform — and only then move to the visual side. This is what turns design decisions from matters of taste into arguable ones.",
+          "For when it's unclear what sets the brand apart and what to say to the audience. We research the category, the competitive field and current perception, formulate the brand platform — and only then move to the visual side. This is what turns design decisions from matters of taste into decisions you can defend.",
         includes: [
           "Audit of the current brand and the competitive field",
           "Interviews with key people in the company",
@@ -142,11 +142,11 @@ const dictionary: Dictionary = {
       steps: [
         {
           title: "Brief and project scope",
-          text: "We unpack the task, audience, and success criteria. Scope, timeline, and price are fixed before we start.",
+          text: "We unpack the task, the audience and the criteria for the result. Scope, timeline and price are fixed before we start.",
         },
         {
           title: "Research",
-          text: "We study the market, competitors, and how the brand is currently perceived. We find what to build the difference on.",
+          text: "We study the market, the competitors and how the brand is currently perceived, and find what the difference can be built on.",
         },
         {
           title: "Strategy and directions",
@@ -154,7 +154,7 @@ const dictionary: Dictionary = {
         },
         {
           title: "System design",
-          text: "Mark, typography, color, and usage rules. Work happens in rounds — the number is set upfront.",
+          text: "Mark, typography, colour and usage rules. Work happens in rounds — the number is agreed upfront.",
         },
         {
           title: "Production and documentation",

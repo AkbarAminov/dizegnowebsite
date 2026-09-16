@@ -64,7 +64,7 @@ const dictionary: Dictionary = {
       {
         title: "Brend strategiyasi va pozitsiyalash",
         summary:
-          "Brend nimasi bilan farq qilishi va auditoriyaga nima deyish kerakligi noaniq bo'lgan holatlar uchun. Kategoriya, raqobat maydoni va hozirgi qabul qilinishni o'rganamiz, brend platformasini shakllantiramiz — va faqat shundan keyin vizual qismga o'tamiz. Aynan shu dizayn qarorlarini did masalasidan asoslangan qarorga aylantiradi.",
+          "Brend nimasi bilan farq qilishi va auditoriyaga nima deyish kerakligi noaniq bo'lgan holatlar uchun. Kategoriya, raqobat maydoni va brendning hozirgi qabul qilinishini o'rganamiz, brend platformasini shakllantiramiz — va faqat shundan keyin vizual qismga o'tamiz. Aynan shu narsa dizayn qarorlarini did masalasidan asoslab beriladigan qarorlarga aylantiradi.",
         includes: [
           "Joriy brend va raqobat maydoni auditi",
           "Kompaniyaning asosiy xodimlari bilan intervyu",
@@ -82,14 +82,14 @@ const dictionary: Dictionary = {
           "Yangi brend yoki mahsulot uchun nom, deskriptor va slogan. Nom real hayotda qanday ishlashini tekshiramiz: uch tilda qanday jaranglaydi va o'qiladi, domen va ijtimoiy tarmoqlarda ishlaydimi, peshlavhaga sig'adimi, ro'yxatdan o'tgan belgilar bilan to'qnashmaydimi.",
         includes: [
           "Nom mezonlari va ma'no hududi",
-          "Har bir yo'nalish asoslangan long-list",
+          "Har bir yo'nalish asoslab berilgan long-list",
           "Tavsiya bilan short-list",
           "Rus, o'zbek va ingliz tillarida jaranglash tekshiruvi",
           "Domen va akkauntlar bandligini tekshirish",
           "Deskriptor va slogan",
         ],
         result:
-          "Tovar belgisini ro'yxatdan o'tkazishga olib borish mumkin bo'lgan nom va direktorlar kengashiga olib borish mumkin bo'lgan asos.",
+          "Tovar belgisini ro'yxatdan o'tkazish uchun tayyor nom va uni direktorlar kengashida himoya qilish uchun tayyor asos.",
       },
       {
         title: "Qadoqlash",
@@ -103,7 +103,7 @@ const dictionary: Dictionary = {
           "Birinchi tirajgacha bosmaxonani kuzatib borish",
         ],
         result:
-          "Bosmaxona tuzatishlarsiz qabul qiladigan maketlar va liniyaning keyingi mahsulotlari yangi loyihasiz yig'iladigan tizim.",
+          "Bosmaxona tuzatishlarsiz qabul qiladigan maketlar va liniyaning keyingi mahsulotlarini yangi loyihasiz yig'ish imkonini beradigan tizim.",
       },
       {
         title: "Rebrending",
@@ -117,7 +117,7 @@ const dictionary: Dictionary = {
           "Ichki jamoa va pudratchilar uchun gaydlayn",
         ],
         result:
-          "Yangilangan brend va peshlavhalar, hujjatlar va digital yangi tizimga kompaniya ikki xil ko'rinadigan davrsiz o'tadigan reja.",
+          "Yangilangan brend va o'tish rejasi: peshlavhalar, hujjatlar va digital yangi tizimga kompaniya bir vaqtning o'zida ikki xil ko'rinadigan davrsiz o'tadi.",
       },
       {
         title: "Tashuvchilar va kommunikatsiya",
@@ -131,7 +131,7 @@ const dictionary: Dictionary = {
           "Merch va suvenir mahsulotlari",
         ],
         result:
-          "Bitta kompaniya ichidagi o'nta turli pudratchi kabi emas, bitta brend kabi ko'rinadigan tashuvchilar.",
+          "Bitta kompaniya ichidagi o'nta turli pudratchidek emas, yaxlit bitta brenddek ko'rinadigan tashuvchilar.",
       },
     ],
     process: {
@@ -154,7 +154,7 @@ const dictionary: Dictionary = {
         },
         {
           title: "Tizimni ishlab chiqish",
-          text: "Belgi, tipografika, rang va qo'llash qoidalari. Bosqichlar soni oldindan ma'lum.",
+          text: "Belgi, tipografika, rang va qo'llash qoidalari. Raundlar bo'yicha ishlaymiz, ularning soni oldindan kelishiladi.",
         },
         {
           title: "Prodakshn va hujjatlashtirish",
@@ -162,7 +162,7 @@ const dictionary: Dictionary = {
         },
         {
           title: "Ishga tushirish va qo'llab-quvvatlash",
-          text: "Jamoaga tizimni ishga tushirilgandan keyin qo'llashda yordam beramiz. Brendlar joriy etishda buziladi, dizaynda emas.",
+          text: "Ishga tushgandan keyin jamoaga tizimni qo'llashda yordam beramiz. Brendlar dizaynda emas, joriy etishda buziladi.",
         },
       ],
     },
@@ -204,7 +204,7 @@ const dictionary: Dictionary = {
     privacyNote: "Formadagi ma'lumotlardan faqat so'rovingizga javob berish uchun foydalanamiz.",
   },
   contactPopup: {
-    title: "Vazifa haqida so'zlab bering",
+    title: "Vazifangiz haqida aytib bering",
     intro: "Kompaniya va vazifa haqida bir necha satr — ish kuni davomida javob beramiz va suhbat uchun vaqt taklif qilamiz.",
     closeAria: "Yopish",
     openAria: "Aloqa formasini ochish",
