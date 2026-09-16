@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { ProcessSection } from "@/components/ProcessSection";
+import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { EndCTA } from "@/components/EndCTA";
 import { JsonLd } from "@/components/JsonLd";
 import { getDictionary } from "@/lib/getDictionary";
@@ -28,9 +30,8 @@ export default async function ServicesPage({ params }: PageProps<"/[lang]/servic
   return (
     <>
       <section className="px-5 pt-28 pb-16 md:px-8 md:pt-36 md:pb-24">
-        <RevealOnScroll className="grid gap-6 md:grid-cols-2 md:items-end">
+        <RevealOnScroll>
           <h1 className="text-4xl font-medium uppercase tracking-tight md:text-6xl">{services.title}</h1>
-          <p className="max-w-md text-base opacity-70 md:justify-self-end">{services.intro}</p>
         </RevealOnScroll>
 
         <ol className="mt-14 border-t border-white/15 md:mt-20">
@@ -63,21 +64,10 @@ export default async function ServicesPage({ params }: PageProps<"/[lang]/servic
             </li>
           ))}
         </ol>
-
-        <div className="mt-16 md:mt-24">
-          <RevealOnScroll>
-            <h2 className="text-2xl font-medium uppercase tracking-tight md:text-4xl">{services.terms.title}</h2>
-          </RevealOnScroll>
-          <dl className="mt-8 grid gap-8 border-t border-white/15 pt-8 sm:grid-cols-2 lg:grid-cols-4">
-            {services.terms.items.map((item, i) => (
-              <RevealOnScroll key={item.title} delay={Math.min(i * 0.08, 0.3)}>
-                <dt className="text-lg font-medium uppercase tracking-tight">{item.title}</dt>
-                <dd className="mt-3 text-sm opacity-70">{item.text}</dd>
-              </RevealOnScroll>
-            ))}
-          </dl>
-        </div>
       </section>
+
+      <ProcessSection copy={services.process} />
+      <PartnersMarquee label={dict.partners.title} />
       <EndCTA dict={dict.endCta} />
 
       <JsonLd data={servicesJsonLd(dict, lang)} />

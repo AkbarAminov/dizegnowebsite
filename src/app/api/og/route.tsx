@@ -27,7 +27,7 @@ export function GET() {
             <path key={i} d={d} fill="#ffffff" />
           ))}
           {LOCKUP_PATHS.map((d, i) => (
-            <path key={i} d={d} fill="#f0e10c" />
+            <path key={i} d={d} fill="#f0e100" />
           ))}
         </svg>
         <div

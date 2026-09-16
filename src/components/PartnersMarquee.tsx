@@ -28,7 +28,7 @@ function labelFromFilename(file: string): string {
     .trim();
 }
 
-export function PartnersMarquee({ title }: { title: string }) {
+export function PartnersMarquee({ label }: { label: string }) {
   const logos = getPartnerLogos();
   if (logos.length === 0) return null;
 
@@ -38,12 +38,17 @@ export function PartnersMarquee({ title }: { title: string }) {
   const durationSeconds = Math.max(20, logos.length * 4);
 
   return (
-    <section className="border-t border-white/10 py-16 md:py-20">
-      <h2 className="mb-9 px-5 text-center text-sm uppercase tracking-tight opacity-50 md:px-8">{title}</h2>
+    // No visible heading by design; the label is kept for screen readers so
+    // the strip still announces what it is.
+    <section aria-label={label}>
       <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
         <div className="animate-marquee flex w-max items-center gap-16" style={{ animationDuration: `${durationSeconds}s` }}>
           {track.map((file, i) => (
-            <div key={`${file}-${i}`} className="relative h-14 w-36 shrink-0 md:h-16 md:w-44" aria-hidden={i >= logos.length}>
+            <div
+              key={`${file}-${i}`}
+              className="relative h-16 w-[166px] shrink-0 md:h-[74px] md:w-[202px]"
+              aria-hidden={i >= logos.length}
+            >
               <Image
                 src={`/partners/${file}`}
                 alt={i < logos.length ? labelFromFilename(file) : ""}

@@ -40,7 +40,6 @@ export function stripLocale(pathname: string): { locale: Locale; path: string } 
 // title/category/description/credits) is translated separately, via
 // ProjectTranslation — see src/lib/projects.ts.
 type SeoEntry = { title: string; description: string };
-type TitledItem = { title: string; text: string };
 
 export type Dictionary = {
   nav: {
@@ -62,28 +61,27 @@ export type Dictionary = {
     projectFallback: string;
   };
   home: {
-    hero: { eyebrow: string; title: string; lead: string; primaryCta: string; secondaryCta: string };
-    facts: TitledItem[];
-    selectedWork: { title: string; all: string };
-    services: { title: string; intro: string; all: string };
-    process: { title: string; intro: string; steps: TitledItem[] };
-    why: { title: string; intro: string; items: TitledItem[] };
-    industries: { title: string; items: string[] };
+    selectedWork: { all: string };
   };
   services: {
     title: string;
-    intro: string;
     includesLabel: string;
     resultLabel: string;
     items: { title: string; summary: string; includes: string[]; result: string }[];
-    terms: { title: string; items: TitledItem[] };
+    process: {
+      title: string;
+      subtitle: string;
+      prevAria: string;
+      nextAria: string;
+      steps: { title: string; text: string }[];
+    };
   };
-  work: { title: string; intro: string; all: string };
+  work: { title: string; all: string };
   partners: { title: string };
   projectNav: { back: string; previous: string; next: string; related: string };
   projectInfo: { toggle: string; aboutLabel: string };
   gallery: { view: string; openImage: string; openVideo: string };
-  answers: { title: string; intro: string };
+  answers: { title: string };
   contact: {
     title: string;
     lead: string;
@@ -91,8 +89,6 @@ export type Dictionary = {
     location: string;
     timezone: string;
     ndaNote: string;
-    nextTitle: string;
-    nextSteps: TitledItem[];
     formTitle: string;
     formName: string;
     formEmail: string;

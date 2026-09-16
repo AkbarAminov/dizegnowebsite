@@ -43,21 +43,6 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
             </div>
 
             <p className="mt-8 max-w-md text-sm opacity-60">{copy.ndaNote}</p>
-
-            <div className="mt-12 border-t border-white/15 pt-8">
-              <h2 className="text-xs uppercase tracking-tight opacity-50">{copy.nextTitle}</h2>
-              <ol className="mt-6 flex flex-col gap-6">
-                {copy.nextSteps.map((step, i) => (
-                  <li key={step.title} className="grid grid-cols-[2.5rem_minmax(0,1fr)]">
-                    <span className="text-sm text-accent">{String(i + 1).padStart(2, "0")}</span>
-                    <div>
-                      <h3 className="text-base font-medium uppercase tracking-tight">{step.title}</h3>
-                      <p className="mt-1 max-w-md text-sm opacity-70">{step.text}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
           </RevealOnScroll>
 
           <RevealOnScroll delay={0.1}>

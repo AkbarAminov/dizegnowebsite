@@ -17,7 +17,7 @@ export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
           <Link href={localeHref(lang, "/")} className="group inline-block" aria-label={dict.nav.homeAria}>
             <Logo className="h-7 w-auto" />
           </Link>
-          <p className="mt-6 max-w-xs text-sm opacity-60">{dict.footer.tagline}</p>
+          <p className="mt-6 max-w-sm text-sm opacity-60">{dict.footer.tagline}</p>
         </div>
 
         <FooterColumn title={dict.footer.navTitle}>

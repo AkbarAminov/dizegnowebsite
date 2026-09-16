@@ -39,80 +39,10 @@ const dictionary: Dictionary = {
     projectFallback: "{title} — Toshkentdagi Dizegno brending agentligi keysi.",
   },
   home: {
-    hero: {
-      eyebrow: "Brending agentligi · Toshkent",
-      title: "Uzoq o'yinga chiqqan kompaniyalar uchun brending",
-      lead:
-        "O'zbekiston va MDHdagi banklar, chakana savdo, servislar va startaplar uchun aydentika, firma uslubi, qadoqlash va brend strategiyasini ishlab chiqamiz. Har bir loyihani asoschi boshqaradi — brifdan yakuniy fayllargacha.",
-      primaryCta: "Loyihani muhokama qilish",
-      secondaryCta: "Ishlarni ko'rish",
-    },
-    facts: [
-      { title: "Bitta mas'ul kurator", text: "Har bir loyihani brifdan topshirishgacha asoschi va kreativ direktor olib boradi" },
-      { title: "Boshlashdan oldin narx", text: "Qat'iy narx va muddat — ochiq smetalar va soatbay to'lovsiz" },
-      { title: "NDA va huquqlar", text: "Tafsilotlarni muhokama qilishdan oldin NDA imzolaymiz, barcha huquqlar sizga o'tadi" },
-    ],
-    selectedWork: { title: "Tanlangan ishlar", all: "Barcha ishlar" },
-    services: {
-      title: "Xizmatlar",
-      intro:
-        "Belgini yangilashdan tortib qadoqlash va navigatsiya bilan to'liq brend tizimigacha. Hajmni preyskurantga emas, vazifaga qarab belgilaymiz.",
-      all: "Xizmatlar haqida batafsil",
-    },
-    process: {
-      title: "Ish qanday quriladi",
-      intro: "Birinchi kundan tushunarli to'rt bosqich: nima bo'layotgani va keyin nima bo'lishini doim bilasiz.",
-      steps: [
-        {
-          title: "Suhbat va brif",
-          text: "Vazifa, auditoriya va muvaffaqiyat mezonlarini tahlil qilamiz. Brif bo'lmasa — birga tuzamiz. So'ng hajm, muddat va narxni belgilaymiz.",
-        },
-        {
-          title: "Tadqiqot va yo'nalish",
-          text: "Bozor, raqobatchilar va kontekstni o'rganamiz, g'oyani topamiz va birinchi taqdimotda konsept-yo'nalishlarni ko'rsatamiz.",
-        },
-        {
-          title: "Raundlar bo'yicha dizayn",
-          text: "Tizimni ishlab chiqamiz, muhokama qilamiz, takomillashtiramiz — hammasi o'z o'rniga tushguncha. Raundlar soni oldindan ma'lum.",
-        },
-        {
-          title: "Prodakshn va topshirish",
-          text: "Yakuniy fayllar, gaydlaynlar va texnik hujjatlarni tayyorlaymiz, huquqlarni topshiramiz. Joriy etish bosqichida aloqada qolamiz.",
-        },
-      ],
-    },
-    why: {
-      title: "Nega Dizegno",
-      intro:
-        "Biz bitta dizayner amaliyotidan mijozlar qaytib keladigan agentlikka aylandik — rosterning kattaligi uchun emas, tizimlilik va sifat uchun.",
-      items: [
-        {
-          title: "Rasm emas, tizim",
-          text: "Logotip — ishning eng kichik qismi. Biz brendni yillar o'tib ham peshlavhada, ilovada va qadoqda yaxlit saqlaydigan qoidalarni loyihalaymiz.",
-        },
-        {
-          title: "Mas'uliyat tarqalib ketmaydi",
-          text: "Siz va natija o'rtasida akkaunt-menejer, strateg va dizaynerdan iborat zanjir yo'q. Loyihani Akbar Aminov shaxsan kuratorlik qiladi.",
-        },
-        {
-          title: "Talabchan sohalarda tajriba",
-          text: "Banking va fintech, chakana savdo, yetkazib berish, tibbiyot, avtomobillar, sport tadbirlari — aniqlik ko'rkamlikdan muhimroq bo'lgan joylar.",
-        },
-        {
-          title: "Ishlab chiqarishga tayyor",
-          text: "Rasmlar emas, bosmaxona, quruvchi va dasturchilar savolsiz qabul qiladigan fayllarni topshiramiz.",
-        },
-      ],
-    },
-    industries: {
-      title: "Sohalar",
-      items: ["Banklar va fintech", "Chakana savdo", "Yetkazib berish va servislar", "Tibbiyot", "Avtomobillar", "Sport va tadbirlar", "Startaplar"],
-    },
+    selectedWork: { all: "Barcha ishlar" },
   },
   services: {
     title: "Xizmatlar",
-    intro:
-      "Har qanday miqyosdagi loyihalarni olamiz — belgini yangilashdan tortib qadoqlash va navigatsiya bilan to'liq brend tizimigacha. Quyida har bir ish nimalardan iborat va yakunida nima olishingiz bayon etilgan.",
     includesLabel: "Nimalar kiradi",
     resultLabel: "Natija",
     items: [
@@ -195,32 +125,41 @@ const dictionary: Dictionary = {
         result: "O'nta pudratchi emas, bitta brend kabi ko'rinadigan tashuvchilar.",
       },
     ],
-    terms: {
-      title: "Hamkorlik shartlari",
-      items: [
+    process: {
+      title: "Ish qanday tashkil etiladi",
+      subtitle: "(bosqichma-bosqich)",
+      prevAria: "Oldingi bosqich",
+      nextAria: "Keyingi bosqich",
+      steps: [
         {
-          title: "Narx",
-          text: "Soatbay emas, loyiha bo'yicha hisoblaymiz. Narx hajmga bog'liq: tashuvchilar soni, raundlar va prodakshn chuqurligi. Boshlashdan oldin qat'iy summani olasiz.",
+          title: "Brif va loyiha chegaralari",
+          text: "Vazifa, auditoriya va natija mezonlarini aniqlaymiz. Hajm, muddat va narxni ishni boshlashdan oldin belgilaymiz.",
         },
         {
-          title: "Muddatlar",
-          text: "Belgini yangilash tez ketadi, qadoqlash va navigatsiya bilan to'liq tizim ko'proq vaqt talab qiladi. Aniq muddatni birinchi suhbatdan keyin narx bilan birga belgilaymiz.",
+          title: "Tadqiqot",
+          text: "Bozor, raqobatchilar va brendning hozirgi qabul qilinishini o'rganamiz. Nimaga tayanib ajralib turishni topamiz.",
         },
         {
-          title: "Huquqlar va maxfiylik",
-          text: "So'rov bo'yicha tafsilotlarni muhokama qilishdan oldin NDA imzolaymiz. To'lovdan keyin barcha huquqlar, manba fayllar va gaydlaynlar mijozga o'tadi.",
+          title: "Strategiya va yo'nalishlar",
+          text: "Pozitsiyalashni shakllantiramiz va kontsept-yo'nalishlarni taqdim etamiz. Bittasini tanlaymiz.",
         },
         {
-          title: "Format",
-          text: "Mustaqil jamoa sifatida ishlaymiz yoki marketingingiz va boshqa agentlik jarayoniga qo'shilamiz — vazifaning aniq bir qismi uchun.",
+          title: "Tizimni ishlab chiqish",
+          text: "Belgi, tipografika, rang va qo'llash qoidalari. Bosqichlar soni oldindan ma'lum.",
+        },
+        {
+          title: "Prodakshn va hujjatlashtirish",
+          text: "Gaydlayn, yakuniy fayllar, pudratchilar uchun texnik hujjatlar. Huquqlar to'liq sizga o'tadi.",
+        },
+        {
+          title: "Ishga tushirish va qo'llab-quvvatlash",
+          text: "Jamoaga tizimni ishga tushirilgandan keyin qo'llashda yordam beramiz. Brendlar joriy etishda buziladi, dizaynda emas.",
         },
       ],
     },
   },
   work: {
     title: "Ishlar",
-    intro:
-      "Banklar, chakana savdo, servislar va startaplar uchun aydentika, qadoqlash, strategiya va kampaniyalar. Loyihalarning bir qismi NDA ostida — ularni uchrashuvda ko'rsatamiz.",
     all: "Barchasi",
   },
   partners: { title: "Hamkorlar va mijozlar" },
@@ -232,10 +171,7 @@ const dictionary: Dictionary = {
   },
   projectInfo: { toggle: "Loyiha haqida", aboutLabel: "Loyiha tavsifi" },
   gallery: { view: "Ko'rish", openImage: "Rasmni ochish", openVideo: "Videoni ochish" },
-  answers: {
-    title: "Savollar",
-    intro: "Qanday ishlaymiz, bu qancha turadi va nimadan boshlash kerak — qisqa va aniq. Javob topmadingizmi — yozing, shaxsan javob beramiz.",
-  },
+  answers: { title: "Savollar" },
   contact: {
     title: "Aloqa",
     lead:
@@ -244,21 +180,6 @@ const dictionary: Dictionary = {
     location: "Toshkent, O'zbekiston",
     timezone: "GMT+5 · ish kuni davomida javob beramiz",
     ndaNote: "Loyiha maxfiymi? Shuni yozing — tafsilotlarni muhokama qilishdan oldin NDA imzolaymiz.",
-    nextTitle: "Keyin nima bo'ladi",
-    nextSteps: [
-      {
-        title: "Bir kun ichida javob",
-        text: "Bir-ikki savolni aniqlashtiramiz va qisqa qo'ng'iroq yoki Toshkentda uchrashuv uchun vaqt taklif qilamiz.",
-      },
-      {
-        title: "Vazifa haqida suhbat",
-        text: "30–40 daqiqa: kontekst, maqsadlar, muddatlar. Undan keyin qanday va qay hajmda yordam bera olishimiz aniq bo'ladi.",
-      },
-      {
-        title: "Narx va muddat bilan taklif",
-        text: "Qat'iy narx, ishlar tarkibi va kalendar — boshlashdan oldin, ochiq smetalarsiz.",
-      },
-    ],
     formTitle: "Bizga yozing",
     formName: "Ism",
     formEmail: "Email",
@@ -280,11 +201,12 @@ const dictionary: Dictionary = {
     openAria: "Aloqa formasini ochish",
   },
   endCta: {
-    line1: "Brendingiz uchun vazifa bormi?",
-    cta: "Bizga yozing — bir kun ichida javob beramiz",
+    line1: "Murosasiz brending",
+    cta: "Loyihani muhokama qilish",
   },
   footer: {
-    tagline: "Toshkentdagi brending agentligi. O'zbekiston va MDH kompaniyalari uchun aydentika, strategiya va qadoqlash.",
+    tagline:
+      "Strategiya, dizayn va ishlab chiqarishni birlashtiramiz — brend ko'rinadigan har bir joyda yaxlit qolishi uchun.",
     navTitle: "Bo'limlar",
     contactTitle: "Aloqa",
     socialTitle: "Ijtimoiy tarmoqlar",

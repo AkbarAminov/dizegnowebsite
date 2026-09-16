@@ -19,7 +19,7 @@ export default function AppleIcon() {
         }}
       >
         <svg viewBox="0 0 110.6 147.26" width={84} height={112}>
-          <path d={WORDMARK_PATHS[0]} fill="#f0e10c" />
+          <path d={WORDMARK_PATHS[0]} fill="#f0e100" />
         </svg>
       </div>
     ),

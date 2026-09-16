@@ -39,80 +39,10 @@ const dictionary: Dictionary = {
     projectFallback: "{title} — a case study by Dizegno, branding agency in Tashkent.",
   },
   home: {
-    hero: {
-      eyebrow: "Branding agency · Tashkent",
-      title: "Branding for companies that play the long game",
-      lead:
-        "We design identities, visual systems, packaging and brand strategy for banks, retail, services and startups across Uzbekistan and the CIS. Every project is led by the founder — from the brief to the final files.",
-      primaryCta: "Discuss a project",
-      secondaryCta: "See the work",
-    },
-    facts: [
-      { title: "One person in charge", text: "The founder and creative director leads every project from brief to delivery" },
-      { title: "Price before we start", text: "A fixed fee and timeline — no open-ended estimates, no hourly billing" },
-      { title: "NDA and full rights", text: "We sign an NDA before details are discussed; all rights transfer to you" },
-    ],
-    selectedWork: { title: "Selected work", all: "All work" },
-    services: {
-      title: "Services",
-      intro:
-        "From a refresh of an existing mark to a full brand system with packaging and signage. Scope follows the task, not a price list.",
-      all: "More about services",
-    },
-    process: {
-      title: "How we work",
-      intro: "Four stages that are clear from day one: you always know what is happening and what comes next.",
-      steps: [
-        {
-          title: "Conversation and brief",
-          text: "We unpack the task, the audience and the criteria for success. No brief yet? We write it together. Then we fix the scope, timeline and price.",
-        },
-        {
-          title: "Research and direction",
-          text: "We study the market, competitors and context, find the idea and present concept directions at the first review.",
-        },
-        {
-          title: "Design in rounds",
-          text: "We build the system, review, refine — until everything falls into place. The number of rounds is agreed in advance.",
-        },
-        {
-          title: "Production and handover",
-          text: "Final files, guidelines and technical documentation, with the rights transferred. We stay in touch through implementation.",
-        },
-      ],
-    },
-    why: {
-      title: "Why Dizegno",
-      intro:
-        "We grew from one designer's practice into an agency clients come back to — for rigour and craft, not the size of the roster.",
-      items: [
-        {
-          title: "A system, not a picture",
-          text: "The logo is the smallest part of the job. We design the rules that keep a brand coherent on a sign, in an app and on a shelf years later.",
-        },
-        {
-          title: "Responsibility doesn't get diluted",
-          text: "There is no chain of account manager, strategist and designer between you and the result. Akbar Aminov curates every project personally.",
-        },
-        {
-          title: "Experience in demanding industries",
-          text: "Banking and fintech, retail, delivery, healthcare, automotive, sports events — where precision matters more than flash.",
-        },
-        {
-          title: "Ready for production",
-          text: "We hand over files that printers, contractors and developers accept without questions — not just pictures.",
-        },
-      ],
-    },
-    industries: {
-      title: "Industries",
-      items: ["Banking & fintech", "Retail", "Delivery & services", "Healthcare", "Automotive", "Sport & events", "Startups"],
-    },
+    selectedWork: { all: "All work" },
   },
   services: {
     title: "Services",
-    intro:
-      "We take on projects of any scale — from refreshing a mark to a full brand system with packaging and signage. Here is what each engagement consists of and what you get at the end.",
     includesLabel: "What's included",
     resultLabel: "Outcome",
     items: [
@@ -195,32 +125,41 @@ const dictionary: Dictionary = {
         result: "Touchpoints that look like one brand, not ten contractors.",
       },
     ],
-    terms: {
-      title: "How we work together",
-      items: [
+    process: {
+      title: "How the work happens",
+      subtitle: "(step by step)",
+      prevAria: "Previous step",
+      nextAria: "Next step",
+      steps: [
         {
-          title: "Pricing",
-          text: "Project-based, not hourly. The price is tied to scope — the number of touchpoints, rounds and the depth of production. You get a fixed sum before we start.",
+          title: "Brief and project scope",
+          text: "We unpack the task, audience, and success criteria. Scope, timeline, and price are fixed before we start.",
         },
         {
-          title: "Timelines",
-          text: "A refresh of a mark moves fast; a full system with packaging and signage takes longer. We fix the exact timeline together with the price after the first conversation.",
+          title: "Research",
+          text: "We study the market, competitors, and how the brand is currently perceived. We find what to build the difference on.",
         },
         {
-          title: "Rights and confidentiality",
-          text: "We sign an NDA on request before details are discussed. After payment, all rights, source files and guidelines transfer to the client.",
+          title: "Strategy and directions",
+          text: "We shape the positioning and present concept directions. One gets chosen.",
         },
         {
-          title: "Format",
-          text: "We work as an independent team or plug into your marketing department or another agency — for a specific part of the task.",
+          title: "System design",
+          text: "Mark, typography, color, and usage rules. Work happens in rounds — the number is set upfront.",
+        },
+        {
+          title: "Production and documentation",
+          text: "Guidelines, final files, technical documentation for contractors. Rights transfer to you in full.",
+        },
+        {
+          title: "Launch and support",
+          text: "We help the team put the system to use after launch. Brands fall apart at rollout, not at design.",
         },
       ],
     },
   },
   work: {
     title: "Work",
-    intro:
-      "Identity, packaging, strategy and campaigns for banks, retail, services and startups. Some projects are under NDA — we'll show those in person.",
     all: "All",
   },
   partners: { title: "Partners & Clients" },
@@ -232,10 +171,7 @@ const dictionary: Dictionary = {
   },
   projectInfo: { toggle: "Project info", aboutLabel: "About the project" },
   gallery: { view: "View", openImage: "Open image", openVideo: "Open video" },
-  answers: {
-    title: "Answers",
-    intro: "How we work, what it costs and where to start — short and to the point. Didn't find your answer? Write to us and we'll reply personally.",
-  },
+  answers: { title: "Answers" },
   contact: {
     title: "Contact",
     lead:
@@ -244,21 +180,6 @@ const dictionary: Dictionary = {
     location: "Tashkent, Uzbekistan",
     timezone: "GMT+5 · we reply within a business day",
     ndaNote: "Confidential project? Say so — we'll sign an NDA before discussing details.",
-    nextTitle: "What happens next",
-    nextSteps: [
-      {
-        title: "A reply within a day",
-        text: "We'll clarify a couple of questions and suggest a time for a short call or a meeting in Tashkent.",
-      },
-      {
-        title: "A conversation about the task",
-        text: "30–40 minutes: context, goals, timing. Afterwards it's clear how we can help and at what scope.",
-      },
-      {
-        title: "A proposal with price and timeline",
-        text: "A fixed fee, the scope of work and a calendar — before we start, no open-ended estimates.",
-      },
-    ],
     formTitle: "Write to us",
     formName: "Name",
     formEmail: "Email",
@@ -280,11 +201,12 @@ const dictionary: Dictionary = {
     openAria: "Open contact form",
   },
   endCta: {
-    line1: "Have a task for your brand?",
-    cta: "Write to us — we reply within a day",
+    line1: "Branding without compromise",
+    cta: "Discuss the project",
   },
   footer: {
-    tagline: "Branding agency in Tashkent. Identity, strategy and packaging for companies across Uzbekistan and the CIS.",
+    tagline:
+      "We connect strategy, design and production so a brand stays coherent everywhere people see it.",
     navTitle: "Sections",
     contactTitle: "Contact",
     socialTitle: "Social",

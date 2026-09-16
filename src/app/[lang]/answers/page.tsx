@@ -29,9 +29,8 @@ export default async function AnswersPage({ params }: PageProps<"/[lang]/answers
   return (
     <>
       <section className="min-h-dvh px-5 pt-28 pb-20 md:px-8 md:pt-36">
-        <RevealOnScroll className="mb-14 grid gap-6 md:mb-20 md:grid-cols-2 md:items-end">
+        <RevealOnScroll className="mb-14 md:mb-20">
           <h1 className="text-4xl font-medium uppercase tracking-tight md:text-6xl">{dict.answers.title}</h1>
-          <p className="max-w-md text-base opacity-70 md:justify-self-end">{dict.answers.intro}</p>
         </RevealOnScroll>
 
         <div className="flex flex-col gap-14 md:gap-20">
