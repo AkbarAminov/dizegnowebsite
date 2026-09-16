@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { ServicesAccordion } from "@/components/ServicesAccordion";
 import { ProcessSection } from "@/components/ProcessSection";
 import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { EndCTA } from "@/components/EndCTA";
@@ -34,36 +35,11 @@ export default async function ServicesPage({ params }: PageProps<"/[lang]/servic
           <h1 className="text-4xl font-medium uppercase tracking-tight md:text-6xl">{services.title}</h1>
         </RevealOnScroll>
 
-        <ol className="mt-14 border-t border-white/15 md:mt-20">
-          {services.items.map((item, i) => (
-            <li key={item.title} id={`service-${i + 1}`} className="scroll-mt-24 border-b border-white/15 py-10 md:py-14">
-              <RevealOnScroll className="grid gap-6 md:grid-cols-[3rem_minmax(0,1fr)] md:gap-x-8">
-                <span className="text-sm opacity-40">{String(i + 1).padStart(2, "0")}</span>
-                <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-                  <div>
-                    <h2 className="text-2xl font-medium uppercase tracking-tight md:text-3xl">{item.title}</h2>
-                    <p className="mt-5 max-w-xl text-base opacity-80">{item.summary}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-tight opacity-50">{services.includesLabel}</p>
-                    <ul className="mt-3 flex flex-col gap-2 text-sm">
-                      {item.includes.map((line) => (
-                        <li key={line} className="flex gap-3">
-                          <span className="text-accent" aria-hidden>
-                            &mdash;
-                          </span>
-                          {line}
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="mt-6 text-xs uppercase tracking-tight opacity-50">{services.resultLabel}</p>
-                    <p className="mt-2 max-w-md text-sm">{item.result}</p>
-                  </div>
-                </div>
-              </RevealOnScroll>
-            </li>
-          ))}
-        </ol>
+        <ServicesAccordion
+          items={services.items}
+          includesLabel={services.includesLabel}
+          resultLabel={services.resultLabel}
+        />
       </section>
 
       <ProcessSection copy={services.process} />

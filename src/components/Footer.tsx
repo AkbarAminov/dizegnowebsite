@@ -14,7 +14,9 @@ export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
     <footer className="border-t border-white/10 px-5 pt-16 pb-24 md:px-8 md:pt-20 md:pb-12">
       <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))] lg:gap-8">
         <div>
-          <Link href={localeHref(lang, "/")} className="group inline-block" aria-label={dict.nav.homeAria}>
+          {/* No `group` class on purpose: the logo's hover styling is driven
+              by group-hover, so leaving it off keeps the footer mark static. */}
+          <Link href={localeHref(lang, "/")} className="inline-block" aria-label={dict.nav.homeAria}>
             <Logo className="h-7 w-auto" />
           </Link>
           <p className="mt-6 max-w-sm text-sm opacity-60">{dict.footer.tagline}</p>

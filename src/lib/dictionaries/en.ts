@@ -49,80 +49,89 @@ const dictionary: Dictionary = {
       {
         title: "Identity and visual system",
         summary:
-          "Our core format. We design the brand's visual system — mark, logo, colour, typography, graphics and the rules for using them — so the brand looks whole on any medium and holds up once other people start working with it.",
+          "The studio's core format. We design the visual system — mark, colour, typography, graphic language and the rules for applying them. The system is built to stay coherent once other people start working with it: your in-house marketing, the printer, signage contractors, the digital team.",
         includes: [
-          "Logo and mark, variants and clear space",
-          "Colour system and typography",
-          "Graphic language: patterns, illustration, photo style",
-          "Key touchpoints: documents, presentation, social media, signage",
-          "Brand guidelines with usage rules",
+          "Mark and logo: variants, clear space, scaling rules",
+          "Colour system with technical values for print and screen",
+          "Typographic hierarchy and typesetting rules",
+          "Graphic language: patterns, illustration, photo style principles",
+          "Key touchpoints: documents, presentation, digital, signage",
+          "Brand guidelines with usage rules and common mistakes",
         ],
-        result: "Guidelines and source files you can hand to any contractor.",
+        result:
+          "A system any contractor can apply without you in the room. You stop being the approval bottleneck on every layout.",
       },
       {
         title: "Brand strategy and positioning",
         summary:
-          "For when it's unclear what makes the brand different and what to say to the audience. We research the market and competitors and formulate the brand platform — only then do we move to design. That's how decisions stop being a matter of taste.",
+          "For when it's unclear what sets the brand apart and what to say to the audience. We research the category, the competitive field and current perception, formulate the brand platform — and only then move to the visual side. This is what turns design decisions from matters of taste into arguable ones.",
         includes: [
-          "Audit of the current brand and competitors",
-          "Audience profile and insights",
-          "Positioning, values, character",
+          "Audit of the current brand and the competitive field",
+          "Interviews with key people in the company",
+          "Audience profile and working insights",
+          "Positioning, values, brand character",
           "Tone of voice and key messages",
           "Brand architecture for product lines",
         ],
-        result: "A brand platform — the document design, marketing and communication build on.",
+        result:
+          "A brand platform — the document design, marketing and communication build on. Internal arguments about “what's right” stop being settled by seniority and start being settled by the document.",
       },
       {
         title: "Naming",
         summary:
-          "A name, descriptor and tagline for a new brand or product. We check how the name sounds and reads in Russian, Uzbek and English, and how it behaves as a domain, a social handle and a sign.",
+          "A name, descriptor and tagline for a new brand or product. We check how the name behaves in reality: how it sounds and reads in three languages, works as a domain and a social handle, fits on a sign, and doesn't clash with registered trademarks.",
         includes: [
           "Naming criteria and territory of meaning",
-          "Long list and short list with rationale",
-          "Sound and readability check in three languages",
+          "Long list with the rationale behind each direction",
+          "Short list with a recommendation",
+          "Sound and readability check in Russian, Uzbek and English",
           "Domain and social handle availability",
           "Descriptor and tagline",
         ],
-        result: "A short list with a recommendation and a name you can take to trademark registration.",
+        result:
+          "A name you can take to trademark registration, and a rationale you can take to the board.",
       },
       {
         title: "Packaging",
         summary:
-          "Packaging and label design: from a single product to a range that scales to dozens of SKUs. We take artwork all the way to print-ready files with technical specifications for the printer.",
+          "Packaging and label design: from a single product to a range that scales to dozens of SKUs. We work through to print-ready files and technical documentation — artwork that looks good in a presentation but falls apart at the printer doesn't count as finished work.",
         includes: [
           "Concept and range architecture",
           "Front and information panel design",
-          "Adaptation to formats and materials",
-          "Print-ready files and specifications",
+          "Adaptation to formats, materials and print methods",
+          "Print-ready files with specifications",
           "Printer support through the first run",
         ],
-        result: "Artwork the printer accepts without questions, and a system for the products that follow.",
+        result:
+          "Artwork the printer accepts without corrections, and a system the next products in the range can be built on without a new project.",
       },
       {
         title: "Rebranding",
         summary:
-          "For a brand that has outgrown its style: the product, audience or scale has changed. We keep the recognition you've built, remove what gets in the way, and plan the transition so signage, documents and digital update without chaos.",
+          "Renewing a brand that has outgrown its style: the product, audience, scale or ownership has changed. The real work here isn't the new mark — it's deciding which of the recognition you've built to keep, and planning the transition, because the transition is where brands fall apart.",
         includes: [
-          "Audit of the identity and every touchpoint",
-          "Strategy: what to keep, what to change",
+          "Identity audit and a full inventory of touchpoints",
+          "Transition strategy: what to keep, what to change, what to drop",
           "New visual system",
-          "Transition plan by touchpoint and priority",
-          "Guidelines for the team and contractors",
+          "Rollout plan by touchpoint and priority, in stages",
+          "Guidelines for the in-house team and contractors",
         ],
-        result: "A renewed brand and a clear rollout plan.",
+        result:
+          "A renewed brand and a plan that moves signage, documents and digital onto the new system without a period where the company looks like two different ones.",
       },
       {
         title: "Touchpoints and communication",
         summary:
-          "Everything where the brand meets people after launch: signage and wayfinding, presentations and reports, campaigns, social media, merchandise. We work as an extension of your team — by your existing guidelines or ours.",
+          "Everything where the brand meets people after launch: wayfinding and signage, annual reports and presentations, campaigns, digital, merchandise. We work as an extension of your team — by your existing guidelines or ours.",
         includes: [
           "Wayfinding, signage, interior branding",
           "Presentations, annual reports, corporate documents",
           "Advertising campaigns and key visuals",
-          "Social media and digital templates",
+          "Templates for digital and social media",
           "Merchandise and promotional items",
         ],
-        result: "Touchpoints that look like one brand, not ten contractors.",
+        result:
+          "Touchpoints that look like one brand, not like ten different contractors inside one company.",
       },
     ],
     process: {

@@ -49,80 +49,89 @@ const dictionary: Dictionary = {
       {
         title: "Aydentika va firma uslubi",
         summary:
-          "Ishimizning asosiy formati. Brendning vizual tizimini loyihalaymiz — belgi, logotip, rang, tipografika, grafika va ulardan foydalanish qoidalari — brend har qanday tashuvchida yaxlit ko'rinishi va boshqalar u bilan ishlay boshlaganda buzilmasligi uchun.",
+          "Agentlik ishining asosiy formati. Vizual tizimni loyihalaymiz — belgi, rang, tipografika, grafik til va ularni qo'llash qoidalari. Tizim shunday quriladiki, u bilan boshqa odamlar ishlay boshlaganda ham yaxlit qoladi: ichki marketing, bosmaxona, peshlavha pudratchilari, digital jamoa.",
         includes: [
-          "Logotip va belgi, variantlar va himoya maydoni",
-          "Rang tizimi va tipografika",
-          "Grafik til: patternlar, illyustratsiya, fotouslub",
-          "Asosiy tashuvchilar: hujjatlar, taqdimot, ijtimoiy tarmoqlar, peshlavha",
-          "Foydalanish qoidalari bilan brendbuk",
+          "Belgi va logotip: variantlar, himoya maydoni, masshtablash qoidalari",
+          "Bosma va ekran uchun texnik qiymatlar bilan rang tizimi",
+          "Tipografik ierarxiya va matn terish qoidalari",
+          "Grafik til: patternlar, illyustratsiya, fotouslub tamoyillari",
+          "Asosiy tashuvchilar: hujjatlar, taqdimot, digital, peshlavha",
+          "Qo'llash qoidalari va tipik xatolar bilan brendbuk",
         ],
-        result: "Istalgan pudratchiga topshirish mumkin bo'lgan brendbuk va manba fayllar.",
+        result:
+          "Istalgan pudratchi sizsiz qo'llay oladigan tizim. Siz endi har bir maketni tasdiqlovchi bo'g'in bo'lib qolmaysiz.",
       },
       {
         title: "Brend strategiyasi va pozitsiyalash",
         summary:
-          "Brend nimasi bilan farq qilishi va auditoriyaga nima deyish kerakligi noaniq bo'lgan holatlar uchun. Bozor va raqobatchilarni o'rganamiz, brend platformasini shakllantiramiz — va faqat shundan keyin dizaynga o'tamiz. Shunda qarorlar did masalasi bo'lmay qoladi.",
+          "Brend nimasi bilan farq qilishi va auditoriyaga nima deyish kerakligi noaniq bo'lgan holatlar uchun. Kategoriya, raqobat maydoni va hozirgi qabul qilinishni o'rganamiz, brend platformasini shakllantiramiz — va faqat shundan keyin vizual qismga o'tamiz. Aynan shu dizayn qarorlarini did masalasidan asoslangan qarorga aylantiradi.",
         includes: [
-          "Joriy brend va raqobatchilar auditi",
-          "Auditoriya portreti va insaytlar",
-          "Pozitsiyalash, qadriyatlar, xarakter",
+          "Joriy brend va raqobat maydoni auditi",
+          "Kompaniyaning asosiy xodimlari bilan intervyu",
+          "Auditoriya portreti va ishchi insaytlar",
+          "Pozitsiyalash, qadriyatlar, brend xarakteri",
           "Tone of voice va asosiy xabarlar",
           "Mahsulot liniyalari uchun brend arxitekturasi",
         ],
-        result: "Brend platformasi — dizayn, marketing va kommunikatsiya tayanadigan hujjat.",
+        result:
+          "Brend platformasi — dizayn, marketing va kommunikatsiya tayanadigan hujjat. «Qanday to'g'ri» degan ichki bahslar obro' bilan emas, hujjat bilan hal qilina boshlaydi.",
       },
       {
         title: "Neyming",
         summary:
-          "Yangi brend yoki mahsulot uchun nom, deskriptor va slogan. Nom rus, o'zbek va ingliz tillarida qanday jaranglashi va o'qilishini, domen, ijtimoiy tarmoqlar va peshlavhada qanday ishlashini tekshiramiz.",
+          "Yangi brend yoki mahsulot uchun nom, deskriptor va slogan. Nom real hayotda qanday ishlashini tekshiramiz: uch tilda qanday jaranglaydi va o'qiladi, domen va ijtimoiy tarmoqlarda ishlaydimi, peshlavhaga sig'adimi, ro'yxatdan o'tgan belgilar bilan to'qnashmaydimi.",
         includes: [
           "Nom mezonlari va ma'no hududi",
-          "Asoslangan long-list va short-list",
-          "Uch tilda jaranglash tekshiruvi",
+          "Har bir yo'nalish asoslangan long-list",
+          "Tavsiya bilan short-list",
+          "Rus, o'zbek va ingliz tillarida jaranglash tekshiruvi",
           "Domen va akkauntlar bandligini tekshirish",
           "Deskriptor va slogan",
         ],
-        result: "Tavsiya bilan short-list va tovar belgisini ro'yxatdan o'tkazishga olib borish mumkin bo'lgan nom.",
+        result:
+          "Tovar belgisini ro'yxatdan o'tkazishga olib borish mumkin bo'lgan nom va direktorlar kengashiga olib borish mumkin bo'lgan asos.",
       },
       {
         title: "Qadoqlash",
         summary:
-          "Qadoq va etiketka dizayni: bitta mahsulotdan tortib o'nlab SKUga kengayadigan liniyagacha. Maketlarni bosmaxona uchun texnik hujjatlar bilan print-ready fayllargacha yetkazamiz.",
+          "Qadoq va etiketka dizayni: bitta mahsulotdan tortib o'nlab SKUga kengayadigan liniyagacha. Print-ready fayllar va texnik hujjatlargacha ishlaymiz — taqdimotda chiroyli ko'rinadigan, lekin bosmaxonada buziladigan maket ish hisoblanmaydi.",
         includes: [
           "Liniya konsepsiyasi va arxitekturasi",
           "Old va axborot tomonlari dizayni",
-          "Format va materiallarga moslashtirish",
-          "Print-ready fayllar va spetsifikatsiyalar",
+          "Format, material va bosish usullariga moslashtirish",
+          "Spetsifikatsiyalar bilan print-ready fayllar",
           "Birinchi tirajgacha bosmaxonani kuzatib borish",
         ],
-        result: "Bosmaxona savolsiz qabul qiladigan maketlar va keyingi mahsulotlar uchun tizim.",
+        result:
+          "Bosmaxona tuzatishlarsiz qabul qiladigan maketlar va liniyaning keyingi mahsulotlari yangi loyihasiz yig'iladigan tizim.",
       },
       {
         title: "Rebrending",
         summary:
-          "O'z uslubidan o'sib ketgan brendni yangilash: mahsulot, auditoriya yoki miqyos o'zgargan. To'plangan tanilishni saqlaymiz, xalaqit berayotganini olib tashlaymiz va peshlavhalar, hujjatlar va digital tartibsizliksiz yangilanishi uchun o'tishni rejalashtiramiz.",
+          "O'z uslubidan o'sib ketgan brendni yangilash: mahsulot, auditoriya, miqyos yoki egasi o'zgargan. Bu yerdagi asosiy ish yangi belgida emas, balki to'plangan tanilishning nimasini saqlashni hal qilishda va o'tish rejasida — chunki brendlar aynan o'tishda buziladi.",
         includes: [
-          "Aydentika va barcha tashuvchilar auditi",
-          "Strategiya: nimani saqlash, nimani o'zgartirish",
+          "Aydentika auditi va tashuvchilarning to'liq inventarizatsiyasi",
+          "O'tish strategiyasi: nimani saqlash, nimani o'zgartirish, nimadan voz kechish",
           "Yangi vizual tizim",
-          "Tashuvchilar va ustuvorliklar bo'yicha o'tish rejasi",
-          "Jamoa va pudratchilar uchun gaydlayn",
+          "Tashuvchilar va ustuvorliklar bo'yicha bosqichma-bosqich joriy etish rejasi",
+          "Ichki jamoa va pudratchilar uchun gaydlayn",
         ],
-        result: "Yangilangan brend va tushunarli joriy etish rejasi.",
+        result:
+          "Yangilangan brend va peshlavhalar, hujjatlar va digital yangi tizimga kompaniya ikki xil ko'rinadigan davrsiz o'tadigan reja.",
       },
       {
         title: "Tashuvchilar va kommunikatsiya",
         summary:
-          "Brend ishga tushgandan keyin odamlar bilan uchrashadigan hamma narsa: navigatsiya va peshlavhalar, taqdimotlar va hisobotlar, reklama kampaniyalari, ijtimoiy tarmoqlar, merch. Jamoangizning davomi sifatida ishlaymiz — mavjud gaydlayn yoki biznikiga ko'ra.",
+          "Brend ishga tushgandan keyin odamlar bilan uchrashadigan hamma narsa: navigatsiya va peshlavhalar, yillik hisobotlar va taqdimotlar, kampaniyalar, digital, merch. Jamoangizning davomi sifatida ishlaymiz — mavjud gaydlayn yoki biznikiga ko'ra.",
         includes: [
           "Navigatsiya, peshlavhalar, makonlarni bezash",
           "Taqdimotlar, yillik hisobotlar, korporativ hujjatlar",
           "Reklama kampaniyalari va key visual",
-          "Ijtimoiy tarmoqlar va digital uchun shablonlar",
+          "Digital va ijtimoiy tarmoqlar uchun shablonlar",
           "Merch va suvenir mahsulotlari",
         ],
-        result: "O'nta pudratchi emas, bitta brend kabi ko'rinadigan tashuvchilar.",
+        result:
+          "Bitta kompaniya ichidagi o'nta turli pudratchi kabi emas, bitta brend kabi ko'rinadigan tashuvchilar.",
       },
     ],
     process: {
