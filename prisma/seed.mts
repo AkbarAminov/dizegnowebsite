@@ -14,11 +14,13 @@ const prisma = new PrismaClient({ adapter });
 const LOCALES = ["ru", "en", "uz"] as const satisfies readonly Locale[];
 
 type SeedImage = { width: number; height: number };
-type Copy = { title: string; category: string; description: string; production: string | null };
+type Copy = { title: string; description: string; production: string | null };
 type SeedField = Record<Locale, { label: string; value: string }>;
 type SeedProject = {
   slug: string;
   year: number;
+  // Not translated — values must exist in src/lib/categories.ts.
+  categories: string[];
   translations: Record<Locale, Copy>;
   fields?: SeedField[];
   images: SeedImage[];
@@ -33,15 +35,17 @@ const LANDSCAPE: SeedImage = { width: 800, height: 600 };
 const PORTRAIT: SeedImage = { width: 600, height: 800 };
 const SQUARE: SeedImage = { width: 700, height: 700 };
 
-// Categories are client sectors so the Work page filter reads as industries.
+// Client sectors, so the Work page filter reads as industries.
 const CATEGORY = {
-  FINANCE: { ru: "Финансы и банкинг", en: "Finance & Banking", uz: "Moliya va banking" },
-  AUTOMOTIVE: { ru: "Автомобильная индустрия", en: "Automotive", uz: "Avtomobil sanoati" },
-  FOOD: { ru: "Еда и доставка", en: "Food & Delivery", uz: "Ovqat va yetkazib berish" },
-  HEALTH: { ru: "Здравоохранение", en: "Healthcare", uz: "Sog'liqni saqlash" },
-  SPORT: { ru: "Спорт и события", en: "Sport & Events", uz: "Sport va tadbirlar" },
-  OTHER: { ru: "Другое", en: "Other", uz: "Boshqa" },
-} as const satisfies Record<string, Record<Locale, string>>;
+  FINANCE: "Finance & Banking",
+  AUTOMOTIVE: "Automotive",
+  FOOD: "Food & Delivery",
+  HEALTH: "Healthcare",
+  RETAIL: "Retail",
+  SPORT: "Sport & Events",
+  DIGITAL: "Digital & Web",
+  OTHER: "Other",
+} as const;
 
 const CREDIT_LABEL = {
   Client: { ru: "Клиент", en: "Client", uz: "Mijoz" },
@@ -59,15 +63,14 @@ function credit(labelKey: keyof typeof CREDIT_LABEL, value: string): SeedField {
 }
 
 function copy(
-  category: keyof typeof CATEGORY,
   title: Record<Locale, string>,
   description: Record<Locale, string>,
   production: string | null = null
 ): Record<Locale, Copy> {
   return {
-    ru: { title: title.ru, category: CATEGORY[category].ru, description: description.ru, production },
-    en: { title: title.en, category: CATEGORY[category].en, description: description.en, production },
-    uz: { title: title.uz, category: CATEGORY[category].uz, description: description.uz, production },
+    ru: { title: title.ru, description: description.ru, production },
+    en: { title: title.en, description: description.en, production },
+    uz: { title: title.uz, description: description.uz, production },
   };
 }
 
@@ -75,8 +78,8 @@ const projects: SeedProject[] = [
   {
     slug: "north-star-identity",
     year: 2026,
+    categories: [CATEGORY.FINANCE],
     translations: copy(
-      "FINANCE",
       { ru: "Айдентика North Star", en: "North Star Identity", uz: "North Star identifikatsiyasi" },
       {
         ru: "Гибкая система айдентики, построенная вокруг одного вращающегося знака.",
@@ -91,8 +94,8 @@ const projects: SeedProject[] = [
   {
     slug: "verge-brand-strategy",
     year: 2026,
+    categories: [CATEGORY.FINANCE],
     translations: copy(
-      "FINANCE",
       { ru: "Брендовая стратегия Verge", en: "Verge Brand Strategy", uz: "Verge brend strategiyasi" },
       {
         ru: "Позиционирование и нейминг для fintech-стартапа на ранней стадии.",
@@ -106,8 +109,8 @@ const projects: SeedProject[] = [
   {
     slug: "kinetic-motion-reel",
     year: 2025,
+    categories: [CATEGORY.AUTOMOTIVE],
     translations: copy(
-      "AUTOMOTIVE",
       { ru: "Моушн-ролик Kinetic", en: "Kinetic Motion Reel", uz: "Kinetic Motion videoroliki" },
       {
         ru: "Короткий ролик с типографской анимацией для запуска новой модели.",
@@ -122,8 +125,8 @@ const projects: SeedProject[] = [
   {
     slug: "drift-retail-concept",
     year: 2024,
+    categories: [CATEGORY.AUTOMOTIVE, CATEGORY.RETAIL],
     translations: copy(
-      "AUTOMOTIVE",
       { ru: "Ритейл-концепция Drift", en: "Drift Retail Concept", uz: "Drift chakana savdo kontseptsiyasi" },
       {
         ru: "Концепция шоурума и интерьерная графика для сети автодилеров.",
@@ -138,8 +141,8 @@ const projects: SeedProject[] = [
   {
     slug: "harbor-packaging-system",
     year: 2025,
+    categories: [CATEGORY.FOOD],
     translations: copy(
-      "FOOD",
       { ru: "Упаковочная система Harbor", en: "Harbor Packaging System", uz: "Harbor qadoqlash tizimi" },
       {
         ru: "Модульная упаковка для бренда морепродуктов и доставки продуктов на побережье.",
@@ -153,8 +156,8 @@ const projects: SeedProject[] = [
   {
     slug: "loop-app-interface",
     year: 2025,
+    categories: [CATEGORY.FOOD, CATEGORY.DIGITAL],
     translations: copy(
-      "FOOD",
       { ru: "Интерфейс приложения Loop", en: "Loop App Interface", uz: "Loop ilovasi interfeysi" },
       {
         ru: "Визуальная айдентика и интерфейс для приложения доставки еды по запросу.",
@@ -168,8 +171,8 @@ const projects: SeedProject[] = [
   {
     slug: "atlas-signage-program",
     year: 2024,
+    categories: [CATEGORY.HEALTH],
     translations: copy(
-      "HEALTH",
       { ru: "Программа навигации Atlas", en: "Atlas Signage Program", uz: "Atlas navigatsiya dasturi" },
       {
         ru: "Навигация и указатели для больничного кампуса.",
@@ -184,8 +187,8 @@ const projects: SeedProject[] = [
   {
     slug: "meridian-annual-report",
     year: 2023,
+    categories: [CATEGORY.HEALTH],
     translations: copy(
-      "HEALTH",
       { ru: "Годовой отчёт Meridian", en: "Meridian Annual Report", uz: "Meridian yillik hisoboti" },
       {
         ru: "Ориентированная на данные вёрстка годового отчёта для группы медицинского страхования.",
@@ -200,8 +203,8 @@ const projects: SeedProject[] = [
   {
     slug: "aperture-festival-identity",
     year: 2026,
+    categories: [CATEGORY.SPORT],
     translations: copy(
-      "SPORT",
       { ru: "Айдентика фестиваля Aperture", en: "Aperture Festival Identity", uz: "Aperture festivali identifikatsiyasi" },
       {
         ru: "Генеративная система айдентики для фотофестиваля.",
@@ -215,8 +218,8 @@ const projects: SeedProject[] = [
   {
     slug: "silo-editorial-layout",
     year: 2024,
+    categories: [CATEGORY.OTHER],
     translations: copy(
-      "OTHER",
       { ru: "Editorial-вёрстка Silo", en: "Silo Editorial Layout", uz: "Silo jurnal sahifalash" },
       {
         ru: "Сеточная система для ежеквартального печатного издания об архитектуре.",
@@ -235,6 +238,7 @@ async function main() {
       where: { slug: p.slug },
       update: {
         year: p.year,
+        categories: p.categories,
         translations: {
           deleteMany: {},
           create: LOCALES.map((locale) => ({ locale, ...p.translations[locale] })),
@@ -247,6 +251,7 @@ async function main() {
       create: {
         slug: p.slug,
         year: p.year,
+        categories: p.categories,
         order: index,
         published: true,
         images: {

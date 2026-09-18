@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { DEFAULT_LOCALE } from "./i18n";
+import { sanitiseCategories } from "./categories";
 
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(120),
@@ -24,7 +25,6 @@ const optionalText = z.string().trim().transform((value) => value || null);
 // same way and doesn't know which one is the default).
 const translationSchema = z.object({
   title: z.string().trim(),
-  category: optionalText,
   description: optionalText,
   production: optionalText,
 });
@@ -37,6 +37,9 @@ export const projectSchema = z.object({
     .trim()
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug may only contain lowercase letters, digits and hyphens"),
   year: z.number().int().min(1900).max(2100).nullable(),
+  // Unknown values are dropped rather than rejected, so retiring a category
+  // in src/lib/categories.ts can't make an existing project unsaveable.
+  categories: z.array(z.string()).transform(sanitiseCategories),
   translations: z.object({ ru: translationSchema, en: translationSchema, uz: translationSchema }),
   fields: z.array(
     z.object({

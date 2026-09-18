@@ -5,6 +5,7 @@ import { prisma } from "./prisma";
 import type { Project } from "./types";
 import { DEFAULT_LOCALE, type Locale } from "./i18n";
 import { preventOrphans } from "./typography";
+import { sanitiseCategories } from "./categories";
 
 const include = {
   images: { orderBy: { order: "asc" } },
@@ -63,7 +64,7 @@ function toProject(row: ProjectRow, locale: Locale): Project {
   return {
     slug: row.slug,
     title: preventOrphans(t?.title ?? "", locale),
-    category: t?.category ? preventOrphans(t.category, locale) : null,
+    categories: sanitiseCategories(row.categories),
     description: preventOrphans(t?.description ?? "", locale),
     // A YouTube embed cannot be a card thumbnail; prefer the first real image.
     thumbnail: (gallery.find((image) => image.type !== "youtube") ?? gallery[0])?.src ?? null,
@@ -96,20 +97,6 @@ export const getPublishedProjects = cache(async (locale: Locale = DEFAULT_LOCALE
   });
   return rows.map((row) => toProject(row, locale));
 });
-
-/** Distinct categories in use per locale, for the admin form's suggestions. */
-export async function getProjectCategories(): Promise<Record<Locale, string[]>> {
-  const rows = await prisma.projectTranslation.findMany({
-    where: { category: { not: null } },
-    select: { locale: true, category: true },
-  });
-  const result: Record<Locale, string[]> = { ru: [], en: [], uz: [] };
-  for (const row of rows) {
-    if (row.category && !result[row.locale].includes(row.category)) result[row.locale].push(row.category);
-  }
-  for (const locale of Object.keys(result) as Locale[]) result[locale].sort();
-  return result;
-}
 
 /**
  * Public pages are statically rendered. Call this after every admin

@@ -16,7 +16,7 @@ export type Credit = { label: string; value: string };
 export type Project = {
   slug: string;
   title: string;
-  category: string | null;
+  categories: string[];
   description: string;
   thumbnail: string | null;
   gallery: GalleryImage[];

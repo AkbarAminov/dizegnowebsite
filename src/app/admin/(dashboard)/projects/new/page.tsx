@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getProjectCategories } from "@/lib/projects";
 import { ProjectForm } from "../../ProjectForm";
 
-export default async function NewProjectPage() {
-  const categories = await getProjectCategories();
-
+export default function NewProjectPage() {
   return (
     <div className="mx-auto max-w-6xl">
       <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-neutral-100">
@@ -18,7 +15,7 @@ export default async function NewProjectPage() {
       </p>
 
       <div className="mt-6">
-        <ProjectForm categories={categories} />
+        <ProjectForm />
       </div>
     </div>
   );

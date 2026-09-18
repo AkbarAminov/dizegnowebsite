@@ -82,7 +82,9 @@ export function projectJsonLd(project: Project, lang: Locale) {
     description: truncate(project.description, 300),
     url: absoluteUrl(localeHref(lang, `/work/${project.slug}/`)),
     image: project.gallery.filter((image) => image.type !== "youtube").map((image) => absoluteUrl(image.src)),
-    genre: project.category ? plainText(project.category) : undefined,
+    // schema.org/genre repeats for multiple values; an array is the JSON-LD
+    // way to express that.
+    genre: project.categories.length ? project.categories : undefined,
     dateCreated: year,
     creator: { "@id": ORGANIZATION_ID },
     inLanguage: lang,

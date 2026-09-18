@@ -10,6 +10,11 @@ model Project {
   id        String   @id @default(cuid())
   slug      String   @unique
   year      Int?
+  // JSON array of category names from src/lib/categories.ts. MySQL has no
+  // scalar-list type, and the /work/ filter runs client-side over the
+  // already-fetched list, so a JSON column is enough (same approach as
+  // ProjectField.translations).
+  categories Json
   order     Int      @default(0)
   // Pinned projects sort before unpinned ones on the public site.
   pinned    Boolean  @default(false)
@@ -39,7 +44,6 @@ model ProjectTranslation {
   project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   locale      Locale
   title       String?
-  category    String?
   description String? @db.Text
   production  String? @db.Text
 

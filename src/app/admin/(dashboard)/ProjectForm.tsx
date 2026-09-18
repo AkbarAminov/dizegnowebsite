@@ -4,7 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import type { ProjectInput } from "@/lib/validation";
+import type { Category } from "@/lib/categories";
 import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS, mapLocales, type Locale } from "@/lib/i18n";
+import { CategorySelect } from "./CategorySelect";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { Switch } from "./Switch";
 import { Toast, type ToastMessage } from "./Toast";
@@ -21,13 +23,15 @@ import {
   secondaryButtonClass,
 } from "./ui";
 
-type LocaleTranslation = { title: string; category: string; description: string; production: string };
+type LocaleTranslation = { title: string; description: string; production: string };
 type FieldTranslation = { label: string; value: string };
 type FieldRow = { translations: Record<Locale, FieldTranslation> };
 
 export type ProjectFormValues = {
   slug: string;
   year: string;
+  // Not translated — one list shared by every locale, see lib/categories.ts.
+  categories: Category[];
   translations: Record<Locale, LocaleTranslation>;
   fields: FieldRow[];
 };
@@ -39,12 +43,13 @@ type Errors = {
   fields?: Record<number, Partial<Record<Locale, string>>>;
 };
 
-const EMPTY_TRANSLATION: LocaleTranslation = { title: "", category: "", description: "", production: "" };
+const EMPTY_TRANSLATION: LocaleTranslation = { title: "", description: "", production: "" };
 const EMPTY_FIELD_TRANSLATION: FieldTranslation = { label: "", value: "" };
 
 const EMPTY: ProjectFormValues = {
   slug: "",
   year: "",
+  categories: [],
   translations: { ru: { ...EMPTY_TRANSLATION }, en: { ...EMPTY_TRANSLATION }, uz: { ...EMPTY_TRANSLATION } },
   fields: [],
 };
@@ -100,14 +105,12 @@ function validate(values: ProjectFormValues): Errors {
 export function ProjectForm({
   projectId,
   initial = EMPTY,
-  categories,
   published = false,
   pinned = false,
 }: {
   // Absent when creating a new project.
   projectId?: string;
   initial?: ProjectFormValues;
-  categories: Record<Locale, string[]>;
   published?: boolean;
   pinned?: boolean;
 }) {
@@ -141,6 +144,10 @@ export function ProjectForm({
   function set<K extends "slug" | "year">(key: K, value: ProjectFormValues[K]) {
     setValues((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: undefined }));
+  }
+
+  function setCategories(categories: Category[]) {
+    setValues((current) => ({ ...current, categories }));
   }
 
   function setTranslation(locale: Locale, key: keyof LocaleTranslation, value: string) {
@@ -210,9 +217,9 @@ export function ProjectForm({
     const payload: ProjectInput = {
       slug: values.slug.trim(),
       year: values.year ? Number(values.year) : null,
+      categories: values.categories,
       translations: mapLocales(values.translations, (t) => ({
         title: t.title.trim(),
-        category: t.category.trim(),
         description: t.description.trim(),
         production: t.production.trim(),
       })),
@@ -312,23 +319,11 @@ export function ProjectForm({
 
             <div className="grid gap-5 sm:grid-cols-2">
               <Field
-                label={`Category (${LOCALE_LABELS[activeLocale]})`}
-                htmlFor="project-category"
-                hint="Shown under the title. Reuse one or type a new one."
+                label="Categories"
+                htmlFor="project-categories"
+                hint="Pick one or more. Shared across all languages."
               >
-                <input
-                  id="project-category"
-                  value={t.category}
-                  onChange={(event) => setTranslation(activeLocale, "category", event.target.value)}
-                  list="category-options"
-                  placeholder="Branding"
-                  className={inputClass}
-                />
-                <datalist id="category-options">
-                  {categories[activeLocale].map((category) => (
-                    <option key={category} value={category} />
-                  ))}
-                </datalist>
+                <CategorySelect id="project-categories" selected={values.categories} onChange={setCategories} />
               </Field>
 
               <Field label="Year" error={errors.year} htmlFor="project-year" hint="Optional. Shared across all languages.">
