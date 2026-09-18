@@ -215,7 +215,7 @@ const dictionary: Dictionary = {
   },
   footer: {
     tagline:
-      "Strategiya, dizayn va ishlab chiqarishni birlashtiramiz — brend ko'rinadigan har bir joyda yaxlit qolishi uchun.",
+      "Fintech tafakkuri, xalqaro standart va madaniy kontekstni birlashtiramiz — ishoniladigan brendlar yaratish uchun.",
     navTitle: "Bo'limlar",
     contactTitle: "Aloqa",
     socialTitle: "Ijtimoiy tarmoqlar",

@@ -215,7 +215,7 @@ const dictionary: Dictionary = {
   },
   footer: {
     tagline:
-      "We connect strategy, design and production so a brand stays coherent everywhere people see it.",
+      "We combine fintech thinking, international standards and cultural context to build brands people trust.",
     navTitle: "Sections",
     contactTitle: "Contact",
     socialTitle: "Social",
