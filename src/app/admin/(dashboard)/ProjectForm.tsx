@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import type { ProjectInput } from "@/lib/validation";
-import type { Category } from "@/lib/categories";
 import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS, mapLocales, type Locale } from "@/lib/i18n";
 import { CategorySelect } from "./CategorySelect";
 import { ConfirmDialog } from "./ConfirmDialog";
@@ -31,7 +30,7 @@ export type ProjectFormValues = {
   slug: string;
   year: string;
   // Not translated — one list shared by every locale, see lib/categories.ts.
-  categories: Category[];
+  categories: string[];
   translations: Record<Locale, LocaleTranslation>;
   fields: FieldRow[];
 };
@@ -105,12 +104,15 @@ function validate(values: ProjectFormValues): Errors {
 export function ProjectForm({
   projectId,
   initial = EMPTY,
+  categoryOptions,
   published = false,
   pinned = false,
 }: {
   // Absent when creating a new project.
   projectId?: string;
   initial?: ProjectFormValues;
+  // Built-in suggestions plus every category already used on a project.
+  categoryOptions: string[];
   published?: boolean;
   pinned?: boolean;
 }) {
@@ -146,7 +148,7 @@ export function ProjectForm({
     setErrors((current) => ({ ...current, [key]: undefined }));
   }
 
-  function setCategories(categories: Category[]) {
+  function setCategories(categories: string[]) {
     setValues((current) => ({ ...current, categories }));
   }
 
@@ -323,7 +325,12 @@ export function ProjectForm({
                 htmlFor="project-categories"
                 hint="Pick one or more. Shared across all languages."
               >
-                <CategorySelect id="project-categories" selected={values.categories} onChange={setCategories} />
+                <CategorySelect
+                  id="project-categories"
+                  selected={values.categories}
+                  options={categoryOptions}
+                  onChange={setCategories}
+                />
               </Field>
 
               <Field label="Year" error={errors.year} htmlFor="project-year" hint="Optional. Shared across all languages.">

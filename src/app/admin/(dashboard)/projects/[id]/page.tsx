@@ -2,8 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { pickTranslation } from "@/lib/projects";
-import { sanitiseCategories } from "@/lib/categories";
+import { getUsedCategories, pickTranslation } from "@/lib/projects";
+import { mergeCategoryOptions, sanitiseCategories } from "@/lib/categories";
 import { UPLOAD_RULES } from "@/lib/uploads";
 import { DEFAULT_LOCALE, LOCALES } from "@/lib/i18n";
 import { ProjectForm, type ProjectFormValues } from "../../ProjectForm";
@@ -12,14 +12,17 @@ import { cardClass, secondaryButtonClass } from "../../ui";
 
 export default async function EditProjectPage({ params }: PageProps<"/admin/projects/[id]">) {
   const { id } = await params;
-  const project = await prisma.project.findUnique({
-    where: { id },
-    include: {
-      images: { orderBy: { order: "asc" } },
-      fields: { orderBy: { order: "asc" } },
-      translations: true,
-    },
-  });
+  const [project, usedCategories] = await Promise.all([
+    prisma.project.findUnique({
+      where: { id },
+      include: {
+        images: { orderBy: { order: "asc" } },
+        fields: { orderBy: { order: "asc" } },
+        translations: true,
+      },
+    }),
+    getUsedCategories(),
+  ]);
   if (!project) notFound();
 
   const displayTitle = pickTranslation(project.translations, DEFAULT_LOCALE)?.title || "Untitled";
@@ -74,6 +77,7 @@ export default async function EditProjectPage({ params }: PageProps<"/admin/proj
       <div className="mt-6">
         <ProjectForm
           projectId={project.id}
+          categoryOptions={mergeCategoryOptions(usedCategories)}
           published={project.published}
           pinned={project.pinned}
           initial={initial}

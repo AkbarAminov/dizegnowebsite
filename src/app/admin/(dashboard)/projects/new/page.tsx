@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { getUsedCategories } from "@/lib/projects";
+import { mergeCategoryOptions } from "@/lib/categories";
 import { ProjectForm } from "../../ProjectForm";
 
-export default function NewProjectPage() {
+export default async function NewProjectPage() {
+  const categoryOptions = mergeCategoryOptions(await getUsedCategories());
+
   return (
     <div className="mx-auto max-w-6xl">
       <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-neutral-100">
@@ -15,7 +19,7 @@ export default function NewProjectPage() {
       </p>
 
       <div className="mt-6">
-        <ProjectForm />
+        <ProjectForm categoryOptions={categoryOptions} />
       </div>
     </div>
   );

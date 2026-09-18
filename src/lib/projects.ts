@@ -5,7 +5,7 @@ import { prisma } from "./prisma";
 import type { Project } from "./types";
 import { DEFAULT_LOCALE, type Locale } from "./i18n";
 import { preventOrphans } from "./typography";
-import { sanitiseCategories } from "./categories";
+import { sanitiseCategories, sanitiseCategoryVocabulary } from "./categories";
 
 const include = {
   images: { orderBy: { order: "asc" } },
@@ -97,6 +97,16 @@ export const getPublishedProjects = cache(async (locale: Locale = DEFAULT_LOCALE
   });
   return rows.map((row) => toProject(row, locale));
 });
+
+/**
+ * Every category currently in use, so the admin dropdown can offer one the
+ * user invented on another project. Covers drafts too — a category should
+ * be reusable before the project it was coined on goes live.
+ */
+export async function getUsedCategories(): Promise<string[]> {
+  const rows = await prisma.project.findMany({ select: { categories: true } });
+  return sanitiseCategoryVocabulary(rows.flatMap((row) => sanitiseCategories(row.categories)));
+}
 
 /**
  * Public pages are statically rendered. Call this after every admin
