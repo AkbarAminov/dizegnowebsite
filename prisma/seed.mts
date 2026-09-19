@@ -19,7 +19,7 @@ type SeedField = Record<Locale, { label: string; value: string }>;
 type SeedProject = {
   slug: string;
   year: number;
-  // Not translated — values must exist in src/lib/categories.ts.
+  // Not translated — created in the Category table if missing.
   categories: string[];
   translations: Record<Locale, Copy>;
   fields?: SeedField[];
@@ -233,6 +233,16 @@ const projects: SeedProject[] = [
 ];
 
 async function main() {
+  // Appended after whatever is already there, so re-running never reorders
+  // the list the admin has arranged.
+  const existing = await prisma.category.findMany({ select: { name: true } });
+  const known = new Set(existing.map((category) => category.name.toLowerCase()));
+  const missing = Object.values(CATEGORY).filter((name) => !known.has(name.toLowerCase()));
+  const last = await prisma.category.aggregate({ _max: { order: true } });
+  await prisma.category.createMany({
+    data: missing.map((name, i) => ({ name, order: (last._max.order ?? -1) + 1 + i })),
+  });
+
   for (const [index, p] of projects.entries()) {
     await prisma.project.upsert({
       where: { slug: p.slug },

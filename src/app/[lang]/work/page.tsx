@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { WorkFilter } from "@/components/WorkFilter";
 import { EndCTA } from "@/components/EndCTA";
-import { getPublishedProjects } from "@/lib/projects";
+import { getCategories, getPublishedProjects } from "@/lib/projects";
 import { getDictionary } from "@/lib/getDictionary";
 import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/seo";
@@ -17,7 +17,11 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/work">): P
 export default async function WorkPage({ params }: PageProps<"/[lang]/work">) {
   const { lang: rawLang } = await params;
   const lang = isLocale(rawLang) ? rawLang : DEFAULT_LOCALE;
-  const [projects, dict] = await Promise.all([getPublishedProjects(lang), getDictionary(lang)]);
+  const [projects, categories, dict] = await Promise.all([
+    getPublishedProjects(lang),
+    getCategories(),
+    getDictionary(lang),
+  ]);
 
   return (
     <>
@@ -26,7 +30,7 @@ export default async function WorkPage({ params }: PageProps<"/[lang]/work">) {
           <h1 className="text-4xl font-medium uppercase tracking-tight md:text-6xl">{dict.work.title}</h1>
         </RevealOnScroll>
 
-        <WorkFilter projects={projects} lang={lang} allLabel={dict.work.all} />
+        <WorkFilter projects={projects} categories={categories} lang={lang} allLabel={dict.work.all} />
       </section>
       <EndCTA dict={dict.endCta} />
     </>

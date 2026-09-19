@@ -77,6 +77,8 @@ ansible/                        deploy — see docs/deployment.md
 ## Data flow
 DB (`Project` + `ProjectTranslation` + `ProjectImage` + `ProjectField`) → `toProject(row, locale)` → **`Project`** (`types.ts`) → components. `year`/`production`/`fields[]` collapse into `credits`. Grid order = `pinned desc, order asc`. The public site never sees a raw Prisma row.
 
+Categories: `Category` (name + priority `order`) is the vocabulary; `Project.categories` is a JSON array of its names. The admin adds, reorders and deletes categories from the project form's dropdown (`/api/admin/categories/**`); deleting one also strips it from every project. `toProject` and the `/work/` filter follow the `Category` order.
+
 ## Auth (`src/lib/auth.ts`, `src/proxy.ts`)
 Single admin from `ADMIN_EMAIL`/`ADMIN_PASSWORD`. Session = HMAC-SHA256 signed, expiring `admin_session` cookie built with **Web Crypto** (so identical code runs in the proxy and in server actions). `proxy.ts` redirects unauthenticated `/admin/*` to the login page and 401s `/api/admin/*`. Credentials compared in constant time.
 

@@ -4,18 +4,27 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Project } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
-import { mergeCategoryOptions } from "@/lib/categories";
 import { WorkGrid } from "./WorkGrid";
 
 // Client-side category filter over the already-fetched project list. A
 // project can carry several categories, so it shows under each of them.
-export function WorkFilter({ projects, lang, allLabel }: { projects: Project[]; lang: Locale; allLabel: string }) {
+export function WorkFilter({
+  projects,
+  categories: allCategories,
+  lang,
+  allLabel,
+}: {
+  projects: Project[];
+  // Every category in the admin's priority order.
+  categories: string[];
+  lang: Locale;
+  allLabel: string;
+}) {
   const [active, setActive] = useState<string | null>(null);
-  // Only offer filters that match something. Ordered by the suggested list
-  // first, then admin-invented categories alphabetically, so the bar keeps
-  // a stable order instead of following project order.
+  // Only offer filters that match something, in the priority order set in
+  // the admin rather than following project order.
   const inUse = new Set(projects.flatMap((project) => project.categories));
-  const categories = mergeCategoryOptions([...inUse]).filter((category) => inUse.has(category));
+  const categories = allCategories.filter((category) => inUse.has(category));
 
   if (categories.length === 0) return <WorkGrid projects={projects} lang={lang} />;
 

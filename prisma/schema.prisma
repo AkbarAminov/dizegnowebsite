@@ -10,10 +10,10 @@ model Project {
   id        String   @id @default(cuid())
   slug      String   @unique
   year      Int?
-  // JSON array of category names from src/lib/categories.ts. MySQL has no
-  // scalar-list type, and the /work/ filter runs client-side over the
-  // already-fetched list, so a JSON column is enough (same approach as
-  // ProjectField.translations).
+  // JSON array of Category names. MySQL has no scalar-list type, and the
+  // /work/ filter runs client-side over the already-fetched list, so a JSON
+  // column is enough (same approach as ProjectField.translations). Deleting
+  // a Category strips its name from here too (api/admin/categories/[id]).
   categories Json
   order     Int      @default(0)
   // Pinned projects sort before unpinned ones on the public site.
@@ -27,6 +27,18 @@ model Project {
   translations ProjectTranslation[]
 
   @@index([published, pinned, order])
+}
+
+// The vocabulary the admin dropdown offers and the /work/ filter follows.
+// `order` is the priority set in the dropdown: it orders both the filter
+// bar and each project's own list. Names are compared case-insensitively
+// (the default utf8mb4 collation), so "Retail" and "retail" can't coexist.
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique @db.VarChar(40)
+  order Int    @default(0)
+
+  @@index([order])
 }
 
 enum Locale {

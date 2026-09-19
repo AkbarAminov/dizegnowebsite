@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getUsedCategories } from "@/lib/projects";
-import { mergeCategoryOptions } from "@/lib/categories";
+import { getCategoryOptions } from "@/lib/projects";
 import { ProjectForm } from "../../ProjectForm";
 
 export default async function NewProjectPage() {
-  const categoryOptions = mergeCategoryOptions(await getUsedCategories());
+  const categoryOptions = await getCategoryOptions();
 
   return (
     <div className="mx-auto max-w-6xl">

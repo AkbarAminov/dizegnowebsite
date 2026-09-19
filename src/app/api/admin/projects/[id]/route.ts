@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { isUniqueViolation, jsonError, parseBody } from "@/lib/api";
 import { projectPatchSchema, validateProjectInput } from "@/lib/validation";
-import { revalidatePublicSite } from "@/lib/projects";
+import { resolveCategories, revalidatePublicSite } from "@/lib/projects";
 import { removeUpload } from "@/lib/uploads";
 import { LOCALES } from "@/lib/i18n";
 
@@ -12,7 +12,8 @@ export async function PATCH(request: Request, { params }: RouteContext<"/api/adm
   const titleError = validateProjectInput(parsed.data);
   if (titleError) return jsonError(titleError, 400);
 
-  const { fields, translations, ...data } = parsed.data;
+  const { fields, translations, categories, ...rest } = parsed.data;
+  const data = categories ? { ...rest, categories: await resolveCategories(categories) } : rest;
 
   try {
     const [project] = await prisma.$transaction([

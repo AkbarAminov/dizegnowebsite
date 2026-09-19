@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import type { ProjectInput } from "@/lib/validation";
+import type { CategoryOption } from "@/lib/projects";
 import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS, mapLocales, type Locale } from "@/lib/i18n";
 import { CategorySelect } from "./CategorySelect";
 import { ConfirmDialog } from "./ConfirmDialog";
@@ -29,7 +30,7 @@ type FieldRow = { translations: Record<Locale, FieldTranslation> };
 export type ProjectFormValues = {
   slug: string;
   year: string;
-  // Not translated — one list shared by every locale, see lib/categories.ts.
+  // Not translated — one list shared by every locale, see the Category model.
   categories: string[];
   translations: Record<Locale, LocaleTranslation>;
   fields: FieldRow[];
@@ -111,8 +112,8 @@ export function ProjectForm({
   // Absent when creating a new project.
   projectId?: string;
   initial?: ProjectFormValues;
-  // Built-in suggestions plus every category already used on a project.
-  categoryOptions: string[];
+  // The Category table in priority order.
+  categoryOptions: CategoryOption[];
   published?: boolean;
   pinned?: boolean;
 }) {
@@ -150,6 +151,17 @@ export function ProjectForm({
 
   function setCategories(categories: string[]) {
     setValues((current) => ({ ...current, categories }));
+  }
+
+  // The server already stripped a deleted category from this project, so it
+  // leaves the saved baseline as well — otherwise the form would look dirty.
+  function removeCategory(name: string) {
+    const without = (form: ProjectFormValues) => ({
+      ...form,
+      categories: form.categories.filter((value) => value.toLowerCase() !== name.toLowerCase()),
+    });
+    setValues(without);
+    setSaved(without);
   }
 
   function setTranslation(locale: Locale, key: keyof LocaleTranslation, value: string) {
@@ -330,6 +342,7 @@ export function ProjectForm({
                   selected={values.categories}
                   options={categoryOptions}
                   onChange={setCategories}
+                  onDelete={removeCategory}
                 />
               </Field>
 

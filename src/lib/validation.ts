@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { DEFAULT_LOCALE } from "./i18n";
-import { sanitiseCategories } from "./categories";
+import { CATEGORY_MAX_LENGTH, sanitiseCategories } from "./categories";
 
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(120),
@@ -37,8 +37,9 @@ export const projectSchema = z.object({
     .trim()
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug may only contain lowercase letters, digits and hyphens"),
   year: z.number().int().min(1900).max(2100).nullable(),
-  // Unknown values are dropped rather than rejected, so retiring a category
-  // in src/lib/categories.ts can't make an existing project unsaveable.
+  // Names missing from the Category table are dropped on save (see
+  // resolveCategories) rather than rejected, so a category deleted while the
+  // form was open can't make the project unsaveable.
   categories: z.array(z.string()).transform(sanitiseCategories),
   translations: z.object({ ru: translationSchema, en: translationSchema, uz: translationSchema }),
   fields: z.array(
@@ -60,6 +61,10 @@ export function validateProjectInput(data: { translations?: ProjectInput["transl
 export const projectPatchSchema = projectSchema.partial().extend({
   published: z.boolean().optional(),
   pinned: z.boolean().optional(),
+});
+
+export const categorySchema = z.object({
+  name: z.string().trim().min(1, "Enter a category name").max(CATEGORY_MAX_LENGTH),
 });
 
 export const orderSchema = z.object({ order: z.array(z.string()).min(1) });
