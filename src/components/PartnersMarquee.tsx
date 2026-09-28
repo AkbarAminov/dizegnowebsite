@@ -53,7 +53,7 @@ export function PartnersMarquee({ label }: { label: string }) {
                 src={`/partners/${file}`}
                 alt={i < logos.length ? labelFromFilename(file) : ""}
                 fill
-                sizes="200px"
+                sizes="(min-width: 768px) 202px, 166px"
                 className="object-contain opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
                 unoptimized={file.toLowerCase().endsWith(".svg")}
               />

@@ -12,6 +12,7 @@ export function MediaThumbnail({
   sizes,
   fitMode = "cover",
   priority = false,
+  quality,
   playIconSize = 40,
 }: {
   src: string;
@@ -20,6 +21,8 @@ export function MediaThumbnail({
   sizes: string;
   fitMode?: FitMode;
   priority?: boolean;
+  // Only the values listed in next.config's images.qualities are allowed.
+  quality?: number;
   playIconSize?: number;
 }) {
   if (type === "youtube") {
@@ -41,6 +44,7 @@ export function MediaThumbnail({
       sizes={sizes}
       className={fitMode === "contain" ? "object-contain" : "object-cover"}
       priority={priority}
+      quality={quality}
       // Optimisation would strip the animation from a gif.
       unoptimized={type === "gif"}
     />

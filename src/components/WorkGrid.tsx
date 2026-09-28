@@ -12,6 +12,15 @@ const COLUMN_CLASSES = {
   3: "grid-cols-1 gap-3 px-5 sm:grid-cols-2 sm:gap-4 md:px-8 lg:grid-cols-3 lg:gap-5",
 };
 
+// Must track COLUMN_CLASSES: a card fills one column, so an under-stated
+// width makes the browser pick a smaller source and upscale it — which is
+// why the two-column grid looked soft on a retina screen while the same
+// image was sharp in the lightbox.
+const COLUMN_SIZES = {
+  2: "(min-width: 640px) 50vw, 100vw",
+  3: "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw",
+};
+
 // Uniform project grid used on Home, Work and the "related projects" strip.
 export function WorkGrid({
   projects,
@@ -25,7 +34,14 @@ export function WorkGrid({
   return (
     <div className={`grid ${COLUMN_CLASSES[columns]}`}>
       {projects.map((project, i) => (
-        <WorkCard key={project.slug} project={project} lang={lang} priority={i < 2} index={i} />
+        <WorkCard
+          key={project.slug}
+          project={project}
+          lang={lang}
+          sizes={COLUMN_SIZES[columns]}
+          priority={i < 2}
+          index={i}
+        />
       ))}
     </div>
   );
@@ -34,11 +50,13 @@ export function WorkGrid({
 function WorkCard({
   project,
   lang,
+  sizes,
   priority,
   index,
 }: {
   project: Project;
   lang: Locale;
+  sizes: string;
   priority: boolean;
   index: number;
 }) {
@@ -71,9 +89,12 @@ function WorkCard({
             src={project.thumbnail}
             alt={project.title}
             fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            sizes={sizes}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             priority={priority}
+            // A cover is the first thing a visitor judges the studio on;
+            // the default 75 shows its artefacts on flat brand colour.
+            quality={90}
           />
         )}
 

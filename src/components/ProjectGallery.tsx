@@ -47,6 +47,7 @@ export function ProjectGallery({
                 alt={`${alt} — ${index + 1}`}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 priority={index < 2}
+                quality={90}
               />
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-200 group-hover:bg-black/40 group-hover:opacity-100">
                 <span className="text-sm font-medium uppercase tracking-tight text-white">{dict.view}</span>
