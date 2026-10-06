@@ -8,6 +8,7 @@ import type { CategoryOption } from "@/lib/projects";
 import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS, mapLocales, type Locale } from "@/lib/i18n";
 import { CategorySelect } from "./CategorySelect";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { RichTextEditor } from "./RichTextEditor";
 import { Switch } from "./Switch";
 import { Toast, type ToastMessage } from "./Toast";
 import {
@@ -367,13 +368,12 @@ export function ProjectForm({
           <SectionHeader title="Story" hint="The text that runs beside the images on the project page." />
           <div className="flex flex-col gap-5 p-5 pt-0">
             <Field label={`Description (${LOCALE_LABELS[activeLocale]})`} htmlFor="project-description">
-              <textarea
+              <RichTextEditor
+                key={activeLocale}
                 id="project-description"
                 value={t.description}
-                onChange={(event) => setTranslation(activeLocale, "description", event.target.value)}
-                rows={5}
+                onChange={(html) => setTranslation(activeLocale, "description", html)}
                 placeholder="What the project was and what you made."
-                className={inputClass}
               />
             </Field>
             <Field

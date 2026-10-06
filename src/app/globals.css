@@ -64,3 +64,13 @@ body {
 .animate-marquee {
   animation: marquee linear infinite;
 }
+
+/* RichTextEditor.tsx (admin): tiptap adds the class/attribute, not the
+   styling — the empty-state hint text for the description field. */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: color-mix(in srgb, white 40%, transparent);
+}

@@ -73,7 +73,11 @@ export function ProjectInfoPanel({
       >
         <h2 className="sr-only">{aboutLabel}</h2>
         <div className="grid gap-10 md:grid-cols-[3fr_2fr]">
-          <p className="max-w-2xl text-base opacity-80">{project.description}</p>
+          {/* project.description is sanitised HTML from RichTextEditor.tsx (src/lib/richText.ts) */}
+          <div
+            className="max-w-2xl text-base opacity-80 [&_em]:italic [&_li]:mt-1 [&_ol]:mt-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_p:last-child]:mb-0 [&_p]:mb-4 [&_strong]:font-semibold [&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-5"
+            dangerouslySetInnerHTML={{ __html: project.description }}
+          />
 
           <dl>
             {project.credits.map((credit, i) => (

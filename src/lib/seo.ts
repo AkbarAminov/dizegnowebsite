@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DEFAULT_LOCALE, LOCALES, localeHref, type Locale } from "./i18n";
+import { richTextToPlainText } from "./richText";
 
 export const SITE_URL = "https://dizegnoagency.com";
 export const SITE_NAME = "Dizegno";
@@ -20,9 +21,11 @@ export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
 }
 
-// Trims a description to what search engines actually show, on a word boundary.
+// Trims a description to what search engines actually show, on a word
+// boundary. `text` is a project description, which is HTML since
+// RichTextEditor.tsx — strip the markup before anything else.
 export function truncate(text: string, max = 155): string {
-  const clean = plainText(text).replace(/\s+/g, " ").trim();
+  const clean = plainText(richTextToPlainText(text));
   if (clean.length <= max) return clean;
   return `${clean.slice(0, max).replace(/[\s,;:—-]+\S*$/, "")}…`;
 }

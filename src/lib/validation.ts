@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { DEFAULT_LOCALE } from "./i18n";
 import { CATEGORY_MAX_LENGTH, sanitiseCategories } from "./categories";
+import { isRichTextEmpty, sanitizeRichText } from "./richText";
 
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(120),
@@ -19,13 +20,21 @@ export type ContactInput = z.infer<typeof contactSchema>;
 
 const optionalText = z.string().trim().transform((value) => value || null);
 
+// The description comes from RichTextEditor.tsx as HTML — sanitised to an
+// allowlist here (never trust the client, even though it's a single admin)
+// and reduced to null when nothing visible is left in it.
+const richTextOptional = z.string().trim().transform((value) => {
+  const sanitized = sanitizeRichText(value);
+  return isRichTextEmpty(sanitized) ? null : sanitized;
+});
+
 // Every locale's copy is optional except the title in the default locale —
 // that's the one piece of content a project can't be published without
 // (checked in validateProjectInput, since zod validates each locale the
 // same way and doesn't know which one is the default).
 const translationSchema = z.object({
   title: z.string().trim(),
-  description: optionalText,
+  description: richTextOptional,
   production: optionalText,
 });
 
