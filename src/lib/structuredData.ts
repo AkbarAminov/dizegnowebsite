@@ -40,6 +40,14 @@ export function organizationJsonLd(dict: Dictionary) {
   };
 }
 
+export function homePageJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    primaryImageOfPage: absoluteUrl("/cover.webp"),
+  };
+}
+
 export function servicesJsonLd(dict: Dictionary, lang: Locale) {
   return {
     "@context": "https://schema.org",

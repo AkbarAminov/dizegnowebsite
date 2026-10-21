@@ -39,6 +39,8 @@ export function languageAlternates(path: string): Record<string, string> {
   };
 }
 
+type ShareImage = { url: string; width?: number; height?: number; alt?: string; type?: string };
+
 type PageMeta = {
   lang: Locale;
   // Unprefixed path, e.g. "/work/" — the locale prefix is added here.
@@ -47,7 +49,9 @@ type PageMeta = {
   description: string;
   // The home page carries the full brand title and skips the "— Dizegno" template.
   absoluteTitle?: boolean;
-  image?: { url: string; width?: number; height?: number; alt?: string };
+  // A single image, or several in priority order (e.g. webp first, jpg
+  // fallback for clients that read webp poorly).
+  image?: ShareImage | ShareImage[];
 };
 
 // One place that knows how title, description, canonical, hreflang and the
@@ -56,7 +60,7 @@ export function pageMetadata({ lang, path, title, description, absoluteTitle, im
   const url = absoluteUrl(localeHref(lang, path));
   const cleanTitle = plainText(title);
   const cleanDescription = plainText(description);
-  const shareImage = image ?? { ...OG_IMAGE, alt: SITE_NAME };
+  const shareImages = image ? (Array.isArray(image) ? image : [image]) : [{ ...OG_IMAGE, alt: SITE_NAME }];
 
   return {
     title: absoluteTitle ? { absolute: cleanTitle } : cleanTitle,
@@ -69,13 +73,13 @@ export function pageMetadata({ lang, path, title, description, absoluteTitle, im
       url,
       title: cleanTitle,
       description: cleanDescription,
-      images: [shareImage],
+      images: shareImages,
     },
     twitter: {
       card: "summary_large_image",
       title: cleanTitle,
       description: cleanDescription,
-      images: [shareImage.url],
+      images: shareImages.map((shareImage) => shareImage.url),
     },
   };
 }

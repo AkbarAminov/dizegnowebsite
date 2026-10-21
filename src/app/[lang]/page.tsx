@@ -3,10 +3,20 @@ import Link from "next/link";
 import { WorkGrid } from "@/components/WorkGrid";
 import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { EndCTA } from "@/components/EndCTA";
+import { JsonLd } from "@/components/JsonLd";
 import { getPublishedProjects } from "@/lib/projects";
 import { getDictionary } from "@/lib/getDictionary";
 import { DEFAULT_LOCALE, isLocale, localeHref } from "@/lib/i18n";
-import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl, pageMetadata } from "@/lib/seo";
+import { homePageJsonLd } from "@/lib/structuredData";
+
+// Cover shown when the home page is shared — webp first, jpg fallback for
+// messengers/crawlers that unfurl webp poorly.
+const COVER_ALT = "Dizegno — брендинговое агентство в Ташкенте";
+const COVER_IMAGES = [
+  { url: absoluteUrl("/cover.webp"), width: 900, height: 507, type: "image/webp", alt: COVER_ALT },
+  { url: absoluteUrl("/cover.jpg"), width: 900, height: 507, type: "image/jpeg", alt: COVER_ALT },
+];
 
 // Pinned projects come first (see getPublishedProjects), so the home page
 // shows the ones the admin chose to feature; the rest live on /work/.
@@ -22,6 +32,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]">): Promis
     title: dict.seo.home.title,
     description: dict.seo.home.description,
     absoluteTitle: true,
+    image: COVER_IMAGES,
   });
 }
 
@@ -52,6 +63,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
       <PartnersMarquee label={dict.partners.title} />
       <EndCTA dict={dict.endCta} />
+      <JsonLd data={homePageJsonLd()} />
     </>
   );
 }

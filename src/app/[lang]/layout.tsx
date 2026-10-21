@@ -46,6 +46,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     robots: {
       index: true,
       follow: true,
+      "max-image-preview": "large",
       googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
     },
     openGraph: { type: "website", siteName: SITE_NAME, images: [OG_IMAGE] },
